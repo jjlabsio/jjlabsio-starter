@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
+  "style": "radix-vega",
   "rsc": true,
   "tsx": true,
   "tailwind": {
@@ -10,11 +10,15 @@
     "cssVariables": true
   },
   "iconLibrary": "lucide",
+  "rtl": false,
   "aliases": {
     "components": "@repo/ui/components",
     "utils": "@repo/ui/lib/utils",
     "hooks": "@repo/ui/hooks",
     "lib": "@repo/ui/lib",
     "ui": "@repo/ui/components"
-  }
+  },
+  "menuColor": "default",
+  "menuAccent": "bold",
+  "registries": {}
 }
