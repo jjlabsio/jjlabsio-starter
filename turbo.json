@@ -13,9 +13,13 @@
     "typecheck": {
       "dependsOn": ["^typecheck"]
     },
+    "test": {
+      "dependsOn": ["^build"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
     }
-  }
+  },
+  "globalEnv": ["DATABASE_URL", "NODE_ENV"]
 }
