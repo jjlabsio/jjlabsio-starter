@@ -19,3 +19,20 @@ export async function deleteUser(id: string) {
 
   revalidatePath("/users");
 }
+
+export async function createComment(formData: FormData) {
+  const content = formData.get("content") as string;
+  const authorId = formData.get("authorId") as string;
+
+  await database.comment.create({
+    data: { content, authorId },
+  });
+
+  revalidatePath("/users");
+}
+
+export async function deleteComment(id: string) {
+  await database.comment.delete({ where: { id } });
+
+  revalidatePath("/users");
+}

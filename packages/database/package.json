@@ -26,6 +26,9 @@
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
+  "prisma": {
+    "schema": "prisma/schema"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./client": "./src/client.ts",
