@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:deploy": "pnpm --filter @repo/database db:migrate:deploy && next build",
     "start": "next start",
     "lint": "eslint .",
     "lint:fix": "next lint --fix",
