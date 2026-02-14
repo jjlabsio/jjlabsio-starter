@@ -1,0 +1,3 @@
+{
+  "buildCommand": "pnpm --filter @repo/database build && pnpm --filter app build:deploy"
+}
