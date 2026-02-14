@@ -59,8 +59,8 @@ const data = {
       icon: Folder,
     },
     {
-      title: "Team",
-      url: "#",
+      title: "Users",
+      url: "/users",
       icon: Users,
     },
   ],
