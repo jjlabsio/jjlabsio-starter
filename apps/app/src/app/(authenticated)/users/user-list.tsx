@@ -30,7 +30,7 @@ export function UserList({ users }: UserListProps) {
               <td className="px-4 py-2">{user.email}</td>
               <td className="px-4 py-2">{user.name ?? "-"}</td>
               <td className="px-4 py-2">
-                {user.createdAt.toLocaleDateString()}
+                {user.createdAt.toLocaleDateString("ko-KR")}
               </td>
               <td className="px-4 py-2 text-right">
                 <Button
