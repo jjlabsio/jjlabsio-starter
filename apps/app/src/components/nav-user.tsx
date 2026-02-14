@@ -4,9 +4,14 @@ import {
   Bell,
   CreditCard,
   LogOut,
+  Monitor,
+  Moon,
   MoreVertical,
+  Sun,
+  SunMoon,
   UserCircle,
 } from "lucide-react";
+import { useTheme } from "next-themes";
 
 import {
   Avatar,
@@ -20,6 +25,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import {
@@ -39,6 +47,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { theme, setTheme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -96,6 +105,26 @@ export function NavUser({
                 <Bell />
                 Notifications
               </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <SunMoon />
+                  Theme
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={() => setTheme("light")}>
+                    <Sun />
+                    Light
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("dark")}>
+                    <Moon />
+                    Dark
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme("system")}>
+                    <Monitor />
+                    System
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
