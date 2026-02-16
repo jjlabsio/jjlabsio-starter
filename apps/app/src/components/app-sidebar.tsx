@@ -29,6 +29,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@repo/ui/components/sidebar";
 
 const data = {
@@ -154,15 +155,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
-            >
-              <a href="#">
-                <CircleDot className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
-            </SidebarMenuButton>
+            <div className="flex items-center group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1">
+              <SidebarMenuButton
+                asChild
+                className="data-[slot=sidebar-menu-button]:p-1.5! hover:opacity-80!"
+              >
+                <a href="#">
+                  <CircleDot className="size-5!" />
+                  <span className="text-base font-semibold">Acme Inc.</span>
+                </a>
+              </SidebarMenuButton>
+              <SidebarTrigger className="shrink-0 group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground!" />
+            </div>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
