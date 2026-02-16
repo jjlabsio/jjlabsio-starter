@@ -165,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <span className="text-base font-semibold">Acme Inc.</span>
                 </a>
               </SidebarMenuButton>
-              <SidebarTrigger className="shrink-0 group-data-[collapsible=icon]:hidden hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground!" />
+              <SidebarTrigger className="shrink-0 hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground!" />
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
