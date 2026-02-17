@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import {
   BarChart3,
   Camera,
@@ -27,7 +28,6 @@ import {
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
 } from "@repo/ui/components/sidebar";
@@ -156,16 +156,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <div className="flex items-center group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1">
-              <SidebarMenuButton
-                asChild
-                className="data-[slot=sidebar-menu-button]:p-1.5! hover:opacity-80!"
-              >
-                <a href="#">
-                  <CircleDot className="size-5!" />
-                  <span className="text-base font-semibold">Acme Inc.</span>
-                </a>
-              </SidebarMenuButton>
-              <SidebarTrigger className="shrink-0 hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground!" />
+              <Link href="/" className="flex items-center gap-2 p-1.5">
+                <CircleDot className="size-5!" />
+                <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">
+                  Acme Inc.
+                </span>
+              </Link>
+              <SidebarTrigger className="ml-auto shrink-0 hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground!" />
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
