@@ -1,29 +1,24 @@
 "use client";
 
 import {
-  Bell,
-  CreditCard,
-  LogOut,
-  Monitor,
-  Moon,
-  MoreVertical,
-  Sun,
-  SunMoon,
-  UserCircle,
-} from "lucide-react";
+  IconBell,
+  IconCreditCard,
+  IconLogout,
+  IconDeviceDesktop,
+  IconMoon,
+  IconDotsVertical,
+  IconSun,
+  IconSunMoon,
+  IconUserCircle,
+} from "@tabler/icons-react";
 import { useTheme } from "next-themes";
 
-import {
-  Avatar,
-  AvatarFallback,
-  // AvatarImage,
-} from "@repo/ui/components/avatar";
+import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -47,19 +42,39 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="text-muted-foreground truncate text-xs">
+                {user.email}
+              </span>
+            </div>
+            <IconDotsVertical className="ml-auto size-4" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-(--anchor-width) min-w-56 rounded-lg"
+            side={isMobile ? "bottom" : "right"}
+            align="end"
+            sideOffset={4}
+          >
+            <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -68,59 +83,37 @@ export function NavUser({
                   {user.email}
                 </span>
               </div>
-              <MoreVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  {/* <AvatarImage src={user.avatar} alt={user.name} /> */}
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
+            </div>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <UserCircle />
+                <IconUserCircle />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
+                <IconCreditCard />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell />
+                <IconBell />
                 Notifications
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <SunMoon />
+                  <IconSunMoon />
                   Theme
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuItem onClick={() => setTheme("light")}>
-                    <Sun />
+                    <IconSun />
                     Light
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    <Moon />
+                    <IconMoon />
                     Dark
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")}>
-                    <Monitor />
+                    <IconDeviceDesktop />
                     System
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
@@ -128,7 +121,7 @@ export function NavUser({
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <LogOut />
+              <IconLogout />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

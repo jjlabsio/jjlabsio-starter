@@ -1,15 +1,15 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "radix-vega",
+  "style": "base-vega",
   "rsc": true,
   "tsx": true,
   "tailwind": {
     "config": "",
     "css": "src/styles/globals.css",
-    "baseColor": "neutral",
+    "baseColor": "stone",
     "cssVariables": true
   },
-  "iconLibrary": "lucide",
+  "iconLibrary": "tabler",
   "rtl": false,
   "aliases": {
     "components": "@repo/ui/components",
@@ -19,6 +19,6 @@
     "ui": "@repo/ui/components"
   },
   "menuColor": "default",
-  "menuAccent": "bold",
+  "menuAccent": "subtle",
   "registries": {}
 }

@@ -1,5 +1,5 @@
 import { Button } from "@repo/ui/components/button";
-import { Check } from "lucide-react";
+import { IconCheck } from "@tabler/icons-react";
 
 interface Plan {
   readonly name: string;
@@ -60,7 +60,7 @@ export function PricingCard({ plan }: PricingCardProps) {
             key={feature}
             className="flex items-start gap-3 text-sm text-muted-foreground"
           >
-            <Check className="mt-0.5 size-4 shrink-0 text-foreground/60" />
+            <IconCheck className="mt-0.5 size-4 shrink-0 text-foreground/60" />
             {feature}
           </li>
         ))}

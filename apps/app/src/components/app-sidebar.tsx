@@ -3,21 +3,22 @@
 import * as React from "react";
 import Link from "next/link";
 import {
-  BarChart3,
-  Camera,
-  CircleDot,
-  Database,
-  FileText,
-  Folder,
-  HelpCircle,
-  LayoutDashboard,
-  ListChecks,
-  ClipboardList,
-  Search,
-  Settings,
-  Users,
-  Sparkles,
-} from "lucide-react";
+  IconChartBar,
+  IconCamera,
+  IconCircleDot,
+  IconComponents,
+  IconDatabase,
+  IconFileText,
+  IconFolder,
+  IconHelpCircle,
+  IconLayoutDashboard,
+  IconListCheck,
+  IconClipboardList,
+  IconSearch,
+  IconSettings,
+  IconUsers,
+  IconSparkles,
+} from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -42,33 +43,38 @@ const data = {
     {
       title: "Dashboard",
       url: "/dashboard",
-      icon: LayoutDashboard,
+      icon: IconLayoutDashboard,
     },
     {
       title: "Lifecycle",
       url: "/test",
-      icon: ListChecks,
+      icon: IconListCheck,
     },
     {
       title: "Analytics",
       url: "#",
-      icon: BarChart3,
+      icon: IconChartBar,
     },
     {
       title: "Projects",
       url: "#",
-      icon: Folder,
+      icon: IconFolder,
     },
     {
       title: "Users",
       url: "/users",
-      icon: Users,
+      icon: IconUsers,
+    },
+    {
+      title: "Components",
+      url: "/components",
+      icon: IconComponents,
     },
   ],
   navClouds: [
     {
       title: "Capture",
-      icon: Camera,
+      icon: IconCamera,
       isActive: true,
       url: "#",
       items: [
@@ -84,7 +90,7 @@ const data = {
     },
     {
       title: "Proposal",
-      icon: FileText,
+      icon: IconFileText,
       url: "#",
       items: [
         {
@@ -99,7 +105,7 @@ const data = {
     },
     {
       title: "Prompts",
-      icon: Sparkles,
+      icon: IconSparkles,
       url: "#",
       items: [
         {
@@ -117,34 +123,34 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: Settings,
+      icon: IconSettings,
     },
     {
       title: "Get Help",
       url: "#",
-      icon: HelpCircle,
+      icon: IconHelpCircle,
     },
     {
       title: "Search",
       url: "#",
-      icon: Search,
+      icon: IconSearch,
     },
   ],
   documents: [
     {
       name: "Data Library",
       url: "#",
-      icon: Database,
+      icon: IconDatabase,
     },
     {
       name: "Reports",
       url: "#",
-      icon: ClipboardList,
+      icon: IconClipboardList,
     },
     {
       name: "Word Assistant",
       url: "#",
-      icon: FileText,
+      icon: IconFileText,
     },
   ],
 };
@@ -157,7 +163,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <div className="flex items-center group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1">
               <Link href="/" className="flex items-center gap-2 p-1.5">
-                <CircleDot className="size-5!" />
+                <IconCircleDot className="size-5!" />
                 <span className="text-base font-semibold group-data-[collapsible=icon]:hidden">
                   Acme Inc.
                 </span>

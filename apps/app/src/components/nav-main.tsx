@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { type LucideIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -24,12 +23,12 @@ export function NavMain({
   items: {
     title: string;
     url: string;
-    icon?: LucideIcon;
+    icon?: React.ComponentType<{ className?: string }>;
   }[];
 }) {
   const pathname = usePathname();
   const [mountedPathname, setMountedPathname] = React.useState<string | null>(
-    null
+    null,
   );
 
   React.useEffect(() => {
@@ -44,17 +43,15 @@ export function NavMain({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}
-                asChild
+                render={<Link href={item.url} />}
                 isActive={
                   mountedPathname
                     ? isItemActive(mountedPathname, item.url)
                     : false
                 }
               >
-                <Link href={item.url}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                </Link>
+                {item.icon && <item.icon />}
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

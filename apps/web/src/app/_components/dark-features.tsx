@@ -1,35 +1,35 @@
 import { Button } from "@repo/ui/components/button";
 import {
-  Zap,
-  Shield,
-  BarChart3,
-  Workflow,
-  Globe,
-  Lock,
-  Layers,
-  Cpu,
-} from "lucide-react";
+  IconBolt,
+  IconShield,
+  IconChartBar,
+  IconRoute,
+  IconWorld,
+  IconLock,
+  IconStack2,
+  IconCpu,
+} from "@tabler/icons-react";
 
 const FEATURES_TOP = [
   {
-    icon: Zap,
+    icon: IconBolt,
     title: "Lightning Fast",
     description:
       "Sub-second response times with edge computing and smart caching.",
   },
   {
-    icon: Shield,
+    icon: IconShield,
     title: "Enterprise Security",
     description: "SOC 2 compliant with end-to-end encryption and SSO support.",
   },
   {
-    icon: BarChart3,
+    icon: IconChartBar,
     title: "Advanced Analytics",
     description:
       "Real-time dashboards and custom reports for data-driven decisions.",
   },
   {
-    icon: Workflow,
+    icon: IconRoute,
     title: "Smart Automations",
     description:
       "AI-powered workflows that adapt to your team\u2019s processes.",
@@ -38,22 +38,22 @@ const FEATURES_TOP = [
 
 const FEATURES_BOTTOM = [
   {
-    icon: Globe,
+    icon: IconWorld,
     title: "Global CDN",
     description: "Deploy to 200+ edge locations for worldwide performance.",
   },
   {
-    icon: Lock,
+    icon: IconLock,
     title: "Access Control",
     description: "Fine-grained permissions with role-based access management.",
   },
   {
-    icon: Layers,
+    icon: IconStack2,
     title: "Version Control",
     description: "Built-in versioning with branching and merge capabilities.",
   },
   {
-    icon: Cpu,
+    icon: IconCpu,
     title: "AI Assistant",
     description: "Intelligent suggestions that help your team move faster.",
   },

@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { IconStarFilled } from "@tabler/icons-react";
 
 const BRANDS = [
   "Vercel",
@@ -16,7 +16,7 @@ export function SocialProof() {
         <div className="flex flex-col items-center gap-8">
           <div className="flex items-center gap-1">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star
+              <IconStarFilled
                 key={i}
                 className="size-4 fill-neutral-800 text-neutral-800 dark:fill-neutral-200 dark:text-neutral-200"
               />
