@@ -2,13 +2,14 @@
 
 import {
   IconBell,
+  IconCheck,
   IconCreditCard,
   IconLogout,
   IconDeviceDesktop,
   IconMoon,
   IconDotsVertical,
   IconSun,
-  IconSunMoon,
+  IconContrastFilled,
   IconUserCircle,
 } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
@@ -42,7 +43,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
-  const { setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   return (
     <SidebarMenu>
@@ -100,21 +101,24 @@ export function NavUser({
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <IconSunMoon />
+                  <IconContrastFilled />
                   Theme
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuItem onClick={() => setTheme("light")}>
                     <IconSun />
                     Light
+                    {theme === "light" && <IconCheck className="ml-auto" />}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")}>
                     <IconMoon />
                     Dark
+                    {theme === "dark" && <IconCheck className="ml-auto" />}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")}>
                     <IconDeviceDesktop />
                     System
+                    {theme === "system" && <IconCheck className="ml-auto" />}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
