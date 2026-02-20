@@ -24,5 +24,13 @@
       "persistent": true
     }
   },
-  "globalEnv": ["DATABASE_URL", "DIRECT_URL", "NODE_ENV"]
+  "globalEnv": [
+    "DATABASE_URL",
+    "DIRECT_URL",
+    "NODE_ENV",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET"
+  ]
 }

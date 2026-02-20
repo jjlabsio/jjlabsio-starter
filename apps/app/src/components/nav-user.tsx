@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import {
   IconBell,
   IconCheck,
@@ -13,8 +14,13 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
+import { signOut } from "@repo/auth/client";
 
-import { Avatar, AvatarFallback } from "@repo/ui/components/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@repo/ui/components/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,17 +39,40 @@ import {
   useSidebar,
 } from "@repo/ui/components/sidebar";
 
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .filter(Boolean)
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+}
+
 export function NavUser({
   user,
 }: {
   user: {
     name: string;
     email: string;
-    avatar: string;
+    image?: string;
   };
 }) {
   const { isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
+  const router = useRouter();
+
+  const initials = getInitials(user.name || user.email);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch {
+      // redirect regardless of server call result
+    } finally {
+      router.push("/sign-in");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -58,7 +87,8 @@ export function NavUser({
             }
           >
             <Avatar className="h-8 w-8 rounded-lg grayscale">
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              {user.image && <AvatarImage src={user.image} alt={user.name} />}
+              <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -76,7 +106,10 @@ export function NavUser({
           >
             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                {user.image && <AvatarImage src={user.image} alt={user.name} />}
+                <AvatarFallback className="rounded-lg">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user.name}</span>
@@ -124,7 +157,7 @@ export function NavUser({
               </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleSignOut}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
