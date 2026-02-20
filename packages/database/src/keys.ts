@@ -12,4 +12,5 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     DIRECT_URL: process.env.DIRECT_URL,
   },
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 });
