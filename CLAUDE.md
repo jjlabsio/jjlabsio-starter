@@ -19,6 +19,8 @@ SaaS 서비스를 빠르게 구축하기 위한 starter template 모노레포.
 | Styling   | Tailwind CSS v4, shadcn/ui (radix-vega theme) |
 | Font      | Pretendard Variable (local)                   |
 | Linting   | ESLint 9 (flat config), Prettier              |
+| Auth      | Better Auth (Google OAuth, Prisma adapter)    |
+| Database  | Prisma ORM, PostgreSQL (Supabase)             |
 | Git Hooks | Husky + lint-staged                           |
 | Runtime   | Node.js >= 20                                 |
 
@@ -31,6 +33,8 @@ apps/
   app/              # SaaS app (dashboard, sidebar, charts)
   web/              # Landing page (planned)
 packages/
+  auth/             # Better Auth server/client config, env validation
+  database/         # Prisma client, schema, migrations
   ui/               # Shared shadcn/ui components, hooks, utils
   eslint-config/    # Shared ESLint configs (base, next, react-internal)
   typescript-config/ # Shared TypeScript configs (base, nextjs, react-library)
@@ -54,6 +58,8 @@ pnpm format       # Format with Prettier
 
 Internal packages use `workspace:*` protocol:
 
+- `@repo/auth` - Better Auth server/client (`packages/auth`)
+- `@repo/database` - Prisma client and schema (`packages/database`)
 - `@repo/ui` - shared UI components (`packages/ui`)
 - `@repo/eslint-config` - shared ESLint config (`packages/eslint-config`)
 - `@repo/typescript-config` - shared TypeScript config (`packages/typescript-config`)
@@ -80,7 +86,7 @@ New apps under `apps/` should:
 1. Extend `@repo/typescript-config/nextjs.json`
 2. Use `@repo/eslint-config/next.js`
 3. Import shared components from `@repo/ui`
-4. Transpile `@repo/ui` in `next.config.ts`
+4. Transpile `@repo/ui`, `@repo/database`, `@repo/auth` in `next.config.ts`
 
 ### Pre-commit
 
