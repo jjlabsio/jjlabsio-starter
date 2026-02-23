@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@better-auth/telemetry": "^1.4.18",
     "@repo/auth": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/ui": "workspace:*",
