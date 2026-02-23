@@ -1,3 +1,5 @@
+import { Button } from "@repo/ui/components/button";
+
 export default function HomePage() {
   return (
     <>
@@ -8,12 +10,15 @@ export default function HomePage() {
         Build your next SaaS product faster than ever.
       </h1>
       <div className="flex w-full max-w-md gap-3">
-        <button className="flex-1 rounded bg-primary px-8 py-5 text-base font-semibold uppercase tracking-wide text-primary-foreground transition-colors hover:bg-primary/80">
+        <Button className="flex-1 px-8 py-5 text-base font-semibold uppercase tracking-wide">
           Get Started
-        </button>
-        <button className="flex-1 rounded bg-muted px-8 py-5 text-base font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:bg-muted/80">
+        </Button>
+        <Button
+          variant="secondary"
+          className="flex-1 px-8 py-5 text-base font-semibold uppercase tracking-wide"
+        >
           Learn More
-        </button>
+        </Button>
       </div>
       <div className="text-muted-foreground mt-6 flex items-center gap-3 text-xs">
         <span>No credit card required</span>
