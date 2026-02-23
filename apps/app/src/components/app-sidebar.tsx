@@ -6,13 +6,11 @@ import {
   IconChartBar,
   IconCamera,
   IconCircleDot,
-  IconComponents,
   IconDatabase,
   IconFileText,
   IconFolder,
   IconHelpCircle,
   IconLayoutDashboard,
-  IconListCheck,
   IconClipboardList,
   IconSearch,
   IconSettings,
@@ -40,11 +38,6 @@ const data = {
       icon: IconLayoutDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "/test",
-      icon: IconListCheck,
-    },
-    {
       title: "Analytics",
       url: "#",
       icon: IconChartBar,
@@ -53,11 +46,6 @@ const data = {
       title: "Projects",
       url: "#",
       icon: IconFolder,
-    },
-    {
-      title: "Components",
-      url: "/components",
-      icon: IconComponents,
     },
   ],
   navClouds: [
