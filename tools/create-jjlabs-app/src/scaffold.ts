@@ -5,6 +5,7 @@ import { cleanLayout } from "./steps/clean-layout.js";
 import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updateRedirects } from "./steps/update-redirects.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
+import { resetSerenaConfig } from "./steps/reset-serena-config.js";
 import { finalize } from "./steps/finalize.js";
 import { logger } from "./utils/logger.js";
 
@@ -24,6 +25,7 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await cleanAuthDuplication(projectDir, layout);
   await updateRedirects(projectDir, layout);
   await updatePackageNames(projectDir, projectName);
+  await resetSerenaConfig(projectDir, projectName);
   await finalize(projectDir);
 
   logger.success(`\nProject "${projectName}" created successfully!\n`);

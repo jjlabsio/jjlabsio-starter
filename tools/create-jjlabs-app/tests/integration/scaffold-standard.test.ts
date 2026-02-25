@@ -6,6 +6,7 @@ import { cleanLayout } from "../../src/steps/clean-layout.js";
 import { cleanAuthDuplication } from "../../src/steps/clean-auth-duplication.js";
 import { updateRedirects } from "../../src/steps/update-redirects.js";
 import { updatePackageNames } from "../../src/steps/update-package-names.js";
+import { resetSerenaConfig } from "../../src/steps/reset-serena-config.js";
 
 const FIXTURE_DIR = path.resolve(__dirname, "../fixtures/template");
 
@@ -134,11 +135,23 @@ describe("scaffold: standard layout", () => {
     expect(signInPage).not.toContain('callbackURL: "/dashboard"');
   });
 
+  it("resets serena project name", async () => {
+    await resetSerenaConfig(projectDir, "my-standard-app");
+
+    const content = await fs.readFile(
+      path.join(projectDir, ".serena/project.yml"),
+      "utf-8",
+    );
+    expect(content).toContain('project_name: "my-standard-app"');
+    expect(content).not.toContain("jjlabsio-starter");
+  });
+
   it("runs full standard scaffold pipeline correctly", async () => {
     await cleanLayout(projectDir, "standard");
     await cleanAuthDuplication(projectDir, "standard");
     await updateRedirects(projectDir, "standard");
     await updatePackageNames(projectDir, "my-standard-app");
+    await resetSerenaConfig(projectDir, "my-standard-app");
 
     // Sidebar gone
     expect(
@@ -175,5 +188,12 @@ describe("scaffold: standard layout", () => {
     // Package names updated
     const rootPkg = await fs.readJson(path.join(projectDir, "package.json"));
     expect(rootPkg.name).toBe("my-standard-app");
+
+    // Serena config updated
+    const serenaConfig = await fs.readFile(
+      path.join(projectDir, ".serena/project.yml"),
+      "utf-8",
+    );
+    expect(serenaConfig).toContain('project_name: "my-standard-app"');
   });
 });
