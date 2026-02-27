@@ -16,7 +16,7 @@ DATABASE_URL="postgresql://admin:admin@localhost:5432/{{PROJECT_NAME}}?schema=pu
 DIRECT_URL="postgresql://admin:admin@localhost:5432/{{PROJECT_NAME}}?schema=public"
 
 # Better Auth
-BETTER_AUTH_SECRET="replace-with-random-secret-at-least-32-chars"
+BETTER_AUTH_SECRET="replace-with-random-secret-at-least-32-chars"  # openssl rand -base64 32
 BETTER_AUTH_URL="http://localhost:3000"
 
 # Google OAuth (https://console.cloud.google.com/apis/credentials)

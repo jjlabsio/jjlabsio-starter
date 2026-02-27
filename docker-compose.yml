@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: starter
+      POSTGRES_DB: jjlabsio-starter
     volumes:
       - postgres_data:/var/lib/postgresql/data
 

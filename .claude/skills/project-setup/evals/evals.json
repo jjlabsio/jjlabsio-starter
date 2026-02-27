@@ -1,0 +1,23 @@
+{
+  "skill_name": "project-setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "프로젝트 처음 설정해줘. .env 파일 없어.",
+      "expected_output": "1) openssl로 BETTER_AUTH_SECRET을 실제 생성, 2) apps/app/.env 파일을 올바른 내용으로 생성, 3) Docker 실행 요청 후 대기, 4) 유저 응답 시뮬레이션('완료') 후 마이그레이션 실행",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "getting started steps 진행해줘. docker는 이미 실행 중이야.",
+      "expected_output": "1) .env 생성, 2) Docker가 이미 실행 중임을 확인하고 바로 마이그레이션 실행, 3) pnpm dev 안내",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "env 설정 해줘",
+      "expected_output": "스킬이 트리거되어 1) openssl secret 생성, 2) apps/app/.env 파일 생성, 3) Google OAuth 크레덴셜 수동 입력 안내",
+      "files": []
+    }
+  ]
+}
