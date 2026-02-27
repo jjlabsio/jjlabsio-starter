@@ -3,15 +3,7 @@
 > **Claude 컨텍스트 윈도우 자동 로드 파일.**
 > 내용 추가 시 토큰 효율 고려: 중복 제거, 간결한 표현, 불필요한 설명 지양. 문체는 명사형 종결 표현 사용.
 > 프로젝트 개요 및 시작 방법: **README.md** 참조.
-
----
-
-## Project Overview
-
-SaaS 서비스를 빠르게 구축하기 위한 starter template 모노레포.
-
-- **apps/app**: SaaS 애플리케이션 본체 (대시보드, 사용자 기능)
-- **apps/web**: 랜딩페이지 (마케팅, 소개 페이지) - 추가 예정
+> `docs/CODEMAPS/INDEX.md` 존재 시 작업 시작 전 반드시 먼저 참조. 소스 파일 직접 탐색 전 `docs/CODEMAPS/` 확인.
 
 ---
 
@@ -58,17 +50,25 @@ pnpm typecheck    # Type check all packages
 pnpm format       # Format with Prettier
 ```
 
+```bash
+pnpm --filter @repo/database db:migrate:dev      # 개발 마이그레이션 생성 및 적용
+pnpm --filter @repo/database db:migrate:deploy   # 프로덕션 마이그레이션 적용
+pnpm --filter @repo/database db:studio            # Prisma Studio 실행
+```
+
 ---
 
 ## Workspace Dependencies
 
 내부 패키지 `workspace:*` 프로토콜 사용:
 
-- `@repo/auth` - Better Auth server/client (`packages/auth`)
-- `@repo/database` - Prisma client and schema (`packages/database`)
-- `@repo/ui` - shared UI components (`packages/ui`)
-- `@repo/eslint-config` - shared ESLint config (`packages/eslint-config`)
-- `@repo/typescript-config` - shared TypeScript config (`packages/typescript-config`)
+| Package                      | Import                    | Description                       |
+| ---------------------------- | ------------------------- | --------------------------------- |
+| `packages/auth`              | `@repo/auth`              | Better Auth server/client config  |
+| `packages/database`          | `@repo/database`          | Prisma client, schema, migrations |
+| `packages/ui`                | `@repo/ui`                | Shared shadcn/ui components       |
+| `packages/eslint-config`     | `@repo/eslint-config`     | Shared ESLint config              |
+| `packages/typescript-config` | `@repo/typescript-config` | Shared TypeScript config          |
 
 ---
 
@@ -86,6 +86,10 @@ pnpm format       # Format with Prettier
 **항상 `packages/ui`를 통해 shadcn/ui 컴포넌트 우선 활용.** 직접 구현 전 shadcn 컴포넌트 존재 여부 확인 필수.
 
 컴포넌트 관리: `packages/ui` / 설정: `components.json` → `packages/ui`
+
+```bash
+npx shadcn@latest add <component-name> -c packages/ui
+```
 
 ### New App Setup
 

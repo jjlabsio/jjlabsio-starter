@@ -6,6 +6,7 @@ import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updateRedirects } from "./steps/update-redirects.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
 import { resetSerenaConfig } from "./steps/reset-serena-config.js";
+import { generateReadme } from "./steps/generate-readme.js";
 import { finalize } from "./steps/finalize.js";
 import { logger } from "./utils/logger.js";
 
@@ -26,11 +27,13 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await updateRedirects(projectDir, layout);
   await updatePackageNames(projectDir, projectName);
   await resetSerenaConfig(projectDir, projectName);
+  await generateReadme(projectDir, projectName);
   await finalize(projectDir);
 
   logger.success(`\nProject "${projectName}" created successfully!\n`);
   logger.info("Next steps:");
   logger.info(`  cd ${projectName}`);
   logger.info("  # Update .env with your credentials");
-  logger.info("  pnpm dev\n");
+  logger.info("  pnpm dev");
+  logger.info("  # Run /jj:update-docs in Claude Code to generate codemaps\n");
 }
