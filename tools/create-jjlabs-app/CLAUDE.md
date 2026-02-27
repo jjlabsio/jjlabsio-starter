@@ -23,7 +23,7 @@ src/
     update-redirects.ts # 루트 리다이렉트 경로 업데이트
     update-package-names.ts   # package.json 이름 치환
     reset-serena-config.ts    # Serena project.yml 프로젝트명 갱신
-    generate-readme.ts  # README.md / CLAUDE.md 템플릿 생성
+    substitute-project-name.ts  # {{PROJECT_NAME}} 플레이스홀더 일괄 치환
     finalize.ts         # .git·tools/ 제거, .env 복사, pnpm install
   utils/
     fs.ts               # 파일시스템 유틸
@@ -43,4 +43,4 @@ src/
 
 ### 템플릿 치환
 
-`{{PROJECT_NAME}}` 플레이스홀더 사용. `generate-readme.ts`의 `TEMPLATES` 배열에 대상 파일 추가.
+`{{PROJECT_NAME}}` 플레이스홀더 사용. `substitute-project-name.ts`의 `TARGET_FILES` 배열에 대상 파일 추가.
