@@ -1,6 +1,6 @@
 # Billing Codemap
 
-**Last Updated:** 2026-02-28
+**Last Updated:** 2026-03-01
 
 **Entry Points:**
 
@@ -59,15 +59,16 @@
 
 ## Key Modules
 
-| Module                    | Purpose                         | Exports                                                        | Dependencies                         |
-| ------------------------- | ------------------------------- | -------------------------------------------------------------- | ------------------------------------ |
-| `client.ts`               | Initializes Polar SDK           | `polar` (Polar instance)                                       | `@polar-sh/sdk`, `keys.ts`           |
-| `keys.ts`                 | Environment variable validation | `env` (validated env vars)                                     | `@t3-oss/env-nextjs`, `zod`          |
-| `subscription.ts`         | Subscription data operations    | `getSubscription`, `upsertSubscription`                        | `@repo/database`, `types.ts`         |
-| `subscription-utils.ts`   | Status mapping & validation     | `isSubscriptionActive`, `mapPolarStatus`                       | `types.ts`                           |
-| `webhook.ts`              | Webhook re-exports              | `validateEvent`, `WebhookVerificationError`                    | `@polar-sh/sdk/webhooks`             |
-| `types.ts`                | Type definitions                | `Subscription`, `SubscriptionStatus`, `UpsertSubscriptionData` | (pure types)                         |
-| `require-subscription.ts` | Route guard middleware          | `requireSubscription`                                          | `subscription.ts`, `next/navigation` |
+| Module                    | Purpose                          | Exports                                                        | Dependencies                         |
+| ------------------------- | -------------------------------- | -------------------------------------------------------------- | ------------------------------------ |
+| `client.ts`               | Initializes Polar SDK            | `polar` (Polar instance)                                       | `@polar-sh/sdk`, `keys.ts`           |
+| `keys.ts`                 | Environment variable validation  | `env` (validated env vars)                                     | `@t3-oss/env-nextjs`, `zod`          |
+| `plan-config.ts`          | Multi-tier pricing configuration | `TIERS` (Starter/Pro config), `TierConfig`, `BillingPeriod`    | (pure data)                          |
+| `subscription.ts`         | Subscription data operations     | `getSubscription`, `upsertSubscription`                        | `@repo/database`, `types.ts`         |
+| `subscription-utils.ts`   | Status mapping & validation      | `isSubscriptionActive`, `mapPolarStatus`                       | `types.ts`                           |
+| `webhook.ts`              | Webhook re-exports               | `validateEvent`, `WebhookVerificationError`                    | `@polar-sh/sdk/webhooks`             |
+| `types.ts`                | Type definitions                 | `Subscription`, `SubscriptionStatus`, `UpsertSubscriptionData` | (pure types)                         |
+| `require-subscription.ts` | Route guard middleware           | `requireSubscription`                                          | `subscription.ts`, `next/navigation` |
 
 ## Data Flow
 
@@ -199,10 +200,54 @@ enum SubscriptionStatus {
 
 **Client-side (prefixed `NEXT_PUBLIC_`):**
 
-- `NEXT_PUBLIC_POLAR_PRODUCT_ID_MONTHLY` - Monthly plan product ID
-- `NEXT_PUBLIC_POLAR_PRODUCT_ID_YEARLY` - Yearly plan product ID
+- `NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY` - Starter monthly plan product ID
+- `NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY` - Starter yearly plan product ID
+- `NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY` - Pro monthly plan product ID
+- `NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY` - Pro yearly plan product ID
 
 **See:** `packages/billing/src/keys.ts` for schema validation.
+
+## Pricing Tiers
+
+Multi-tier pricing configuration in `packages/billing/src/plan-config.ts`:
+
+```typescript
+export const TIERS = [
+  {
+    id: "starter",
+    name: "Starter",
+    description: "For individuals and small teams.",
+    monthly: { price: 19, formattedPrice: "$19" },
+    yearly: { price: 190, formattedPrice: "$190", savings: "Save 17%" },
+    features: [
+      "Up to 5 projects",
+      "Basic analytics",
+      "3 team members",
+      "Email support",
+      "10GB storage",
+    ],
+  },
+  {
+    id: "pro",
+    name: "Pro",
+    description: "For growing teams that need more power.",
+    monthly: { price: 49, formattedPrice: "$49" },
+    yearly: { price: 490, formattedPrice: "$490", savings: "Save 17%" },
+    highlighted: true,
+    features: [
+      "Unlimited projects",
+      "Advanced analytics",
+      "Unlimited team members",
+      "Priority support",
+      "100GB storage",
+      "Custom workflows",
+      "API access",
+    ],
+  },
+];
+```
+
+**Usage:** Tiers are consumed by pricing UI components (`apps/web/src/app/pricing/`) to render plan cards with monthly/yearly toggle.
 
 ## External Dependencies
 
@@ -262,9 +307,29 @@ checkRateLimit(key: string): { allowed: boolean; remaining: number }
 
 ## Testing
 
-- Unit tests: `packages/billing/src/subscription.test.ts` (subscription utils)
-- Integration: E2E testing of checkout/webhook flows (see app integration tests)
+**Unit tests:**
+
+- `packages/billing/src/plan-config.test.ts` - Plan configuration validation (Vitest)
+- `packages/billing/src/subscription.test.ts` - Subscription utils (Vitest)
+
+**Integration tests:**
+
+- `apps/app/src/app/api/billing/checkout/route.test.ts` - Checkout API route (Vitest)
+- `apps/app/src/lib/resolve-callback-url.test.ts` - Callback URL resolution (Vitest)
+
+**Configuration:**
+
+- `packages/billing/vitest.config.ts` - Billing package Vitest setup
+- `apps/app/vitest.config.ts` - App Vitest setup
+
+**Run tests:**
+
+```bash
+pnpm test                 # Run all tests
+pnpm --filter @repo/billing test  # Run billing package tests
+pnpm --filter @jjlabs/app test    # Run app tests
+```
 
 ---
 
-**Last Verified:** Against commits `d8a2b3e`, `e4ebf4f`, `81017be`, `16152e0`
+**Last Verified:** Against commit `d1803ef` (feat: add multi-tier pricing, vitest setup, and Next.js 16 proxy migration)

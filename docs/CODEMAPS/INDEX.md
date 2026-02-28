@@ -1,6 +1,6 @@
 # Codemaps Index
 
-**Last Updated:** 2026-02-28
+**Last Updated:** 2026-03-01
 
 Central reference for jjlabsio-starter monorepo architecture. Each codemap documents a major area of the codebase.
 
@@ -29,11 +29,13 @@ apps/
   web/              # Marketing/landing page (port 3001)
 packages/
   auth/             # Auth configuration & utilities
-  billing/          # Billing service abstraction
+  billing/          # Billing service abstraction, plan configuration
   database/         # Prisma client & schema
   ui/               # Shared React components
   eslint-config/    # Lint rules
   typescript-config/ # TypeScript configs
+tools/
+  create-jjlabs-app/ # Scaffolding CLI (not documented in codemaps)
 ```
 
 ## Technology Stack
@@ -67,6 +69,18 @@ Major workspace dependencies:
 - **Billing Docs:** `POLAR_SETUP.md` (if exists)
 - **Database:** `packages/database/README.md`
 - **Auth Config:** `packages/auth/README.md`
+
+## Recent Updates (2026-03-01)
+
+**Latest Changes:**
+
+- Multi-tier pricing (Starter/Pro) in `@repo/billing` with configurable plans
+- Vitest test setup for both `@repo/billing` and `apps/app`
+- New tests: checkout route validation, plan config, callback URL resolution
+- Next.js 16 middleware → proxy migration (`apps/app/src/proxy.ts`)
+- Updated Next.js configs to transpile new billing exports
+
+**See:** [Billing Codemap](./BILLING.md) for detailed pricing tier configuration and test structure.
 
 ---
 
