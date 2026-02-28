@@ -34,6 +34,5 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   logger.info("Next steps:");
   logger.info(`  cd ${projectName}`);
   logger.info("  # Update .env with your credentials");
-  logger.info("  pnpm dev");
-  logger.info("  # Run /jj:update-docs in Claude Code to generate codemaps\n");
+  logger.info("  pnpm dev\n");
 }
