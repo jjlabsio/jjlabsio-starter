@@ -1,61 +1,60 @@
-import { Button } from "@repo/ui/components/button";
+import Link from "next/link";
+import { buttonVariants } from "@repo/ui/components/button";
 import { IconCheck } from "@tabler/icons-react";
-
-interface Plan {
-  readonly name: string;
-  readonly price: string;
-  readonly period: string;
-  readonly description: string;
-  readonly cta: string;
-  readonly ctaVariant: "default" | "outline";
-  readonly highlighted: boolean;
-  readonly features: readonly string[];
-}
+import type { BillingPeriod, TierConfig } from "@repo/billing/plan-config";
 
 interface PricingCardProps {
-  readonly plan: Plan;
+  readonly tier: TierConfig;
+  readonly period: BillingPeriod;
+  readonly href: string;
 }
 
-export type { Plan };
+export function PricingCard({ tier, period, href }: PricingCardProps) {
+  const pricing = tier[period];
 
-export function PricingCard({ plan }: PricingCardProps) {
   return (
     <div
       className={`relative flex flex-col rounded-3xl border p-8 ${
-        plan.highlighted
+        tier.highlighted
           ? "border-foreground/20 shadow-[0_32px_64px_rgba(0,0,0,0.06),0_10px_12px_-6px_rgba(0,0,0,0.04)]"
           : "border-border/50"
       }`}
     >
-      {plan.highlighted && (
+      {tier.highlighted && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-foreground px-4 py-1 text-xs font-medium text-background">
           Most Popular
         </div>
       )}
 
       <div className="mb-6">
-        <h3 className="text-lg font-medium">{plan.name}</h3>
+        <h3 className="text-lg font-medium">{tier.name}</h3>
         <div className="mt-3 flex items-baseline gap-1">
           <span className="text-4xl font-light tracking-tight">
-            {plan.price}
+            {pricing.formattedPrice}
           </span>
-          {plan.period && (
-            <span className="text-muted-foreground">{plan.period}</span>
-          )}
+          <span className="text-muted-foreground">{pricing.period}</span>
         </div>
-        <p className="mt-3 text-sm text-muted-foreground">{plan.description}</p>
+        {pricing.savings && (
+          <span className="mt-1 inline-block text-xs font-medium text-green-600">
+            {pricing.savings}
+          </span>
+        )}
+        <p className="mt-3 text-sm text-muted-foreground">{tier.description}</p>
       </div>
 
-      <Button
-        variant={plan.ctaVariant}
-        className="w-full rounded-full"
-        size="lg"
+      <Link
+        href={href}
+        className={buttonVariants({
+          variant: tier.highlighted ? "default" : "outline",
+          className: "w-full rounded-full",
+          size: "lg",
+        })}
       >
-        {plan.cta}
-      </Button>
+        Get Started
+      </Link>
 
       <ul className="mt-8 flex flex-col gap-3">
-        {plan.features.map((feature) => (
+        {tier.features.map((feature) => (
           <li
             key={feature}
             className="flex items-start gap-3 text-sm text-muted-foreground"

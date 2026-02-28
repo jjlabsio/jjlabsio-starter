@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@repo/ui/components/button";
+import { buttonVariants } from "@repo/ui/components/button";
+import { APP_URL } from "@/lib/env";
 
 export function PricingCta() {
   return (
@@ -12,17 +15,24 @@ export function PricingCta() {
           Join thousands of teams already building better products with Acme.
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
-          <Button className="rounded-full px-8 py-6 text-base" size="lg">
-            Start for free
-          </Button>
-          <Link href="/pricing">
-            <Button
-              variant="outline"
-              className="rounded-full px-8 py-6 text-base"
-              size="lg"
-            >
-              Compare plans
-            </Button>
+          <Link
+            href={`${APP_URL}/pricing`}
+            className={buttonVariants({
+              className: "rounded-full px-8 py-6 text-base",
+              size: "lg",
+            })}
+          >
+            Get Started
+          </Link>
+          <Link
+            href="/pricing"
+            className={buttonVariants({
+              variant: "outline",
+              className: "rounded-full px-8 py-6 text-base",
+              size: "lg",
+            })}
+          >
+            Compare plans
           </Link>
         </div>
       </div>

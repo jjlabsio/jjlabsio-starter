@@ -6,15 +6,23 @@ import { checkRateLimit } from "@/lib/rate-limit";
 
 const ALLOWED_PRODUCT_IDS = new Set(
   [
-    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_MONTHLY,
-    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_YEARLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
   ].filter(Boolean),
 );
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const callbackUrl = request.nextUrl.pathname + request.nextUrl.search;
+    return NextResponse.redirect(
+      new URL(
+        `/sign-in?next=${encodeURIComponent(callbackUrl)}`,
+        request.nextUrl.origin,
+      ),
+    );
   }
 
   const { allowed } = checkRateLimit(`checkout:${session.user.id}`);

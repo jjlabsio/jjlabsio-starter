@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { PricingHero } from "./_components/pricing-hero";
-import { PricingCards } from "./_components/pricing-cards";
+import { PricingToggle } from "./_components/pricing-toggle";
 import { FaqSection } from "./_components/faq-section";
 import { PricingCta } from "./_components/pricing-cta";
 
@@ -16,7 +16,7 @@ export default function PricingPage() {
     <div className="min-h-svh">
       <Header />
       <PricingHero />
-      <PricingCards />
+      <PricingToggle />
       <FaqSection />
       <PricingCta />
       <Footer />

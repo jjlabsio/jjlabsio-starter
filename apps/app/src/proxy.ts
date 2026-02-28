@@ -8,7 +8,7 @@ import { getSessionCookie } from "better-auth/cookies";
  * in individual pages/API routes rather than here, to avoid DB queries on
  * every request in the middleware layer.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request);
   if (!sessionCookie) {
     return NextResponse.redirect(new URL("/sign-in", request.url));

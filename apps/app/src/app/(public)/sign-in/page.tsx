@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "@repo/auth/client";
 import { IconBrandGoogle } from "@tabler/icons-react";
 import { Button } from "@repo/ui/components/button";
@@ -11,16 +12,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/card";
+import { resolveCallbackUrl } from "@/lib/resolve-callback-url";
 
-export default function SignInPage() {
+function SignInContent() {
+  const searchParams = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+
+  const next = resolveCallbackUrl(searchParams.get("next"));
 
   const handleSignIn = async () => {
     setError(null);
     setIsPending(true);
     await signIn.social(
-      { provider: "google", callbackURL: "/dashboard" },
+      { provider: "google", callbackURL: next },
       {
         onError(ctx) {
           setError(ctx.error.message);
@@ -55,5 +60,15 @@ export default function SignInPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SignInPage() {
+  return (
+    <Suspense
+      fallback={<div className="flex min-h-svh items-center justify-center" />}
+    >
+      <SignInContent />
+    </Suspense>
   );
 }
