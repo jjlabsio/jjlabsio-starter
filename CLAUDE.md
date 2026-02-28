@@ -9,18 +9,19 @@
 
 ## Tech Stack
 
-| Category  | Technology                                   |
-| --------- | -------------------------------------------- |
-| Framework | Next.js 16, React 19                         |
-| Language  | TypeScript 5.7 (strict mode)                 |
-| Monorepo  | Turborepo 2.6, pnpm 10.4                     |
-| Styling   | Tailwind CSS v4, shadcn/ui (base-vega theme) |
-| Font      | Pretendard Variable (local)                  |
-| Linting   | ESLint 9 (flat config), Prettier             |
-| Auth      | Better Auth (Google OAuth, Prisma adapter)   |
-| Database  | Prisma ORM, PostgreSQL (Supabase as host)    |
-| Git Hooks | Husky + lint-staged                          |
-| Runtime   | Node.js >= 20                                |
+| Category  | Technology                                     |
+| --------- | ---------------------------------------------- |
+| Framework | Next.js 16, React 19                           |
+| Language  | TypeScript 5.7 (strict mode)                   |
+| Monorepo  | Turborepo 2.6, pnpm 10.4                       |
+| Styling   | Tailwind CSS v4, shadcn/ui (base-vega theme)   |
+| Font      | Pretendard Variable (local)                    |
+| Linting   | ESLint 9 (flat config), Prettier               |
+| Auth      | Better Auth (Google OAuth, Prisma adapter)     |
+| Database  | Prisma ORM, PostgreSQL (Supabase as host)      |
+| Billing   | Polar (subscription, webhook, customer portal) |
+| Git Hooks | Husky + lint-staged                            |
+| Runtime   | Node.js >= 20                                  |
 
 ---
 
@@ -32,6 +33,7 @@ apps/
   web/              # Landing page (port 3001)
 packages/
   auth/             # Better Auth server/client config, env validation
+  billing/          # Polar billing: subscription CRUD, checkout, portal, webhook
   database/         # Prisma client, schema, migrations
   ui/               # Shared shadcn/ui components, hooks, utils
   eslint-config/    # Shared ESLint configs (base, next, react-internal)
@@ -62,13 +64,14 @@ pnpm --filter @repo/database db:studio            # Prisma Studio 실행
 
 내부 패키지 `workspace:*` 프로토콜 사용:
 
-| Package                      | Import                    | Description                       |
-| ---------------------------- | ------------------------- | --------------------------------- |
-| `packages/auth`              | `@repo/auth`              | Better Auth server/client config  |
-| `packages/database`          | `@repo/database`          | Prisma client, schema, migrations |
-| `packages/ui`                | `@repo/ui`                | Shared shadcn/ui components       |
-| `packages/eslint-config`     | `@repo/eslint-config`     | Shared ESLint config              |
-| `packages/typescript-config` | `@repo/typescript-config` | Shared TypeScript config          |
+| Package                      | Import                    | Description                                |
+| ---------------------------- | ------------------------- | ------------------------------------------ |
+| `packages/auth`              | `@repo/auth`              | Better Auth server/client config           |
+| `packages/billing`           | `@repo/billing`           | Polar billing, subscription, webhook utils |
+| `packages/database`          | `@repo/database`          | Prisma client, schema, migrations          |
+| `packages/ui`                | `@repo/ui`                | Shared shadcn/ui components                |
+| `packages/eslint-config`     | `@repo/eslint-config`     | Shared ESLint config                       |
+| `packages/typescript-config` | `@repo/typescript-config` | Shared TypeScript config                   |
 
 ---
 
