@@ -16,7 +16,7 @@ export function PricingCta() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link
-            href={`${APP_URL}/pricing`}
+            href={`${APP_URL}/sign-in`}
             className={buttonVariants({
               className: "rounded-full px-8 py-6 text-base",
               size: "lg",

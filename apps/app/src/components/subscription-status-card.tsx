@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import type { Subscription, SubscriptionStatus } from "@repo/billing";
 import { Badge } from "@repo/ui/components/badge";
