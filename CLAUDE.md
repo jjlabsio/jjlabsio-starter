@@ -38,6 +38,7 @@ packages/
   ui/               # Shared shadcn/ui components, hooks, utils
   eslint-config/    # Shared ESLint configs (base, next, react-internal)
   typescript-config/ # Shared TypeScript configs (base, nextjs, react-library)
+tools/              # 스캐폴딩 CLI 도구 — codemap 탐색 제외
 ```
 
 ---
