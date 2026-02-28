@@ -28,13 +28,24 @@ async function removeToolsDir(projectDir: string): Promise<void> {
   }
 }
 
-async function copyEnvFile(projectDir: string): Promise<void> {
-  const envExample = path.join(projectDir, ".env.example");
-  const envLocal = path.join(projectDir, ".env");
+const ENV_EXAMPLE_PATHS = [
+  "apps/app/.env.example",
+  "packages/database/.env.example",
+];
 
-  if (await fs.pathExists(envExample)) {
-    logger.step("Creating .env from .env.example...");
-    await fs.copy(envExample, envLocal);
+async function copyEnvFile(projectDir: string): Promise<void> {
+  logger.step("Creating .env files from .env.example...");
+
+  for (const envExampleRelPath of ENV_EXAMPLE_PATHS) {
+    const envExample = path.join(projectDir, envExampleRelPath);
+    const envLocal = path.join(
+      projectDir,
+      envExampleRelPath.replace(".env.example", ".env"),
+    );
+
+    if (await fs.pathExists(envExample)) {
+      await fs.copy(envExample, envLocal);
+    }
   }
 }
 
