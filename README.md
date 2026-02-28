@@ -2,52 +2,80 @@
 
 > TODO: 프로젝트에 대한 설명을 여기에 작성하세요.
 
-## Getting Started
+## Initial Setup
 
-### 1. 환경변수 설정
+> AI 어시스턴트가 이 프로젝트를 셋팅할 때 아래 단계를 순서대로 실행하세요.
+>
+> **이미 완료된 항목:** 프로젝트명 치환, `.env` 파일 생성, `pnpm install`
 
-`.env` 파일이 자동으로 생성되어 있습니다.
+### Step 1. BETTER_AUTH_SECRET 생성
 
-`apps/app/.env`에서 아래 값을 설정합니다:
+`apps/app/.env`의 `BETTER_AUTH_SECRET`이 아직 placeholder입니다. 실제 값으로 업데이트하세요:
 
-```
-# Database
-DATABASE_URL="postgresql://admin:admin@localhost:5432/{{PROJECT_NAME}}?schema=public"
-DIRECT_URL="postgresql://admin:admin@localhost:5432/{{PROJECT_NAME}}?schema=public"
-
-# Better Auth
-BETTER_AUTH_SECRET="replace-with-random-secret-at-least-32-chars"  # openssl rand -base64 32
-BETTER_AUTH_URL="http://localhost:3000"
-
-# Google OAuth (https://console.cloud.google.com/apis/credentials)
-GOOGLE_CLIENT_ID="your-google-client-id"
-GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```bash
+openssl rand -base64 32
 ```
 
-### 2. DB 이름 확인
+생성된 값을 `apps/app/.env`의 `BETTER_AUTH_SECRET`에 설정합니다.
 
-`docker-compose.yml`의 `POSTGRES_DB`가 자동으로 설정되어 있습니다.
+### Step 2. 플러그인 설치 확인
+
+[jj@jjlabsio-claude-code](https://github.com/jjlabsio/jjlabsio-claude-code) 플러그인이 필요합니다.
+
+플러그인 설치 여부를 `/plugins` 명령으로 확인하고, 없으면 설치합니다:
 
 ```
-# docker-compose.yml
-POSTGRES_DB: {{PROJECT_NAME}}
+/plugin install jj@jjlabsio-claude-code
 ```
 
-`.env`의 `DATABASE_URL`, `DIRECT_URL`도 동일하게 설정되어 있습니다.
+> **중요:** 플러그인 설치 후 대화를 재시작해야 합니다. 재시작 후 이 README를 다시 참조해 나머지 단계를 계속 진행하세요.
 
-### 3. 개발 서버 실행
+### Step 3. Docker 및 DB 마이그레이션
 
 ```bash
 docker compose up -d                          # PostgreSQL 실행
 pnpm --filter @repo/database db:migrate:dev   # 마이그레이션 실행
-pnpm dev                                      # 개발 서버 실행
 ```
 
-### 4. Codemaps 생성 (Claude Code)
-
-[jj@jjlabsio-claude-code](https://github.com/jjlabsio/jjlabsio-claude-code) 플러그인이 필요합니다.
+### Step 4. Codemaps 생성
 
 ```
-/plugin install jj@jjlabsio-claude-code
 /jj:update-docs
+```
+
+---
+
+## Google OAuth 설정 (수동)
+
+[Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 OAuth 자격 증명 생성 후 `apps/app/.env`에 설정합니다:
+
+```
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+```
+
+---
+
+## 개발 서버 실행
+
+```bash
+pnpm dev
+```
+
+---
+
+## Commands
+
+```bash
+pnpm dev          # 전체 앱 개발 서버 실행
+pnpm build        # 전체 빌드
+pnpm lint         # 린트
+pnpm typecheck    # 타입 체크
+pnpm format       # Prettier 포매팅
+```
+
+```bash
+pnpm --filter @repo/database db:migrate:dev      # 개발 마이그레이션 생성 및 적용
+pnpm --filter @repo/database db:migrate:deploy   # 프로덕션 마이그레이션 적용
+pnpm --filter @repo/database db:studio           # Prisma Studio 실행
 ```
