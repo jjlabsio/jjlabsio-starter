@@ -6,7 +6,7 @@
 
 > AI 어시스턴트가 이 프로젝트를 셋팅할 때 아래 단계를 순서대로 실행하세요.
 >
-> **이미 완료된 항목:** 프로젝트명 치환, `.env` 파일 생성, `pnpm install`
+> **이미 완료된 항목:** 프로젝트명 치환, `.env` 파일 생성, `pnpm install`, codemaps 생성
 
 ### Step 1. BETTER_AUTH_SECRET 생성
 
@@ -35,12 +35,6 @@ openssl rand -base64 32
 ```bash
 docker compose up -d                          # PostgreSQL 실행
 pnpm --filter @repo/database db:migrate:dev   # 마이그레이션 실행
-```
-
-### Step 4. Codemaps 생성
-
-```
-/jj:update-docs
 ```
 
 ---
