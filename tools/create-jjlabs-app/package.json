@@ -1,6 +1,6 @@
 {
   "name": "create-jjlabs-app",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "CLI to scaffold a new JJLabs app from the starter template",
   "type": "module",
   "bin": {
