@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconBell,
@@ -61,6 +62,9 @@ export function NavUser({
   const { isMobile } = useSidebar();
   const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const initials = getInitials(user.name || user.email);
 
@@ -124,7 +128,9 @@ export function NavUser({
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/settings/billing")}
+              >
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
@@ -141,17 +147,23 @@ export function NavUser({
                   <DropdownMenuItem onClick={() => setTheme("light")}>
                     <IconSun />
                     Light
-                    {theme === "light" && <IconCheck className="ml-auto" />}
+                    {mounted && theme === "light" && (
+                      <IconCheck className="ml-auto" />
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")}>
                     <IconMoon />
                     Dark
-                    {theme === "dark" && <IconCheck className="ml-auto" />}
+                    {mounted && theme === "dark" && (
+                      <IconCheck className="ml-auto" />
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")}>
                     <IconDeviceDesktop />
                     System
-                    {theme === "system" && <IconCheck className="ml-auto" />}
+                    {mounted && theme === "system" && (
+                      <IconCheck className="ml-auto" />
+                    )}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>
