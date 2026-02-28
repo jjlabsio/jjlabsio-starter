@@ -45,6 +45,33 @@ pnpm --filter @repo/database db:migrate:dev   # 마이그레이션 실행
 
 ---
 
+## Polar Billing 설정 (수동)
+
+[polar.sh](https://polar.sh)에서 아래 항목을 준비한 후 `apps/app/.env`에 설정합니다.
+
+**1. Organization 생성 후 제품 2개 추가** (월간, 연간)
+
+**2. API Key 발급**: Settings → API Keys → Personal Access Token
+
+**3. Webhook 등록**: Settings → Webhooks → Add Endpoint
+
+- URL: `https://your-domain.com/api/webhooks/polar`
+- Events: `subscription.created`, `subscription.updated`, `subscription.canceled`
+
+**4. 환경변수 설정:**
+
+```
+POLAR_ACCESS_TOKEN="pat_xxx"
+POLAR_WEBHOOK_SECRET="whs_xxx"
+POLAR_ORGANIZATION_ID="org_xxx"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_MONTHLY="prod_xxx_monthly"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_YEARLY="prod_xxx_yearly"
+```
+
+**5. Pricing 페이지 가격 업데이트**: `apps/app/src/app/(public)/pricing/page.tsx`의 `$XX` 플레이스홀더를 실제 가격으로 교체
+
+---
+
 ## Google OAuth 설정 (수동)
 
 [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 OAuth 자격 증명 생성 후 `apps/app/.env`에 설정합니다:

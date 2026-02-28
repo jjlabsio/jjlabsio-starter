@@ -10,9 +10,10 @@ export async function getSubscription(userId: string) {
 export async function upsertSubscription(data: UpsertSubscriptionData) {
   const { database } = await import("@repo/database");
   return database.subscription.upsert({
-    where: { polarSubscriptionId: data.polarSubscriptionId },
+    where: { userId: data.userId },
     create: data,
     update: {
+      polarSubscriptionId: data.polarSubscriptionId,
       status: data.status,
       polarProductId: data.polarProductId,
       polarPriceId: data.polarPriceId,

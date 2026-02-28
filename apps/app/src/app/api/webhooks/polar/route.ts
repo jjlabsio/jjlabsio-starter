@@ -22,19 +22,24 @@ export async function POST(request: NextRequest) {
       case "subscription.created":
       case "subscription.updated": {
         const sub = event.data;
+        const priceId = sub.prices[0]?.id;
+        if (!priceId) {
+          return NextResponse.json({ error: "Missing price" }, { status: 400 });
+        }
+
         await upsertSubscription({
           polarSubscriptionId: sub.id,
-          userId: await resolveUserId(sub.customer.email),
+          userId: await resolveUserId(sub.customer),
           polarProductId: sub.productId,
-          polarPriceId: sub.prices[0]?.id ?? "",
+          polarPriceId: priceId,
           status: mapPolarStatus(sub.status),
           currentPeriodStart: new Date(sub.currentPeriodStart),
           currentPeriodEnd: sub.currentPeriodEnd
             ? new Date(sub.currentPeriodEnd)
             : null,
           cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
-          trialStart: null,
-          trialEnd: null,
+          trialStart: sub.startedAt ? new Date(sub.startedAt) : null,
+          trialEnd: sub.endsAt ? new Date(sub.endsAt) : null,
         });
 
         if (sub.customer.externalId) {
@@ -48,19 +53,24 @@ export async function POST(request: NextRequest) {
 
       case "subscription.canceled": {
         const sub = event.data;
+        const priceId = sub.prices[0]?.id;
+        if (!priceId) {
+          return NextResponse.json({ error: "Missing price" }, { status: 400 });
+        }
+
         await upsertSubscription({
           polarSubscriptionId: sub.id,
-          userId: await resolveUserId(sub.customer.email),
+          userId: await resolveUserId(sub.customer),
           polarProductId: sub.productId,
-          polarPriceId: sub.prices[0]?.id ?? "",
-          status: "CANCELED",
+          polarPriceId: priceId,
+          status: mapPolarStatus(sub.status),
           currentPeriodStart: new Date(sub.currentPeriodStart),
           currentPeriodEnd: sub.currentPeriodEnd
             ? new Date(sub.currentPeriodEnd)
             : null,
           cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
-          trialStart: null,
-          trialEnd: null,
+          trialStart: sub.startedAt ? new Date(sub.startedAt) : null,
+          trialEnd: sub.endsAt ? new Date(sub.endsAt) : null,
         });
         break;
       }
@@ -76,7 +86,13 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function resolveUserId(email: string): Promise<string> {
-  const user = await database.user.findUniqueOrThrow({ where: { email } });
+async function resolveUserId(customer: {
+  externalId: string | null;
+  email: string;
+}): Promise<string> {
+  if (customer.externalId) return customer.externalId;
+  const user = await database.user.findUniqueOrThrow({
+    where: { email: customer.email },
+  });
   return user.id;
 }
