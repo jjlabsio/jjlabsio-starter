@@ -1,0 +1,36 @@
+{
+  "name": "@repo/billing",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@polar-sh/sdk": "^0.34.5",
+    "@repo/database": "workspace:*",
+    "@t3-oss/env-nextjs": "^0.11.1",
+    "server-only": "^0.0.1",
+    "zod": "^3.25.76"
+  },
+  "peerDependencies": {
+    "next": ">=15.0.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "eslint": "^9.32.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./keys": "./src/keys.ts",
+    "./subscription": "./src/subscription.ts",
+    "./require-subscription": "./src/require-subscription.ts",
+    "./webhook": "./src/webhook.ts"
+  }
+}

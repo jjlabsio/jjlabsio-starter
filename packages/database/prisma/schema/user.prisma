@@ -1,13 +1,15 @@
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String?
-  emailVerified Boolean   @default(false) @map("email_verified")
-  image         String?
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime  @updatedAt @map("updated_at")
-  sessions      Session[]
-  accounts      Account[]
+  id              String        @id @default(cuid())
+  email           String        @unique
+  name            String?
+  emailVerified   Boolean       @default(false) @map("email_verified")
+  image           String?
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  polarCustomerId String?       @unique @map("polar_customer_id")
+  sessions        Session[]
+  accounts        Account[]
+  subscription    Subscription?
 
   @@map("users")
 }

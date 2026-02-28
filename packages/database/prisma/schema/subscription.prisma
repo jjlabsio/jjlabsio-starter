@@ -1,0 +1,26 @@
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  CANCELED
+  PAST_DUE
+  UNPAID
+}
+
+model Subscription {
+  id                  String             @id @default(cuid())
+  userId              String             @unique @map("user_id")
+  user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  polarSubscriptionId String             @unique @map("polar_subscription_id")
+  polarProductId      String             @map("polar_product_id")
+  polarPriceId        String             @map("polar_price_id")
+  status              SubscriptionStatus
+  currentPeriodStart  DateTime           @map("current_period_start")
+  currentPeriodEnd    DateTime?          @map("current_period_end")
+  cancelAtPeriodEnd   Boolean            @default(false) @map("cancel_at_period_end")
+  trialStart          DateTime?          @map("trial_start")
+  trialEnd            DateTime?          @map("trial_end")
+  createdAt           DateTime           @default(now()) @map("created_at")
+  updatedAt           DateTime           @updatedAt @map("updated_at")
+
+  @@map("subscriptions")
+}
