@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   IconBell,
   IconCheck,
@@ -128,9 +129,7 @@ export function NavUser({
                 <IconUserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => router.push("/settings/billing")}
-              >
+              <DropdownMenuItem render={<Link href="/settings/billing" />}>
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>

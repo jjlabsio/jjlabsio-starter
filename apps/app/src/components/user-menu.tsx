@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   IconBell,
   IconCheck,
@@ -98,7 +99,7 @@ export function UserMenu({
             <IconUserCircle />
             Account
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem render={<Link href="/settings/billing" />}>
             <IconCreditCard />
             Billing
           </DropdownMenuItem>
