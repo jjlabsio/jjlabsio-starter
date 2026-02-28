@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
     if (e instanceof WebhookVerificationError) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
-    throw e;
+    // Unknown event type or schema validation error — acknowledge to prevent retries
+    console.warn("[Polar Webhook] Could not parse event, ignoring:", e);
+    return NextResponse.json({ received: true });
   }
 
   try {
@@ -27,9 +29,10 @@ export async function POST(request: NextRequest) {
           return NextResponse.json({ error: "Missing price" }, { status: 400 });
         }
 
+        const userId = await resolveUserId(sub.customer);
         await upsertSubscription({
           polarSubscriptionId: sub.id,
-          userId: await resolveUserId(sub.customer),
+          userId,
           polarProductId: sub.productId,
           polarPriceId: priceId,
           status: mapPolarStatus(sub.status),
@@ -42,12 +45,10 @@ export async function POST(request: NextRequest) {
           trialEnd: sub.endsAt ? new Date(sub.endsAt) : null,
         });
 
-        if (sub.customer.externalId) {
-          await database.user.update({
-            where: { id: sub.customer.externalId },
-            data: { polarCustomerId: sub.customerId },
-          });
-        }
+        await database.user.update({
+          where: { id: userId },
+          data: { polarCustomerId: sub.customerId },
+        });
         break;
       }
 

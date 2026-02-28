@@ -4,4 +4,5 @@ import { env } from "./keys";
 
 export const polar = new Polar({
   accessToken: env.POLAR_ACCESS_TOKEN,
+  server: process.env.NODE_ENV === "production" ? "production" : "sandbox",
 });
