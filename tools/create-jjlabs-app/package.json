@@ -16,6 +16,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "test:e2e": "rm -rf ../../test-project && pnpm build && cd ../.. && node tools/create-jjlabs-app/dist/index.js test-project",
     "publish:npm": "pnpm build && npm publish --access public --auth-type=web"
   },
   "dependencies": {
