@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconMenu2 } from "@tabler/icons-react";
 
-import { UserMenu } from "@/components/user-menu";
+import { UserMenu } from "@/domains/standard/components/user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@repo/ui/lib/utils";
 import { Button } from "@repo/ui/components/button";

@@ -1,4 +1,4 @@
-import { SiteHeader } from "@/components/site-header";
+import { SiteHeader } from "@/domains/sidebar/components/site-header";
 
 interface PageContainerProps {
   title: string;

@@ -17,9 +17,9 @@ import {
   IconSparkles,
 } from "@tabler/icons-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/domains/sidebar/components/nav-main";
+import { NavSecondary } from "@/domains/sidebar/components/nav-secondary";
+import { NavUser } from "@/domains/sidebar/components/nav-user";
 import {
   Sidebar,
   SidebarContent,

@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IconCircleDot } from "@tabler/icons-react";
 
-import { UserMenu } from "@/components/user-menu";
+import { UserMenu } from "@/domains/standard/components/user-menu";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { MobileNav } from "@/components/mobile-nav";
+import { MobileNav } from "@/domains/standard/components/mobile-nav";
 import { cn } from "@repo/ui/lib/utils";
 
 const navLinks = [
