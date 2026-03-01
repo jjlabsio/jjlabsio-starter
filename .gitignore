@@ -9,11 +9,15 @@ tools/create-jjlabs-app/template/apps/app/.next/
 tools/create-jjlabs-app/template/apps/web/.next/
 tools/create-jjlabs-app/template/apps/*/node_modules/
 tools/create-jjlabs-app/template/packages/*/node_modules/
-tools/create-jjlabs-app/template/.env
-tools/create-jjlabs-app/template/apps/app/.env
-tools/create-jjlabs-app/template/apps/app/.env.production
+tools/create-jjlabs-app/template/**/.env
+tools/create-jjlabs-app/template/**/.env.*
 tools/create-jjlabs-app/template/apps/app/coverage/
-tools/create-jjlabs-app/template/apps/web/.env
-tools/create-jjlabs-app/template/packages/database/.env
 tools/create-jjlabs-app/template/packages/*/coverage/
 tools/create-jjlabs-app/template/packages/*/.turbo/
+
+# OS artifacts
+.DS_Store
+*.pem
+
+# Debug logs
+npm-debug.log*
