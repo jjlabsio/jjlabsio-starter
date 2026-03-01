@@ -1,37 +1,19 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# Dependencies
-node_modules
-.pnp
-.pnp.js
-
-# Local env files
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production
-.env.production.local
-
-# Testing
-coverage
-
-# Turbo
-.turbo
-
-# Vercel
-.vercel
-
-# Build Outputs
-.next/
-out/
-build
-dist
-
-
-# Debug
-npm-debug.log*
-
-# Misc
-.DS_Store
-*.pem
+apps/
+node_modules/
+.turbo/
+tools/create-jjlabs-app/dist/
+tools/create-jjlabs-app/node_modules/
+tools/create-jjlabs-app/template/node_modules/
+tools/create-jjlabs-app/template/.turbo/
+tools/create-jjlabs-app/template/apps/app/.next/
+tools/create-jjlabs-app/template/apps/web/.next/
+tools/create-jjlabs-app/template/apps/*/node_modules/
+tools/create-jjlabs-app/template/packages/*/node_modules/
+tools/create-jjlabs-app/template/.env
+tools/create-jjlabs-app/template/apps/app/.env
+tools/create-jjlabs-app/template/apps/app/.env.production
+tools/create-jjlabs-app/template/apps/app/coverage/
+tools/create-jjlabs-app/template/apps/web/.env
+tools/create-jjlabs-app/template/packages/database/.env
+tools/create-jjlabs-app/template/packages/*/coverage/
+tools/create-jjlabs-app/template/packages/*/.turbo/
