@@ -24,7 +24,10 @@ describe("copyTemplate", () => {
   });
 
   it("renames gitignore to .gitignore after copy", async () => {
-    vi.mocked(fs.pathExists).mockResolvedValue(true as never);
+    // First pathExists call: TEMPLATE_DIR exists; second: gitignore src exists
+    vi.mocked(fs.pathExists)
+      .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(true as never);
     vi.mocked(fs.copy).mockResolvedValue(undefined as never);
     vi.mocked(fs.move).mockResolvedValue(undefined as never);
 
@@ -36,8 +39,20 @@ describe("copyTemplate", () => {
     );
   });
 
+  it("skips gitignore rename when gitignore file does not exist", async () => {
+    // First pathExists call: TEMPLATE_DIR exists; second: gitignore src does NOT exist
+    vi.mocked(fs.pathExists)
+      .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(false as never);
+    vi.mocked(fs.copy).mockResolvedValue(undefined as never);
+
+    await copyTemplate("/tmp/test-project");
+
+    expect(fs.move).not.toHaveBeenCalled();
+  });
+
   it("throws when TEMPLATE_DIR does not exist", async () => {
-    vi.mocked(fs.pathExists).mockResolvedValue(false as never);
+    vi.mocked(fs.pathExists).mockResolvedValueOnce(false as never);
 
     await expect(copyTemplate("/tmp/test-project")).rejects.toThrow(
       "Template directory not found",

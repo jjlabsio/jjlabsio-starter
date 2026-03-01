@@ -1,11 +1,13 @@
-import path from "path";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
 import { logger } from "../utils/logger.js";
 
 // TEMPLATE_DIR resolves to tools/create-jjlabs-app/template/
-// Works for both dist/ (built) and src/steps/ (tsx dev) contexts:
-// - In built: __dirname = dist/, so ../../template
-// - In tsx dev: __dirname = src/steps/, so ../../template (same relative path works)
+// Uses fileURLToPath(import.meta.url) for ESM compatibility (no __dirname in ESM).
+// Works for both dist/ (built: dist/steps/ → ../../template) and
+// src/steps/ (tsx dev: src/steps/ → ../../template) contexts.
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_DIR = path.resolve(__dirname, "../../template");
 
 export async function copyTemplate(projectPath: string): Promise<void> {
