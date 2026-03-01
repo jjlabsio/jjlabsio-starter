@@ -15,6 +15,8 @@ tools/create-jjlabs-app/template/apps/app/coverage/
 tools/create-jjlabs-app/template/packages/*/coverage/
 tools/create-jjlabs-app/template/packages/*/.turbo/
 
+test-project/
+
 # OS artifacts
 .DS_Store
 *.pem
