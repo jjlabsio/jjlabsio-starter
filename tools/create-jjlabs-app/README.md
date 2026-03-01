@@ -30,7 +30,9 @@ CLI는 다음 순서로 프로젝트를 생성합니다:
 3. **Auth 정리** - 선택한 레이아웃에 맞게 인증 관련 코드 정리
 4. **Redirect 업데이트** - 루트 페이지 리다이렉트 경로를 레이아웃에 맞게 변경
 5. **패키지 이름 업데이트** - `package.json`의 이름을 프로젝트 이름으로 변경
-6. **마무리** - `.git` 제거, `.env` 생성, `pnpm install` 실행
+6. **Serena 설정 초기화** - `.serena/project.yml`의 프로젝트명 갱신
+7. **플레이스홀더 치환** - `{{PROJECT_NAME}}` 플레이스홀더를 실제 프로젝트명으로 일괄 치환
+8. **마무리** - `.git` 제거, `.env` 생성, `pnpm install` 실행
 
 ## Layout Options
 
@@ -74,6 +76,5 @@ pnpm dev
 
 ```bash
 cd tools/create-jjlabs-app
-pnpm build
-npm publish
+pnpm publish:npm
 ```
