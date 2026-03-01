@@ -1,13 +1,14 @@
 {
   "name": "create-jjlabs-app",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "CLI to scaffold a new JJLabs app from the starter template",
   "type": "module",
   "bin": {
     "create-jjlabs-app": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "template"
   ],
   "scripts": {
     "build": "tsup",
@@ -18,7 +19,6 @@
     "publish:npm": "pnpm build && npm publish --access public --auth-type=web"
   },
   "dependencies": {
-    "degit": "^2.8.4",
     "fs-extra": "^11.2.0",
     "picocolors": "^1.1.1",
     "prompts": "^2.4.2"
