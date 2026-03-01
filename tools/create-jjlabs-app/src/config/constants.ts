@@ -1,5 +1,3 @@
-export const TEMPLATE_REPO = "jjlabsio/jjlabsio-starter";
-
 export const APP_DIR = "apps/app";
 export const SRC_DIR = `${APP_DIR}/src`;
 export const COMPONENTS_DIR = `${SRC_DIR}/components`;
