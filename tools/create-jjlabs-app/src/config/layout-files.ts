@@ -1,49 +1,31 @@
 import {
-  COMPONENTS_DIR,
   SIDEBAR_GROUP_DIR,
   STANDARD_GROUP_DIR,
+  STANDARD_DOMAIN_DIR,
+  SIDEBAR_DOMAIN_DIR,
   type LayoutChoice,
 } from "./constants.js";
 
-interface LayoutFileMap {
+interface LayoutDirs {
   readonly routeGroupDir: string;
-  readonly components: readonly string[];
+  readonly domainDir: string;
 }
 
-const SIDEBAR_FILES: LayoutFileMap = {
+const SIDEBAR_DIRS: LayoutDirs = {
   routeGroupDir: SIDEBAR_GROUP_DIR,
-  components: [
-    `${COMPONENTS_DIR}/app-sidebar.tsx`,
-    `${COMPONENTS_DIR}/nav-main.tsx`,
-    `${COMPONENTS_DIR}/nav-secondary.tsx`,
-    `${COMPONENTS_DIR}/nav-user.tsx`,
-    `${COMPONENTS_DIR}/nav-documents.tsx`,
-    `${COMPONENTS_DIR}/site-header.tsx`,
-    `${COMPONENTS_DIR}/page-container.tsx`,
-    `${COMPONENTS_DIR}/section-cards.tsx`,
-    `${COMPONENTS_DIR}/chart-area-interactive.tsx`,
-  ],
+  domainDir: SIDEBAR_DOMAIN_DIR,
 };
 
-const STANDARD_FILES: LayoutFileMap = {
+const STANDARD_DIRS: LayoutDirs = {
   routeGroupDir: STANDARD_GROUP_DIR,
-  components: [
-    `${COMPONENTS_DIR}/app-header.tsx`,
-    `${COMPONENTS_DIR}/app-footer.tsx`,
-    `${COMPONENTS_DIR}/mobile-nav.tsx`,
-    `${COMPONENTS_DIR}/user-menu.tsx`,
-  ],
+  domainDir: STANDARD_DOMAIN_DIR,
 };
 
-const FILE_MAP: Record<LayoutChoice, LayoutFileMap> = {
-  sidebar: STANDARD_FILES,
-  standard: SIDEBAR_FILES,
+const DIR_MAP: Record<LayoutChoice, LayoutDirs> = {
+  sidebar: STANDARD_DIRS, // sidebar 선택 시 → standard 삭제
+  standard: SIDEBAR_DIRS, // standard 선택 시 → sidebar 삭제
 };
 
-export function getFilesToRemove(layout: LayoutChoice): LayoutFileMap {
-  return FILE_MAP[layout];
-}
-
-export function getSelectedLayoutDir(layout: LayoutChoice): string {
-  return layout === "sidebar" ? SIDEBAR_GROUP_DIR : STANDARD_GROUP_DIR;
+export function getDirsToRemove(layout: LayoutChoice): LayoutDirs {
+  return DIR_MAP[layout];
 }
