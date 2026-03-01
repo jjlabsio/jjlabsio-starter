@@ -29,3 +29,7 @@ const DIR_MAP: Record<LayoutChoice, LayoutDirs> = {
 export function getDirsToRemove(layout: LayoutChoice): LayoutDirs {
   return DIR_MAP[layout];
 }
+
+export function getSelectedLayoutDir(layout: LayoutChoice): string {
+  return layout === "sidebar" ? SIDEBAR_GROUP_DIR : STANDARD_GROUP_DIR;
+}
