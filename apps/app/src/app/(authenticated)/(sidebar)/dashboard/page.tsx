@@ -1,9 +1,9 @@
 import { headers } from "next/headers";
 import { auth } from "@repo/auth";
 import { requireSubscription } from "@repo/billing/require-subscription";
-import { ChartAreaInteractive } from "@/components/chart-area-interactive";
-import { PageContainer } from "@/components/page-container";
-import { SectionCards } from "@/components/section-cards";
+import { ChartAreaInteractive } from "@/domains/sidebar/components/chart-area-interactive";
+import { PageContainer } from "@/domains/sidebar/components/page-container";
+import { SectionCards } from "@/domains/sidebar/components/section-cards";
 
 export default async function DashboardPage() {
   // (authenticated)/layout.tsx guarantees session exists — fetching here only to get user.id
