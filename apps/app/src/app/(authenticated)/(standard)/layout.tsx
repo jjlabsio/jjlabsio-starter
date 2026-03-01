@@ -1,8 +1,8 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@repo/auth";
-import { AppHeader } from "@/components/app-header";
-import { AppFooter } from "@/components/app-footer";
+import { AppHeader } from "@/domains/standard/components/app-header";
+import { AppFooter } from "@/domains/standard/components/app-footer";
 
 export default async function StandardLayout({
   children,
