@@ -5,7 +5,6 @@ import { logger } from "../utils/logger.js";
 
 export async function finalize(projectDir: string): Promise<void> {
   await removeGitDir(projectDir);
-  await removeToolsDir(projectDir);
   await copyEnvFile(projectDir);
   await installDependencies(projectDir);
 }
@@ -16,15 +15,6 @@ async function removeGitDir(projectDir: string): Promise<void> {
   if (await fs.pathExists(gitDir)) {
     logger.step("Removing .git directory...");
     await fs.remove(gitDir);
-  }
-}
-
-async function removeToolsDir(projectDir: string): Promise<void> {
-  const toolsDir = path.join(projectDir, "tools");
-
-  if (await fs.pathExists(toolsDir)) {
-    logger.step("Removing tools directory...");
-    await fs.remove(toolsDir);
   }
 }
 
