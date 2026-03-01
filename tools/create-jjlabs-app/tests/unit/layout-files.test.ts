@@ -1,54 +1,38 @@
 import { describe, expect, it } from "vitest";
 import {
-  getFilesToRemove,
+  getDirsToRemove,
   getSelectedLayoutDir,
 } from "../../src/config/layout-files.js";
 import {
   SIDEBAR_GROUP_DIR,
   STANDARD_GROUP_DIR,
-  COMPONENTS_DIR,
+  SIDEBAR_DOMAIN_DIR,
+  STANDARD_DOMAIN_DIR,
 } from "../../src/config/constants.js";
 
-describe("getFilesToRemove", () => {
-  it("returns standard files when sidebar is selected", () => {
-    const result = getFilesToRemove("sidebar");
+describe("getDirsToRemove", () => {
+  it("returns standard dirs when sidebar is selected", () => {
+    const result = getDirsToRemove("sidebar");
 
     expect(result.routeGroupDir).toBe(STANDARD_GROUP_DIR);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/app-header.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/app-footer.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/mobile-nav.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/user-menu.tsx`);
-    expect(result.components).toHaveLength(4);
+    expect(result.domainDir).toBe(STANDARD_DOMAIN_DIR);
   });
 
-  it("returns sidebar files when standard is selected", () => {
-    const result = getFilesToRemove("standard");
+  it("returns sidebar dirs when standard is selected", () => {
+    const result = getDirsToRemove("standard");
 
     expect(result.routeGroupDir).toBe(SIDEBAR_GROUP_DIR);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/app-sidebar.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/nav-main.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/nav-secondary.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/nav-user.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/nav-documents.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/site-header.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/page-container.tsx`);
-    expect(result.components).toContain(`${COMPONENTS_DIR}/section-cards.tsx`);
-    expect(result.components).toContain(
-      `${COMPONENTS_DIR}/chart-area-interactive.tsx`,
-    );
-    expect(result.components).toHaveLength(9);
+    expect(result.domainDir).toBe(SIDEBAR_DOMAIN_DIR);
   });
 
-  it("does not include shared files like providers.tsx or theme-toggle.tsx", () => {
-    const sidebarResult = getFilesToRemove("sidebar");
-    const standardResult = getFilesToRemove("standard");
-    const allComponents = [
-      ...sidebarResult.components,
-      ...standardResult.components,
-    ];
+  it("never returns the selected layout's own dirs", () => {
+    const sidebarResult = getDirsToRemove("sidebar");
+    const standardResult = getDirsToRemove("standard");
 
-    expect(allComponents).not.toContain(`${COMPONENTS_DIR}/providers.tsx`);
-    expect(allComponents).not.toContain(`${COMPONENTS_DIR}/theme-toggle.tsx`);
+    expect(sidebarResult.routeGroupDir).not.toBe(SIDEBAR_GROUP_DIR);
+    expect(sidebarResult.domainDir).not.toBe(SIDEBAR_DOMAIN_DIR);
+    expect(standardResult.routeGroupDir).not.toBe(STANDARD_GROUP_DIR);
+    expect(standardResult.domainDir).not.toBe(STANDARD_DOMAIN_DIR);
   });
 });
 

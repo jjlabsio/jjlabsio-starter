@@ -45,37 +45,30 @@ describe("scaffold: sidebar layout", () => {
     expect(await fs.pathExists(dashboardPage)).toBe(true);
   });
 
-  it("removes standard-specific components", async () => {
+  it("removes standard domain directory", async () => {
     await cleanLayout(projectDir, "sidebar");
 
-    const componentsDir = path.join(projectDir, "apps/app/src/components");
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-header.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-footer.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "mobile-nav.tsx")),
-    ).toBe(false);
-    expect(await fs.pathExists(path.join(componentsDir, "user-menu.tsx"))).toBe(
-      false,
+    const standardDomainDir = path.join(
+      projectDir,
+      "apps/app/src/domains/standard",
     );
+    expect(await fs.pathExists(standardDomainDir)).toBe(false);
   });
 
-  it("preserves sidebar-specific components", async () => {
+  it("preserves sidebar domain directory", async () => {
     await cleanLayout(projectDir, "sidebar");
 
-    const componentsDir = path.join(projectDir, "apps/app/src/components");
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-sidebar.tsx")),
-    ).toBe(true);
-    expect(await fs.pathExists(path.join(componentsDir, "nav-main.tsx"))).toBe(
-      true,
+    const sidebarDomainDir = path.join(
+      projectDir,
+      "apps/app/src/domains/sidebar",
     );
-    expect(await fs.pathExists(path.join(componentsDir, "nav-user.tsx"))).toBe(
-      true,
+    expect(await fs.pathExists(sidebarDomainDir)).toBe(true);
+
+    const sidebarComponent = path.join(
+      sidebarDomainDir,
+      "components/app-sidebar.tsx",
     );
+    expect(await fs.pathExists(sidebarComponent)).toBe(true);
   });
 
   it("preserves shared components", async () => {
@@ -169,6 +162,11 @@ describe("scaffold: sidebar layout", () => {
     expect(
       await fs.pathExists(
         path.join(projectDir, "apps/app/src/app/(authenticated)/(standard)"),
+      ),
+    ).toBe(false);
+    expect(
+      await fs.pathExists(
+        path.join(projectDir, "apps/app/src/domains/standard"),
       ),
     ).toBe(false);
 

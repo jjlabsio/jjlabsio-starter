@@ -48,57 +48,42 @@ describe("scaffold: standard layout", () => {
     expect(await fs.pathExists(aboutPage)).toBe(true);
   });
 
-  it("removes sidebar-specific components", async () => {
+  it("removes sidebar domain directory", async () => {
     await cleanLayout(projectDir, "standard");
 
-    const componentsDir = path.join(projectDir, "apps/app/src/components");
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-sidebar.tsx")),
-    ).toBe(false);
-    expect(await fs.pathExists(path.join(componentsDir, "nav-main.tsx"))).toBe(
-      false,
+    const sidebarDomainDir = path.join(
+      projectDir,
+      "apps/app/src/domains/sidebar",
     );
-    expect(
-      await fs.pathExists(path.join(componentsDir, "nav-secondary.tsx")),
-    ).toBe(false);
-    expect(await fs.pathExists(path.join(componentsDir, "nav-user.tsx"))).toBe(
-      false,
-    );
-    expect(
-      await fs.pathExists(path.join(componentsDir, "nav-documents.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "site-header.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "page-container.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "section-cards.tsx")),
-    ).toBe(false);
-    expect(
-      await fs.pathExists(
-        path.join(componentsDir, "chart-area-interactive.tsx"),
-      ),
-    ).toBe(false);
+    expect(await fs.pathExists(sidebarDomainDir)).toBe(false);
   });
 
-  it("preserves standard-specific components", async () => {
+  it("preserves standard domain directory", async () => {
+    await cleanLayout(projectDir, "standard");
+
+    const standardDomainDir = path.join(
+      projectDir,
+      "apps/app/src/domains/standard",
+    );
+    expect(await fs.pathExists(standardDomainDir)).toBe(true);
+
+    const standardComponent = path.join(
+      standardDomainDir,
+      "components/app-header.tsx",
+    );
+    expect(await fs.pathExists(standardComponent)).toBe(true);
+  });
+
+  it("preserves shared components", async () => {
     await cleanLayout(projectDir, "standard");
 
     const componentsDir = path.join(projectDir, "apps/app/src/components");
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-header.tsx")),
-    ).toBe(true);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "app-footer.tsx")),
-    ).toBe(true);
-    expect(
-      await fs.pathExists(path.join(componentsDir, "mobile-nav.tsx")),
-    ).toBe(true);
-    expect(await fs.pathExists(path.join(componentsDir, "user-menu.tsx"))).toBe(
+    expect(await fs.pathExists(path.join(componentsDir, "providers.tsx"))).toBe(
       true,
     );
+    expect(
+      await fs.pathExists(path.join(componentsDir, "theme-toggle.tsx")),
+    ).toBe(true);
   });
 
   it("removes auth check from standard layout", async () => {
@@ -157,6 +142,11 @@ describe("scaffold: standard layout", () => {
     expect(
       await fs.pathExists(
         path.join(projectDir, "apps/app/src/app/(authenticated)/(sidebar)"),
+      ),
+    ).toBe(false);
+    expect(
+      await fs.pathExists(
+        path.join(projectDir, "apps/app/src/domains/sidebar"),
       ),
     ).toBe(false);
 
