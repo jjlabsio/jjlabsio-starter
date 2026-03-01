@@ -1,6 +1,6 @@
 import path from "node:path";
 import type { LayoutChoice } from "./config/constants.js";
-import { cloneTemplate } from "./steps/clone.js";
+import { copyTemplate } from "./steps/copy-template.js";
 import { cleanLayout } from "./steps/clean-layout.js";
 import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updateRedirects } from "./steps/update-redirects.js";
@@ -21,7 +21,7 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
 
   logger.info(`\nCreating ${projectName} with ${layout} layout...\n`);
 
-  await cloneTemplate(projectDir);
+  await copyTemplate(projectDir);
   await cleanLayout(projectDir, layout);
   await cleanAuthDuplication(projectDir, layout);
   await updateRedirects(projectDir, layout);
