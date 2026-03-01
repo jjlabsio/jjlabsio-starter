@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@repo/auth";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/domains/sidebar/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@repo/ui/components/sidebar";
 
 export default async function SidebarLayout({
