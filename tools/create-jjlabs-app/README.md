@@ -25,12 +25,12 @@ npx create-jjlabs-app
 
 CLI는 다음 순서로 프로젝트를 생성합니다:
 
-1. **Clone** - GitHub에서 스타터 템플릿 복제
+1. **Copy** - CLI 패키지에 내장된 템플릿을 프로젝트 경로로 복사
 2. **Layout 선택** - Sidebar 또는 Standard 레이아웃 중 선택하고 미사용 레이아웃 제거
 3. **Auth 정리** - 선택한 레이아웃에 맞게 인증 관련 코드 정리
 4. **Redirect 업데이트** - 루트 페이지 리다이렉트 경로를 레이아웃에 맞게 변경
 5. **패키지 이름 업데이트** - `package.json`의 이름을 프로젝트 이름으로 변경
-6. **마무리** - `.git` 및 `tools/` 제거, `.env` 생성, `pnpm install` 실행
+6. **마무리** - `.git` 제거, `.env` 생성, `pnpm install` 실행
 
 ## Layout Options
 
@@ -50,20 +50,25 @@ pnpm test             # 테스트 실행
 pnpm typecheck        # 타입 체크
 ```
 
-### 템플릿 개발 시 빌드 제한
+### 템플릿 위치
 
-`apps/app`의 두 레이아웃(`(sidebar)`, `(standard)`)이 동시에 `/settings/billing` 경로를 정의하므로, 템플릿 레포는 **단독으로 빌드되지 않습니다.**
+템플릿 파일은 `tools/create-jjlabs-app/template/`에 위치합니다. 이 디렉토리가 npm 배포 시 `dist/`와 함께 패키지에 포함됩니다(`files: ["dist", "template"]`).
 
-이는 의도된 설계입니다. `create-jjlabs-app`이 레이아웃을 선택하고 미사용 레이아웃 전체를 제거하면 경로 충돌이 해소됩니다.
-
-템플릿 변경 사항 검증 방법:
+템플릿 수정 후 로컬 E2E 테스트:
 
 ```bash
-# 실제 scaffold 결과물로 테스트
-npx create-jjlabs-app test-project
-cd test-project
+cd tools/create-jjlabs-app
+pnpm build                       # dist/ 생성
+node dist/index.js ../test-project  # scaffold 실행
+cd ../test-project
 pnpm dev
 ```
+
+### 템플릿 개발 시 빌드 제한
+
+`apps/app`의 두 레이아웃(`(sidebar)`, `(standard)`)이 동시에 `/settings/billing` 경로를 정의하므로, 템플릿은 **단독으로 빌드되지 않습니다.**
+
+이는 의도된 설계입니다. `create-jjlabs-app`이 레이아웃을 선택하고 미사용 레이아웃 전체를 제거하면 경로 충돌이 해소됩니다.
 
 ## Publishing
 
