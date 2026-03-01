@@ -50,6 +50,21 @@ pnpm test             # 테스트 실행
 pnpm typecheck        # 타입 체크
 ```
 
+### 템플릿 개발 시 빌드 제한
+
+`apps/app`의 두 레이아웃(`(sidebar)`, `(standard)`)이 동시에 `/settings/billing` 경로를 정의하므로, 템플릿 레포는 **단독으로 빌드되지 않습니다.**
+
+이는 의도된 설계입니다. `create-jjlabs-app`이 레이아웃을 선택하고 미사용 레이아웃 전체를 제거하면 경로 충돌이 해소됩니다.
+
+템플릿 변경 사항 검증 방법:
+
+```bash
+# 실제 scaffold 결과물로 테스트
+npx create-jjlabs-app test-project
+cd test-project
+pnpm dev
+```
+
 ## Publishing
 
 ```bash
