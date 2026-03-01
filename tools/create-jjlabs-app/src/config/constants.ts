@@ -7,6 +7,10 @@ export const AUTHENTICATED_DIR = `${SRC_DIR}/app/(authenticated)`;
 export const SIDEBAR_GROUP_DIR = `${AUTHENTICATED_DIR}/(sidebar)`;
 export const STANDARD_GROUP_DIR = `${AUTHENTICATED_DIR}/(standard)`;
 
+export const DOMAINS_DIR = `${SRC_DIR}/domains`;
+export const STANDARD_DOMAIN_DIR = `${DOMAINS_DIR}/standard`;
+export const SIDEBAR_DOMAIN_DIR = `${DOMAINS_DIR}/sidebar`;
+
 export const ROOT_PAGE = `${SRC_DIR}/app/page.tsx`;
 export const SIGN_IN_PAGE = `${SRC_DIR}/app/(public)/sign-in/page.tsx`;
 
