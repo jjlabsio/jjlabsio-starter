@@ -5,7 +5,7 @@ import { ChartAreaInteractive } from "@/domains/sidebar/components/chart-area-in
 import { PageContainer } from "@/domains/sidebar/components/page-container";
 import { SectionCards } from "@/domains/sidebar/components/section-cards";
 
-export default async function DashboardPage() {
+export default async function MainPage() {
   // (authenticated)/layout.tsx guarantees session exists — fetching here only to get user.id
   const session = (await auth.api.getSession({ headers: await headers() }))!;
   await requireSubscription(session.user.id);

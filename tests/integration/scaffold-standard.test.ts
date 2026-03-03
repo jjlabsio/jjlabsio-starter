@@ -40,7 +40,7 @@ describe("scaffold: standard layout", () => {
     );
     expect(await fs.pathExists(standardDir)).toBe(true);
 
-    const homePage = path.join(standardDir, "home/page.tsx");
+    const homePage = path.join(standardDir, "page.tsx");
     expect(await fs.pathExists(homePage)).toBe(true);
 
     const aboutPage = path.join(standardDir, "about/page.tsx");

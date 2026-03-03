@@ -40,7 +40,7 @@ describe("scaffold: sidebar layout", () => {
     );
     expect(await fs.pathExists(sidebarDir)).toBe(true);
 
-    const dashboardPage = path.join(sidebarDir, "dashboard/page.tsx");
+    const dashboardPage = path.join(sidebarDir, "page.tsx");
     expect(await fs.pathExists(dashboardPage)).toBe(true);
   });
 
