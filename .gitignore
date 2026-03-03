@@ -1,19 +1,16 @@
-apps/
+dist/
 node_modules/
-.turbo/
-tools/create-jjlabs-app/dist/
-tools/create-jjlabs-app/node_modules/
-tools/create-jjlabs-app/template/node_modules/
-tools/create-jjlabs-app/template/.turbo/
-tools/create-jjlabs-app/template/apps/app/.next/
-tools/create-jjlabs-app/template/apps/web/.next/
-tools/create-jjlabs-app/template/apps/*/node_modules/
-tools/create-jjlabs-app/template/packages/*/node_modules/
-tools/create-jjlabs-app/template/**/.env
-tools/create-jjlabs-app/template/**/.env.*
-tools/create-jjlabs-app/template/apps/app/coverage/
-tools/create-jjlabs-app/template/packages/*/coverage/
-tools/create-jjlabs-app/template/packages/*/.turbo/
+template/node_modules/
+template/.turbo/
+template/apps/app/.next/
+template/apps/web/.next/
+template/apps/*/node_modules/
+template/packages/*/node_modules/
+template/**/.env
+template/**/.env.*
+template/apps/app/coverage/
+template/packages/*/coverage/
+template/packages/*/.turbo/
 
 test-project/
 

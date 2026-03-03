@@ -1,9 +1,39 @@
 {
-  "name": "jjlabsio-starter-dev",
-  "version": "0.0.1",
-  "private": true,
-  "packageManager": "pnpm@10.4.1",
+  "name": "create-jjlabs-app",
+  "version": "0.1.8",
+  "description": "CLI to scaffold a new JJLabs app from the starter template",
+  "type": "module",
+  "bin": {
+    "create-jjlabs-app": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "template"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "rm -rf test-project && pnpm build && node dist/index.js test-project",
+    "publish:npm": "pnpm build && npm publish --access public --auth-type=web"
+  },
+  "dependencies": {
+    "fs-extra": "^11.2.0",
+    "picocolors": "^1.1.1",
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/prompts": "^2.4.9",
+    "tsup": "^8.3.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
   "engines": {
     "node": ">=20"
-  }
+  },
+  "packageManager": "pnpm@10.4.1"
 }
