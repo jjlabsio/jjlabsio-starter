@@ -1,4 +1,4 @@
-const DEFAULT_CALLBACK_URL = "/dashboard";
+const DEFAULT_CALLBACK_URL = "/";
 
 /**
  * Resolves a safe internal callback URL from the `next` query parameter.
