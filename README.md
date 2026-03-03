@@ -42,7 +42,6 @@ npx create-jjlabs-app
 ## Development
 
 ```bash
-cd tools/create-jjlabs-app
 pnpm install
 pnpm dev              # tsx로 직접 실행 (tsx src/index.ts)
 pnpm build            # tsup으로 dist/ 빌드
@@ -53,14 +52,14 @@ pnpm typecheck        # 타입 체크
 
 ### 템플릿 위치
 
-템플릿 파일은 `tools/create-jjlabs-app/template/`에 위치. npm 배포 시 `dist/`와 함께 패키지에 포함됨 (`files: ["dist", "template"]`).
+템플릿 파일은 `template/`에 위치. npm 배포 시 `dist/`와 함께 패키지에 포함됨 (`files: ["dist", "template"]`).
 
 로컬 E2E 테스트:
 
 ```bash
 pnpm build
-node dist/index.js ../../test-project
-cd ../../test-project && pnpm dev
+node dist/index.js test-project
+cd test-project && pnpm dev
 ```
 
 ### 템플릿 빌드 제한
@@ -70,6 +69,5 @@ cd ../../test-project && pnpm dev
 ## Publishing
 
 ```bash
-cd tools/create-jjlabs-app
 pnpm publish:npm
 ```

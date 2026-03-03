@@ -3,10 +3,10 @@ import { fileURLToPath } from "node:url";
 import fs from "fs-extra";
 import { logger } from "../utils/logger.js";
 
-// TEMPLATE_DIR resolves to tools/create-jjlabs-app/template/
+// TEMPLATE_DIR resolves to <repo-root>/template/
 // Uses fileURLToPath(import.meta.url) for ESM compatibility (no __dirname in ESM).
-// Built context: dist/index.js (single bundle) → ../template = create-jjlabs-app/template/
-// Dev context (tsx): src/steps/copy-template.ts → ../../template = create-jjlabs-app/template/
+// Built context: dist/index.js (single bundle) → ../template = <repo-root>/template/
+// Dev context (tsx): src/steps/copy-template.ts → ../../template = <repo-root>/template/
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const isBundled = __filename.endsWith("dist/index.js");
