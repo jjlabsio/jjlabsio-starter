@@ -10,7 +10,7 @@ import { MobileNav } from "@/domains/standard/components/mobile-nav";
 import { cn } from "@repo/ui/lib/utils";
 
 const navLinks = [
-  { label: "Home", href: "/home" },
+  { label: "Home", href: "/" },
   { label: "About", href: "/about" },
 ] as const;
 
