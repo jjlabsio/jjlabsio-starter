@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Invalid productId" }, { status: 400 });
   }
 
-  const successUrl = new URL("/dashboard", request.nextUrl.origin).toString();
+  const successUrl = new URL("/", request.nextUrl.origin).toString();
 
   try {
     const checkout = await polar.checkouts.create({

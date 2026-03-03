@@ -242,7 +242,7 @@ describe("GET /api/billing/checkout", () => {
         products: ["prod_starter_monthly"],
         customerEmail: "test@example.com",
         externalCustomerId: "user_123",
-        successUrl: "http://localhost:3000/dashboard",
+        successUrl: "http://localhost:3000/",
       });
     });
   });
