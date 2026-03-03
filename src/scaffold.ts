@@ -3,7 +3,6 @@ import type { LayoutChoice } from "./config/constants.js";
 import { copyTemplate } from "./steps/copy-template.js";
 import { cleanLayout } from "./steps/clean-layout.js";
 import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
-import { updateRedirects } from "./steps/update-redirects.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
 import { resetSerenaConfig } from "./steps/reset-serena-config.js";
 import { substituteProjectName } from "./steps/substitute-project-name.js";
@@ -24,7 +23,6 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await copyTemplate(projectDir);
   await cleanLayout(projectDir, layout);
   await cleanAuthDuplication(projectDir, layout);
-  await updateRedirects(projectDir, layout);
   await updatePackageNames(projectDir, projectName);
   await resetSerenaConfig(projectDir, projectName);
   await substituteProjectName(projectDir, projectName);
