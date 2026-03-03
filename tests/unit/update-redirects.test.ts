@@ -36,10 +36,10 @@ describe("updateRedirects", () => {
     expect(rootPageCall![1]).not.toContain('redirect("/dashboard")');
   });
 
-  it("updates sign-in page callbackURL to /home when standard is selected", async () => {
+  it("updates resolve-callback-url DEFAULT_CALLBACK_URL to /home when standard is selected", async () => {
     vi.mocked(fsUtils.readFile).mockImplementation(async (filePath) => {
-      if (filePath.includes("sign-in")) {
-        return `callbackURL: "/dashboard"`;
+      if (filePath.includes("resolve-callback-url")) {
+        return `const DEFAULT_CALLBACK_URL = "/dashboard";`;
       }
       return `redirect("/dashboard")`;
     });
@@ -47,10 +47,33 @@ describe("updateRedirects", () => {
 
     await updateRedirects("/tmp/test-project", "standard");
 
-    const signInCall = vi
+    const callbackUrlCall = vi
       .mocked(fsUtils.writeFile)
-      .mock.calls.find(([filePath]) => filePath.includes("sign-in"));
-    expect(signInCall).toBeDefined();
-    expect(signInCall![1]).toContain('callbackURL: "/home"');
+      .mock.calls.find(([filePath]) =>
+        filePath.includes("resolve-callback-url"),
+      );
+    expect(callbackUrlCall).toBeDefined();
+    expect(callbackUrlCall![1]).toContain(
+      'const DEFAULT_CALLBACK_URL = "/home"',
+    );
+  });
+
+  it("updates checkout route successUrl to /home when standard is selected", async () => {
+    vi.mocked(fsUtils.readFile).mockImplementation(async (filePath) => {
+      if (filePath.includes("checkout")) {
+        return `const successUrl = new URL("/dashboard", request.nextUrl.origin).toString();`;
+      }
+      return `redirect("/dashboard")`;
+    });
+    vi.mocked(fsUtils.writeFile).mockResolvedValue();
+
+    await updateRedirects("/tmp/test-project", "standard");
+
+    const checkoutCall = vi
+      .mocked(fsUtils.writeFile)
+      .mock.calls.find(([filePath]) => filePath.includes("checkout"));
+    expect(checkoutCall).toBeDefined();
+    expect(checkoutCall![1]).toContain('new URL("/home",');
+    expect(checkoutCall![1]).not.toContain('new URL("/dashboard",');
   });
 });

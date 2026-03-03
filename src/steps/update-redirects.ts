@@ -1,5 +1,9 @@
 import path from "node:path";
-import { ROOT_PAGE, SIGN_IN_PAGE } from "../config/constants.js";
+import {
+  ROOT_PAGE,
+  RESOLVE_CALLBACK_URL,
+  CHECKOUT_ROUTE,
+} from "../config/constants.js";
 import type { LayoutChoice } from "../config/constants.js";
 import { readFile, writeFile } from "../utils/fs.js";
 import { logger } from "../utils/logger.js";
@@ -24,7 +28,8 @@ export async function updateRedirects(
 
   await Promise.all([
     updateRootPage(projectDir, targetPath),
-    updateSignInPage(projectDir, targetPath),
+    updateResolveCallbackUrl(projectDir, targetPath),
+    updateCheckoutRoute(projectDir, targetPath),
   ]);
 }
 
@@ -41,15 +46,28 @@ async function updateRootPage(
   await writeFile(filePath, updated);
 }
 
-async function updateSignInPage(
+async function updateResolveCallbackUrl(
   projectDir: string,
   targetPath: string,
 ): Promise<void> {
-  const filePath = path.join(projectDir, SIGN_IN_PAGE);
+  const filePath = path.join(projectDir, RESOLVE_CALLBACK_URL);
   const content = await readFile(filePath);
   const updated = content.replace(
-    /callbackURL:\s*["']\/dashboard["']/,
-    `callbackURL: "${targetPath}"`,
+    /const DEFAULT_CALLBACK_URL = ["']\/dashboard["']/,
+    `const DEFAULT_CALLBACK_URL = "${targetPath}"`,
+  );
+  await writeFile(filePath, updated);
+}
+
+async function updateCheckoutRoute(
+  projectDir: string,
+  targetPath: string,
+): Promise<void> {
+  const filePath = path.join(projectDir, CHECKOUT_ROUTE);
+  const content = await readFile(filePath);
+  const updated = content.replace(
+    /new URL\(["']\/dashboard["'],/,
+    `new URL("${targetPath}",`,
   );
   await writeFile(filePath, updated);
 }

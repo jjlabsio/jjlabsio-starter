@@ -112,12 +112,21 @@ describe("scaffold: standard layout", () => {
     expect(rootPage).toContain('redirect("/home")');
     expect(rootPage).not.toContain('redirect("/dashboard")');
 
-    const signInPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/(public)/sign-in/page.tsx"),
+    const resolveCallbackUrl = await fs.readFile(
+      path.join(projectDir, "apps/app/src/lib/resolve-callback-url.ts"),
       "utf-8",
     );
-    expect(signInPage).toContain('callbackURL: "/home"');
-    expect(signInPage).not.toContain('callbackURL: "/dashboard"');
+    expect(resolveCallbackUrl).toContain('DEFAULT_CALLBACK_URL = "/home"');
+    expect(resolveCallbackUrl).not.toContain(
+      'DEFAULT_CALLBACK_URL = "/dashboard"',
+    );
+
+    const checkoutRoute = await fs.readFile(
+      path.join(projectDir, "apps/app/src/app/api/billing/checkout/route.ts"),
+      "utf-8",
+    );
+    expect(checkoutRoute).toContain('new URL("/home",');
+    expect(checkoutRoute).not.toContain('new URL("/dashboard",');
   });
 
   it("resets serena project name", async () => {

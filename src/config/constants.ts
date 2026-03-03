@@ -10,6 +10,7 @@ export const STANDARD_DOMAIN_DIR = `${DOMAINS_DIR}/standard`;
 export const SIDEBAR_DOMAIN_DIR = `${DOMAINS_DIR}/sidebar`;
 
 export const ROOT_PAGE = `${SRC_DIR}/app/page.tsx`;
-export const SIGN_IN_PAGE = `${SRC_DIR}/app/(public)/sign-in/page.tsx`;
+export const RESOLVE_CALLBACK_URL = `${SRC_DIR}/lib/resolve-callback-url.ts`;
+export const CHECKOUT_ROUTE = `${SRC_DIR}/app/api/billing/checkout/route.ts`;
 
 export type LayoutChoice = "sidebar" | "standard";
