@@ -13,6 +13,7 @@ template/packages/*/coverage/
 template/packages/*/.turbo/
 
 test-project/
+.env
 
 # OS artifacts
 .DS_Store
