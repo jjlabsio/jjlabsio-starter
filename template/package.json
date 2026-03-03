@@ -9,6 +9,7 @@
     "typecheck": "turbo typecheck",
     "test": "turbo test",
     "db:migrate:deploy": "turbo db:migrate:deploy --filter=@repo/database",
+    "db:reset": "docker compose down -v && docker compose up -d && until docker compose exec postgres pg_isready -U admin; do sleep 1; done && pnpm --filter @repo/database db:migrate:dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky"
   },
