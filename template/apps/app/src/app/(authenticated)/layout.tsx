@@ -1,6 +1,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@repo/auth";
+import { requireSubscription } from "@repo/billing";
 
 export default async function AuthenticatedLayout({
   children,
@@ -14,6 +15,8 @@ export default async function AuthenticatedLayout({
   if (!session) {
     redirect("/sign-in");
   }
+
+  await requireSubscription(session.user.id);
 
   return <>{children}</>;
 }
