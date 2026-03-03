@@ -14,7 +14,14 @@ export async function POST(request: NextRequest) {
     if (e instanceof WebhookVerificationError) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
-    // Unknown event type or schema validation error — acknowledge to prevent retries
+    // Polar SDK schema mismatch (e.g. unsupported status values like "trialing"
+    // in active_subscriptions). The subscription is handled via the main event;
+    // return 200 to prevent retries.
+    if (e instanceof Error && e.name === "SDKValidationError") {
+      console.warn("[Polar Webhook] Unrecognized event schema, skipping");
+      return NextResponse.json({ received: true });
+    }
+    // Truly unknown parse failure — log full error for debugging
     console.warn("[Polar Webhook] Could not parse event, ignoring:", e);
     return NextResponse.json({ received: true });
   }
