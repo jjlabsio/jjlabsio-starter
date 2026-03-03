@@ -94,10 +94,10 @@ describe("scaffold: standard layout", () => {
     );
     const content = await fs.readFile(layoutPath, "utf-8");
 
-    expect(content).not.toContain("if (!session)");
+    expect(content).toContain("if (!session) return null");
     expect(content).not.toContain('redirect("/sign-in")');
     expect(content).not.toContain("import { redirect }");
-    expect(content).toContain("session!.user");
+    expect(content).not.toContain("session!.user");
     expect(content).toContain("auth.api.getSession");
   });
 
@@ -139,7 +139,8 @@ describe("scaffold: standard layout", () => {
       "utf-8",
     );
     expect(standardLayout).not.toContain("redirect");
-    expect(standardLayout).toContain("session!.user");
+    expect(standardLayout).not.toContain("session!.user");
+    expect(standardLayout).toContain("if (!session) return null");
 
     // Auth guard intact
     const authLayout = await fs.readFile(

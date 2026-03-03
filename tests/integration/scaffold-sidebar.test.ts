@@ -91,10 +91,10 @@ describe("scaffold: sidebar layout", () => {
     );
     const content = await fs.readFile(layoutPath, "utf-8");
 
-    expect(content).not.toContain("if (!session)");
+    expect(content).toContain("if (!session) return null");
     expect(content).not.toContain('redirect("/sign-in")');
     expect(content).not.toContain("import { redirect }");
-    expect(content).toContain("session!.user");
+    expect(content).not.toContain("session!.user");
     expect(content).toContain("auth.api.getSession");
   });
 
@@ -161,7 +161,8 @@ describe("scaffold: sidebar layout", () => {
       "utf-8",
     );
     expect(sidebarLayout).not.toContain("redirect");
-    expect(sidebarLayout).toContain("session!.user");
+    expect(sidebarLayout).not.toContain("session!.user");
+    expect(sidebarLayout).toContain("if (!session) return null");
 
     // Auth guard intact
     const authLayout = await fs.readFile(

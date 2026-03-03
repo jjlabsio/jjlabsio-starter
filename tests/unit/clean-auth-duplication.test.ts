@@ -79,23 +79,18 @@ describe("transformLayout", () => {
     expect(result).not.toContain('import { redirect } from "next/navigation"');
   });
 
-  it("removes the if (!session) redirect block", () => {
+  it("removes redirect guard and adds safe null guard", () => {
     const result = transformLayout(SIDEBAR_LAYOUT);
-    expect(result).not.toContain("if (!session)");
     expect(result).not.toContain('redirect("/sign-in")');
+    expect(result).toContain("if (!session) return null");
   });
 
-  it("changes session.user to session!.user", () => {
+  it("preserves session.user without unsafe non-null assertion", () => {
     const result = transformLayout(SIDEBAR_LAYOUT);
-    expect(result).toContain("session!.user.name");
-    expect(result).toContain("session!.user.email");
-    expect(result).toContain("session!.user.image");
-    expect(result).not.toMatch(/(?<!!)\.user\.name/);
-  });
-
-  it("adds comment about auth guard verification", () => {
-    const result = transformLayout(SIDEBAR_LAYOUT);
-    expect(result).toContain("session is already verified");
+    expect(result).not.toContain("session!.user");
+    expect(result).toContain("session.user.name");
+    expect(result).toContain("session.user.email");
+    expect(result).toContain("session.user.image");
   });
 
   it("preserves headers import", () => {
@@ -123,7 +118,8 @@ describe("transformLayout", () => {
   it("works with standard layout too", () => {
     const result = transformLayout(STANDARD_LAYOUT);
     expect(result).not.toContain("redirect");
-    expect(result).toContain("session!.user");
+    expect(result).toContain("if (!session) return null");
+    expect(result).not.toContain("session!.user");
     expect(result).toContain("<AppHeader");
     expect(result).toContain("<AppFooter");
   });

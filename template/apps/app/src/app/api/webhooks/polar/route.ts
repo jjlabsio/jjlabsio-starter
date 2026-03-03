@@ -91,7 +91,12 @@ async function resolveUserId(customer: {
   externalId: string | null;
   email: string;
 }): Promise<string> {
-  if (customer.externalId) return customer.externalId;
+  if (customer.externalId) {
+    const user = await database.user.findUnique({
+      where: { id: customer.externalId },
+    });
+    if (user) return user.id;
+  }
   const user = await database.user.findUniqueOrThrow({
     where: { email: customer.email },
   });
