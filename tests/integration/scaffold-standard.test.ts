@@ -4,7 +4,6 @@ import os from "node:os";
 import fs from "fs-extra";
 import { cleanLayout } from "../../src/steps/clean-layout.js";
 import { cleanAuthDuplication } from "../../src/steps/clean-auth-duplication.js";
-import { updateRedirects } from "../../src/steps/update-redirects.js";
 import { updatePackageNames } from "../../src/steps/update-package-names.js";
 import { resetSerenaConfig } from "../../src/steps/reset-serena-config.js";
 
@@ -102,33 +101,6 @@ describe("scaffold: standard layout", () => {
     expect(content).toContain("auth.api.getSession");
   });
 
-  it("updates redirect paths to /home", async () => {
-    await updateRedirects(projectDir, "standard");
-
-    const rootPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/page.tsx"),
-      "utf-8",
-    );
-    expect(rootPage).toContain('redirect("/home")');
-    expect(rootPage).not.toContain('redirect("/dashboard")');
-
-    const resolveCallbackUrl = await fs.readFile(
-      path.join(projectDir, "apps/app/src/lib/resolve-callback-url.ts"),
-      "utf-8",
-    );
-    expect(resolveCallbackUrl).toContain('DEFAULT_CALLBACK_URL = "/home"');
-    expect(resolveCallbackUrl).not.toContain(
-      'DEFAULT_CALLBACK_URL = "/dashboard"',
-    );
-
-    const checkoutRoute = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/api/billing/checkout/route.ts"),
-      "utf-8",
-    );
-    expect(checkoutRoute).toContain('new URL("/home",');
-    expect(checkoutRoute).not.toContain('new URL("/dashboard",');
-  });
-
   it("resets serena project name", async () => {
     await resetSerenaConfig(projectDir, "my-standard-app");
 
@@ -143,7 +115,6 @@ describe("scaffold: standard layout", () => {
   it("runs full standard scaffold pipeline correctly", async () => {
     await cleanLayout(projectDir, "standard");
     await cleanAuthDuplication(projectDir, "standard");
-    await updateRedirects(projectDir, "standard");
     await updatePackageNames(projectDir, "my-standard-app");
     await resetSerenaConfig(projectDir, "my-standard-app");
 
@@ -176,13 +147,6 @@ describe("scaffold: standard layout", () => {
       "utf-8",
     );
     expect(authLayout).toContain("redirect");
-
-    // Redirects updated
-    const rootPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/page.tsx"),
-      "utf-8",
-    );
-    expect(rootPage).toContain('redirect("/home")');
 
     // Package names updated
     const rootPkg = await fs.readJson(path.join(projectDir, "package.json"));

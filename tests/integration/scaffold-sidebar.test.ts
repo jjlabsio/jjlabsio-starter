@@ -4,7 +4,6 @@ import os from "node:os";
 import fs from "fs-extra";
 import { cleanLayout } from "../../src/steps/clean-layout.js";
 import { cleanAuthDuplication } from "../../src/steps/clean-auth-duplication.js";
-import { updateRedirects } from "../../src/steps/update-redirects.js";
 import { updatePackageNames } from "../../src/steps/update-package-names.js";
 import { resetSerenaConfig } from "../../src/steps/reset-serena-config.js";
 
@@ -112,22 +111,6 @@ describe("scaffold: sidebar layout", () => {
     expect(content).toContain("redirect");
   });
 
-  it("keeps redirect paths unchanged for sidebar", async () => {
-    await updateRedirects(projectDir, "sidebar");
-
-    const rootPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/page.tsx"),
-      "utf-8",
-    );
-    expect(rootPage).toContain('redirect("/dashboard")');
-
-    const signInPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/(public)/sign-in/page.tsx"),
-      "utf-8",
-    );
-    expect(signInPage).toContain('callbackURL: "/dashboard"');
-  });
-
   it("updates package names", async () => {
     await updatePackageNames(projectDir, "my-sidebar-app");
 
@@ -154,7 +137,6 @@ describe("scaffold: sidebar layout", () => {
   it("runs full sidebar scaffold pipeline correctly", async () => {
     await cleanLayout(projectDir, "sidebar");
     await cleanAuthDuplication(projectDir, "sidebar");
-    await updateRedirects(projectDir, "sidebar");
     await updatePackageNames(projectDir, "my-sidebar-app");
     await resetSerenaConfig(projectDir, "my-sidebar-app");
 
@@ -188,12 +170,9 @@ describe("scaffold: sidebar layout", () => {
     );
     expect(authLayout).toContain("redirect");
 
-    // Redirects unchanged
-    const rootPage = await fs.readFile(
-      path.join(projectDir, "apps/app/src/app/page.tsx"),
-      "utf-8",
-    );
-    expect(rootPage).toContain('redirect("/dashboard")');
+    // Package names updated
+    const rootPkg = await fs.readJson(path.join(projectDir, "package.json"));
+    expect(rootPkg.name).toBe("my-sidebar-app");
 
     // Serena config updated
     const serenaConfig = await fs.readFile(

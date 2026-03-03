@@ -1,4 +1,4 @@
-const DEFAULT_CALLBACK_URL = "/dashboard";
+const DEFAULT_CALLBACK_URL = "/";
 
 export function resolveCallbackUrl(next?: string | null): string {
   if (!next) return DEFAULT_CALLBACK_URL;
