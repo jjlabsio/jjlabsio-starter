@@ -7,7 +7,7 @@ import { buttonVariants } from "@repo/ui/components/button";
 
 const STATUS_LABELS: Record<SubscriptionStatus, string> = {
   ACTIVE: "Active",
-  TRIALING: "Trial",
+  TRIALING: "Free Trial",
   PAST_DUE: "Past Due",
   CANCELED: "Canceled",
   UNPAID: "Unpaid",
@@ -49,6 +49,16 @@ export function SubscriptionStatusCard({
 
   const statusLabel = STATUS_LABELS[subscription.status];
   const badgeVariant = STATUS_VARIANT[subscription.status];
+  const isTrial = subscription.status === "TRIALING";
+
+  const trialDaysRemaining =
+    isTrial && subscription.trialEnd
+      ? Math.ceil(
+          (subscription.trialEnd.getTime() - Date.now()) /
+            (1000 * 60 * 60 * 24),
+        )
+      : null;
+
   const renewalDate = subscription.currentPeriodEnd
     ? new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(
         subscription.currentPeriodEnd,
@@ -59,10 +69,15 @@ export function SubscriptionStatusCard({
     <div className="bg-card flex items-center justify-between rounded-xl border p-6">
       <div className="space-y-1">
         <div className="flex items-center gap-2">
-          <p className="font-medium">Pro Plan</p>
+          <p className="font-medium">{isTrial ? "Free Trial" : "Pro Plan"}</p>
           <Badge variant={badgeVariant}>{statusLabel}</Badge>
         </div>
-        {renewalDate && (
+        {isTrial && trialDaysRemaining !== null && (
+          <p className="text-muted-foreground text-sm">
+            {trialDaysRemaining} days remaining
+          </p>
+        )}
+        {!isTrial && renewalDate && (
           <p className="text-muted-foreground text-sm">
             {subscription.cancelAtPeriodEnd
               ? `Cancels on ${renewalDate}`
@@ -70,12 +85,18 @@ export function SubscriptionStatusCard({
           </p>
         )}
       </div>
-      <Link
-        href="/api/billing/portal"
-        className={buttonVariants({ variant: "outline", size: "sm" })}
-      >
-        Manage Billing
-      </Link>
+      {isTrial ? (
+        <Link href="/pricing" className={buttonVariants({ size: "sm" })}>
+          Upgrade
+        </Link>
+      ) : (
+        <Link
+          href="/api/billing/portal"
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          Manage Billing
+        </Link>
+      )}
     </div>
   );
 }
