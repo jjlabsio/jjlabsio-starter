@@ -8,6 +8,7 @@ template/apps/*/node_modules/
 template/packages/*/node_modules/
 template/**/.env
 template/**/.env.*
+!template/**/.env.example
 template/apps/app/coverage/
 template/packages/*/coverage/
 template/packages/*/.turbo/

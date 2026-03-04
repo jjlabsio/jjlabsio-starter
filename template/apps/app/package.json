@@ -20,6 +20,7 @@
     "@repo/billing": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@sentry/nextjs": "^9",
     "@tabler/icons-react": "^3.36.1",
     "better-auth": "^1.2.0",
     "next": "16.1.6",

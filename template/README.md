@@ -77,6 +77,20 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 ---
 
+## Sentry 설정 (선택)
+
+[Sentry](https://sentry.io)에서 Next.js 프로젝트를 생성한 후 `apps/app/.env`에 설정합니다:
+
+```
+NEXT_PUBLIC_SENTRY_DSN="https://xxx@xxx.ingest.sentry.io/xxx"
+SENTRY_AUTH_TOKEN="sntrys_xxx"
+```
+
+- `NEXT_PUBLIC_SENTRY_DSN`: 미설정 시 Sentry 비활성화
+- `SENTRY_AUTH_TOKEN`: Source map 업로드용 (선택)
+
+---
+
 ## 개발 서버 실행
 
 ```bash

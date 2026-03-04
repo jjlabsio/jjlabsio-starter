@@ -24,6 +24,7 @@
 | Auth      | Better Auth (Google OAuth, Prisma adapter)     |
 | Database  | Prisma ORM, PostgreSQL (Supabase as host)      |
 | Billing   | Polar (subscription, webhook, customer portal) |
+| Monitoring | Sentry (@sentry/nextjs)                       |
 | Git Hooks | Husky + lint-staged                            |
 | Runtime   | Node.js >= 20                                  |
 
