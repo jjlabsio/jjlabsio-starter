@@ -33,3 +33,10 @@ export interface UpsertSubscriptionData {
   trialStart?: Date | null;
   trialEnd?: Date | null;
 }
+
+export type SubscriptionState =
+  | "unauthenticated"
+  | "no-subscription"
+  | "trialing"
+  | "expired"
+  | "active";

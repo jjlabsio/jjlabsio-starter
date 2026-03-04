@@ -1,6 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { isSubscriptionActive, mapPolarStatus } from "./subscription-utils";
-import { hasActiveTrial, TRIAL_DURATION_DAYS } from "./subscription-utils";
+import {
+  hasActiveTrial,
+  TRIAL_DURATION_DAYS,
+  getSubscriptionState,
+} from "./subscription-utils";
 import type { SubscriptionStatus } from "./types";
 import type { Subscription } from "./types";
 
@@ -124,5 +128,33 @@ describe("hasActiveTrial", () => {
 
   it("null이면 false", () => {
     expect(hasActiveTrial(null)).toBe(false);
+  });
+});
+
+describe("getSubscriptionState", () => {
+  it("구독 없으면 no-subscription", () => {
+    expect(getSubscriptionState(null)).toBe("no-subscription");
+  });
+
+  it("TRIALING + trialEnd 미래이면 trialing", () => {
+    const sub = createTrialSubscription();
+    expect(getSubscriptionState(sub)).toBe("trialing");
+  });
+
+  it("ACTIVE이면 active", () => {
+    const sub = createTrialSubscription({ status: "ACTIVE" });
+    expect(getSubscriptionState(sub)).toBe("active");
+  });
+
+  it("CANCELED이면 expired", () => {
+    const sub = createTrialSubscription({ status: "CANCELED" });
+    expect(getSubscriptionState(sub)).toBe("expired");
+  });
+
+  it("TRIALING + trialEnd 과거이면 expired", () => {
+    const sub = createTrialSubscription({
+      trialEnd: new Date(Date.now() - 1000),
+    });
+    expect(getSubscriptionState(sub)).toBe("expired");
   });
 });

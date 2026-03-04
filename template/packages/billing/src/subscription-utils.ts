@@ -1,4 +1,8 @@
-import type { Subscription, SubscriptionStatus } from "./types";
+import type {
+  Subscription,
+  SubscriptionState,
+  SubscriptionStatus,
+} from "./types";
 
 export const TRIAL_DURATION_DAYS = 14;
 
@@ -39,4 +43,13 @@ export function hasActiveTrial(
   if (subscription.status !== "TRIALING") return false;
   if (!subscription.trialEnd) return false;
   return subscription.trialEnd > new Date();
+}
+
+export function getSubscriptionState(
+  subscription: Subscription | null | undefined,
+): SubscriptionState {
+  if (!subscription) return "no-subscription";
+  if (hasActiveTrial(subscription)) return "trialing";
+  if (subscription.status === "ACTIVE") return "active";
+  return "expired";
 }
