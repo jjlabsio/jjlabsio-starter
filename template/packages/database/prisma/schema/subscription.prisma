@@ -10,9 +10,9 @@ model Subscription {
   id                  String             @id @default(cuid())
   userId              String             @unique @map("user_id")
   user                User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  polarSubscriptionId String             @unique @map("polar_subscription_id")
-  polarProductId      String             @map("polar_product_id")
-  polarPriceId        String             @map("polar_price_id")
+  polarSubscriptionId String?            @unique @map("polar_subscription_id")
+  polarProductId      String?            @map("polar_product_id")
+  polarPriceId        String?            @map("polar_price_id")
   status              SubscriptionStatus
   currentPeriodStart  DateTime           @map("current_period_start")
   currentPeriodEnd    DateTime?          @map("current_period_end")
