@@ -34,6 +34,7 @@
     "./plan-config": "./src/plan-config.ts",
     "./subscription": "./src/subscription.ts",
     "./require-subscription": "./src/require-subscription.ts",
+    "./trial": "./src/trial.ts",
     "./webhook": "./src/webhook.ts"
   }
 }
