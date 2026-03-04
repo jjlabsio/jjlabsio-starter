@@ -7,7 +7,7 @@ import {
   hasActiveTrial,
   TRIAL_DURATION_DAYS,
 } from "@repo/billing";
-import { Button } from "@repo/ui/components/button";
+import { buttonVariants } from "@repo/ui/components/button";
 
 export default async function WelcomePage() {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -36,9 +36,9 @@ export default async function WelcomePage() {
         <p className="text-muted-foreground mb-8 text-sm">
           You have {daysRemaining} days to explore all features.
         </p>
-        <Button size="lg" asChild>
-          <Link href="/">Get Started</Link>
-        </Button>
+        <Link href="/" className={buttonVariants({ size: "lg" })}>
+          Get Started
+        </Link>
       </div>
     </div>
   );
