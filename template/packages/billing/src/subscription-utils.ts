@@ -1,4 +1,6 @@
-import type { SubscriptionStatus } from "./types";
+import type { Subscription, SubscriptionStatus } from "./types";
+
+export const TRIAL_DURATION_DAYS = 14;
 
 const ACTIVE_STATUSES: ReadonlySet<SubscriptionStatus> = new Set([
   "ACTIVE",
@@ -28,4 +30,13 @@ export function mapPolarStatus(polarStatus: string): SubscriptionStatus {
     throw new Error(`Unknown Polar subscription status: ${polarStatus}`);
   }
   return mapped;
+}
+
+export function hasActiveTrial(
+  subscription: Subscription | null | undefined,
+): boolean {
+  if (!subscription) return false;
+  if (subscription.status !== "TRIALING") return false;
+  if (!subscription.trialEnd) return false;
+  return subscription.trialEnd > new Date();
 }

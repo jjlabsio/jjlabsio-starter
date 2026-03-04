@@ -1,6 +1,31 @@
 import { describe, it, expect } from "vitest";
 import { isSubscriptionActive, mapPolarStatus } from "./subscription-utils";
+import { hasActiveTrial, TRIAL_DURATION_DAYS } from "./subscription-utils";
 import type { SubscriptionStatus } from "./types";
+import type { Subscription } from "./types";
+
+// Helper to create a minimal trial subscription for testing
+function createTrialSubscription(
+  overrides: Partial<Subscription> = {},
+): Subscription {
+  const now = new Date();
+  return {
+    id: "test-id",
+    userId: "test-user",
+    polarSubscriptionId: null,
+    polarProductId: null,
+    polarPriceId: null,
+    status: "TRIALING",
+    currentPeriodStart: now,
+    currentPeriodEnd: null,
+    cancelAtPeriodEnd: false,
+    trialStart: now,
+    trialEnd: new Date(now.getTime() + 14 * 24 * 60 * 60 * 1000),
+    createdAt: now,
+    updatedAt: now,
+    ...overrides,
+  };
+}
 
 describe("isSubscriptionActive", () => {
   it("ACTIVE 구독은 활성 상태로 판단", () => {
@@ -65,5 +90,39 @@ describe("mapPolarStatus", () => {
     expect(() => mapPolarStatus("unknown_status")).toThrow(
       "Unknown Polar subscription status: unknown_status",
     );
+  });
+});
+
+describe("TRIAL_DURATION_DAYS", () => {
+  it("기본 trial 기간은 14일", () => {
+    expect(TRIAL_DURATION_DAYS).toBe(14);
+  });
+});
+
+describe("hasActiveTrial", () => {
+  it("TRIALING 상태이고 trialEnd가 미래이면 true", () => {
+    const sub = createTrialSubscription();
+    expect(hasActiveTrial(sub)).toBe(true);
+  });
+
+  it("TRIALING 상태이고 trialEnd가 과거이면 false", () => {
+    const sub = createTrialSubscription({
+      trialEnd: new Date(Date.now() - 1000),
+    });
+    expect(hasActiveTrial(sub)).toBe(false);
+  });
+
+  it("ACTIVE 상태이면 false", () => {
+    const sub = createTrialSubscription({ status: "ACTIVE" });
+    expect(hasActiveTrial(sub)).toBe(false);
+  });
+
+  it("TRIALING 상태이지만 trialEnd가 null이면 false", () => {
+    const sub = createTrialSubscription({ trialEnd: null });
+    expect(hasActiveTrial(sub)).toBe(false);
+  });
+
+  it("null이면 false", () => {
+    expect(hasActiveTrial(null)).toBe(false);
   });
 });
