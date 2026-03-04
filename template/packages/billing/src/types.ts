@@ -8,9 +8,9 @@ export type SubscriptionStatus =
 export interface Subscription {
   id: string;
   userId: string;
-  polarSubscriptionId: string;
-  polarProductId: string;
-  polarPriceId: string;
+  polarSubscriptionId: string | null;
+  polarProductId: string | null;
+  polarPriceId: string | null;
   status: SubscriptionStatus;
   currentPeriodStart: Date;
   currentPeriodEnd: Date | null;
