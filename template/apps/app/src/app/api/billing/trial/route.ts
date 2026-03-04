@@ -18,10 +18,20 @@ export async function POST() {
   try {
     await startTrial(session.user.id);
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "User already has a subscription or trial"
+    ) {
+      return NextResponse.json(
+        { error: "Trial already used or subscription exists" },
+        { status: 409 },
+      );
+    }
+    console.error("[Billing] Trial start failed:", error);
     return NextResponse.json(
-      { error: "Trial already used or subscription exists" },
-      { status: 409 },
+      { error: "Failed to start trial" },
+      { status: 500 },
     );
   }
 }
