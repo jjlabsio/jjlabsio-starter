@@ -59,6 +59,10 @@ src/
 
 `{{PROJECT_NAME}}` 플레이스홀더 사용. `substitute-project-name.ts`의 `TARGET_FILES` 배열에 대상 파일 추가.
 
+### 프론트엔드 컴포넌트
+
+`template/packages/ui/`의 shadcn 컴포넌트 우선 사용. 필요 컴포넌트가 미설치 시 shadcn CLI로 추가 후 사용.
+
 ### 템플릿 gitignore
 
 `template/` 내 `.gitignore`는 npm 배포 시 dotfile 제거 문제로 `gitignore`(점 없이)로 저장.
