@@ -36,8 +36,8 @@ export default async function WelcomePage() {
         <p className="text-muted-foreground mb-8 text-sm">
           You have {daysRemaining} days to explore all features.
         </p>
-        <Button asChild size="lg">
-          <Link href="/">Get Started</Link>
+        <Button render={<Link href="/" />} size="lg">
+          Get Started
         </Button>
       </div>
     </div>

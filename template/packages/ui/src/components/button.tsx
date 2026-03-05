@@ -49,16 +49,20 @@ function Button({
   size = "default",
   isLoading = false,
   children,
+  asChild: _asChild,
   ...props
 }: ButtonPrimitive.Props &
   VariantProps<typeof buttonVariants> & {
     isLoading?: boolean;
+    /** @deprecated Use `render` prop instead. Ignored — exists only to prevent DOM warnings. */
+    asChild?: boolean;
   }) {
   return (
     <ButtonPrimitive
       data-slot="button"
       disabled={isLoading || props.disabled}
       aria-busy={isLoading || undefined}
+      nativeButton={!props.render}
       className={cn(
         buttonVariants({ variant, size, className }),
         isLoading && "relative",
