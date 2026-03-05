@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { buttonVariants } from "@repo/ui/components/button";
-import { APP_URL } from "@/lib/env";
+import { env } from "@/lib/env";
 
 export function PricingCta() {
   return (
@@ -16,7 +16,7 @@ export function PricingCta() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-4">
           <Link
-            href={`${APP_URL}/sign-in`}
+            href={`${env.NEXT_PUBLIC_APP_URL}/sign-in`}
             className={buttonVariants({
               className: "rounded-full px-8 py-6 text-base",
               size: "lg",

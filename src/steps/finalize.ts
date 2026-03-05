@@ -20,6 +20,7 @@ async function removeGitDir(projectDir: string): Promise<void> {
 
 const ENV_EXAMPLE_PATHS = [
   "apps/app/.env.example",
+  "apps/web/.env.example",
   "packages/database/.env.example",
 ];
 
@@ -34,7 +35,7 @@ async function copyEnvFile(projectDir: string): Promise<void> {
     );
 
     if (await fs.pathExists(envExample)) {
-      await fs.copy(envExample, envLocal);
+      await fs.move(envExample, envLocal);
     }
   }
 }

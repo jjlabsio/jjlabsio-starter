@@ -6,7 +6,14 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_SENTRY_DSN"]
+      "env": [
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY",
+        "NEXT_PUBLIC_SENTRY_DSN"
+      ]
     },
     "db:migrate:deploy": {
       "cache": false
@@ -29,10 +36,14 @@
     "DATABASE_URL",
     "DIRECT_URL",
     "NODE_ENV",
+    "SKIP_ENV_VALIDATION",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
+    "POLAR_ACCESS_TOKEN",
+    "POLAR_WEBHOOK_SECRET",
+    "POLAR_ORGANIZATION_ID",
     "RESEND_API_KEY",
     "SENTRY_AUTH_TOKEN"
   ]

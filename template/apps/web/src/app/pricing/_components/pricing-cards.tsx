@@ -2,7 +2,7 @@
 
 import type { BillingPeriod } from "@repo/billing/plan-config";
 import { TIERS } from "@repo/billing/plan-config";
-import { APP_URL, PRODUCT_IDS } from "@/lib/env";
+import { env, PRODUCT_IDS } from "@/lib/env";
 import { PricingCard } from "./pricing-card";
 
 interface PricingCardsProps {
@@ -16,8 +16,8 @@ export function PricingCards({ period }: PricingCardsProps) {
         {TIERS.map((tier) => {
           const productId = PRODUCT_IDS[tier.id][period];
           const href = productId
-            ? `${APP_URL}/api/billing/checkout?productId=${productId}`
-            : `${APP_URL}/sign-in`;
+            ? `${env.NEXT_PUBLIC_APP_URL}/api/billing/checkout?productId=${productId}`
+            : `${env.NEXT_PUBLIC_APP_URL}/sign-in`;
           return (
             <PricingCard
               key={tier.id}
