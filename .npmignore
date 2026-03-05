@@ -1,0 +1,10 @@
+src/
+tests/
+test-project/
+docs/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.DS_Store
+*.pem
+npm-debug.log*
