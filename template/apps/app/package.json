@@ -19,6 +19,7 @@
     "@repo/auth": "workspace:*",
     "@repo/billing": "workspace:*",
     "@repo/database": "workspace:*",
+    "@repo/email": "workspace:*",
     "@repo/ui": "workspace:*",
     "@sentry/nextjs": "^9",
     "@tabler/icons-react": "^3.36.1",

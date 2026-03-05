@@ -7,6 +7,8 @@ const TARGET_FILES = [
   "CLAUDE.md",
   "apps/app/.env.example",
   "packages/database/.env.example",
+  "packages/email/src/index.ts",
+  "packages/email/src/templates/welcome.tsx",
   "docker-compose.yml",
 ];
 

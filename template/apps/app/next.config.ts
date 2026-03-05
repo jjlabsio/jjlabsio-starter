@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "@repo/database",
     "@repo/auth",
     "@repo/billing",
+    "@repo/email",
   ],
 };
 
