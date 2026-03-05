@@ -1,9 +1,8 @@
 dist/
 node_modules/
 template/node_modules/
-template/.turbo/
-template/apps/app/.next/
-template/apps/web/.next/
+template/**/.turbo/
+template/**/.next/
 template/apps/*/node_modules/
 template/packages/*/node_modules/
 template/**/.env
@@ -11,7 +10,6 @@ template/**/.env.*
 !template/**/.env.example
 template/apps/app/coverage/
 template/packages/*/coverage/
-template/packages/*/.turbo/
 
 test-project/
 .env

@@ -8,3 +8,6 @@ vitest.config.ts
 .DS_Store
 *.pem
 npm-debug.log*
+**/node_modules
+**/.next
+**/.turbo
