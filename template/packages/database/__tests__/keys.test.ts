@@ -4,6 +4,7 @@ describe("keys", () => {
   beforeEach(() => {
     vi.resetModules();
     vi.unstubAllEnvs();
+    vi.stubEnv("SKIP_ENV_VALIDATION", "");
   });
 
   it("should export env with validated DATABASE_URL", async () => {

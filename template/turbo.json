@@ -37,6 +37,7 @@
     "DATABASE_URL",
     "DIRECT_URL",
     "NODE_ENV",
+    "PORT",
     "SKIP_ENV_VALIDATION",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
