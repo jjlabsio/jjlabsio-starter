@@ -5,14 +5,16 @@
 ## Usage
 
 ```bash
-npx create-jjlabs-app my-app
+npx @jjlabsio/create-jjlabs-app@latest my-app
 ```
 
 프로젝트 이름을 생략하면 대화형으로 입력받습니다:
 
 ```bash
-npx create-jjlabs-app
+npx @jjlabsio/create-jjlabs-app@latest
 ```
+
+CLI 실행 파일 이름은 계속 `create-jjlabs-app`입니다.
 
 ## Options
 
@@ -68,6 +70,33 @@ cd test-project && pnpm dev
 
 ## Publishing
 
+릴리스는 GitHub Actions로 자동화됨.
+
+1. PR 제목, 본문, 또는 라벨에 릴리스 의도 선언
+
+```text
+release: major
+release: minor
+release: patch
+release: none
+release: 1.2.3
+```
+
+2. PR merge 후 `main` push에서 `.github/workflows/release.yml` 실행
+3. workflow가 버전 결정, `chore(release): vX.Y.Z` 커밋, 태그, GitHub Release, npm publish 수행
+
+비릴리스 PR은 `release: none` 사용.
+
+### npm Trusted Publishing
+
+npm package `@jjlabsio/create-jjlabs-app`에 Trusted Publisher 설정 필요:
+
+- Repository: `jjlabsio/jjlabsio-starter`
+- Workflow: `.github/workflows/release.yml`
+- Environment: 비워둠
+
+workflow는 npm 토큰 없이 OIDC provenance publish 사용:
+
 ```bash
-pnpm publish:npm
+npm publish --provenance --access public
 ```

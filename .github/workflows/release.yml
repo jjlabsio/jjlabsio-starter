@@ -1,0 +1,322 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Exact version to publish, for example 0.1.9. Leave empty to run full release."
+        required: false
+        type: string
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, 'chore(release):')
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      has_changes: ${{ steps.release.outputs.has_changes }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Read merged PR
+        if: github.event_name == 'push'
+        run: |
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            "/repos/${GITHUB_REPOSITORY}/commits/${GITHUB_SHA}/pulls" \
+            --jq '.[0] // {}' > pr.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Resolve release version
+        id: release
+        run: |
+          node <<'NODE'
+          const { execFileSync } = require("node:child_process");
+          const fs = require("node:fs");
+
+          const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+          const current = pkg.version;
+          const inputVersion = process.env.INPUT_VERSION || "";
+          const pr = fs.existsSync("pr.json")
+            ? JSON.parse(fs.readFileSync("pr.json", "utf8"))
+            : {};
+          const labels = Array.isArray(pr.labels)
+            ? pr.labels.map((label) => label.name).join("\n")
+            : "";
+
+          const lastTag = (() => {
+            try {
+              return execFileSync("git", ["describe", "--tags", "--abbrev=0", "--match", "v[0-9]*"], {
+                encoding: "utf8",
+                stdio: ["ignore", "pipe", "ignore"],
+              }).trim();
+            } catch {
+              return "";
+            }
+          })();
+
+          const range = lastTag ? `${lastTag}..HEAD` : "HEAD";
+          const commits = execFileSync("git", ["log", range, "--format=%s%n%b"], {
+            encoding: "utf8",
+          });
+          const text = [
+            inputVersion,
+            pr.title || "",
+            pr.body || "",
+            labels,
+            process.env.HEAD_COMMIT || "",
+            commits,
+          ].join("\n");
+
+          const semver = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
+          const releaseIntentRaw = text.match(
+            /(?:release-version|release|version)\s*:\s*(major|minor|patch|none|(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)(?![0-9A-Za-z.+-])/i
+          )?.[1];
+          const releaseIntent = releaseIntentRaw?.toLowerCase();
+          const explicitVersion =
+            inputVersion ||
+            (releaseIntentRaw && semver.test(releaseIntentRaw) ? releaseIntentRaw : "");
+
+          let bump = "";
+          if (explicitVersion) {
+            bump = "exact";
+          } else if (["major", "minor", "patch", "none"].includes(releaseIntent)) {
+            bump = releaseIntent;
+          } else if (/BREAKING CHANGE|^[a-z]+(?:\([^)]+\))?!:/m.test(text)) {
+            bump = "major";
+          } else if (/^feat(?:\([^)]+\))?:/m.test(text)) {
+            bump = "minor";
+          } else if (/^(?:fix|perf|refactor)(?:\([^)]+\))?:/m.test(text)) {
+            bump = "patch";
+          }
+
+          const nextVersion = bump === "none" ? "" : explicitVersion || bumpVersion(current, bump);
+          const output = fs.createWriteStream(process.env.GITHUB_OUTPUT, { flags: "a" });
+
+          if (!nextVersion) {
+            output.write("has_changes=false\n");
+            console.log("No releasable changes found.");
+            process.exit(0);
+          }
+
+          if (!semver.test(nextVersion)) {
+            throw new Error(`Invalid semver: ${nextVersion}`);
+          }
+
+          if (compareSemver(nextVersion, current) < 0) {
+            throw new Error(`Release version ${nextVersion} is lower than current version ${current}`);
+          }
+
+          output.write("has_changes=true\n");
+          output.write(`version=${nextVersion}\n`);
+          console.log(`Release version resolved: ${nextVersion} (${bump})`);
+
+          function bumpVersion(version, type) {
+            if (!type) return "";
+            const [major, minor, patch] = version.split(".").map(Number);
+            if (type === "major") return `${major + 1}.0.0`;
+            if (type === "minor") return `${major}.${minor + 1}.0`;
+            if (type === "patch") return `${major}.${minor}.${patch + 1}`;
+            return "";
+          }
+
+          function compareSemver(a, b) {
+            const parse = (value) => {
+              const [withoutBuild] = value.split("+");
+              const [core, prerelease = ""] = withoutBuild.split("-");
+              return {
+                core: core.split(".").map(Number),
+                prerelease: prerelease ? prerelease.split(".") : [],
+              };
+            };
+            const left = parse(a);
+            const right = parse(b);
+            for (let i = 0; i < 3; i += 1) {
+              if (left.core[i] !== right.core[i]) return left.core[i] - right.core[i];
+            }
+            if (!left.prerelease.length && !right.prerelease.length) return 0;
+            if (!left.prerelease.length) return 1;
+            if (!right.prerelease.length) return -1;
+
+            const length = Math.max(left.prerelease.length, right.prerelease.length);
+            for (let i = 0; i < length; i += 1) {
+              const l = left.prerelease[i];
+              const r = right.prerelease[i];
+              if (l === undefined) return -1;
+              if (r === undefined) return 1;
+              if (l === r) continue;
+
+              const lNumeric = /^[0-9]+$/.test(l);
+              const rNumeric = /^[0-9]+$/.test(r);
+              if (lNumeric && rNumeric) return Number(l) - Number(r);
+              if (lNumeric) return -1;
+              if (rNumeric) return 1;
+              return l < r ? -1 : 1;
+            }
+            return 0;
+          }
+          NODE
+        env:
+          HEAD_COMMIT: ${{ github.event.head_commit.message }}
+          INPUT_VERSION: ${{ github.event.inputs.version }}
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: resolve
+    if: needs.resolve.outputs.has_changes == 'true'
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Update version
+        run: |
+          CURRENT_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+            echo "package.json is already at ${VERSION}, skipping version update"
+          else
+            pnpm version "$VERSION" --no-git-tag-version
+            pnpm install --lockfile-only
+          fi
+        env:
+          VERSION: ${{ needs.resolve.outputs.version }}
+
+      - run: pnpm build
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm audit --audit-level moderate
+
+      - name: Clean template artifacts
+        run: find template \( -name node_modules -o -name .next -o -name .turbo \) -type d -prune -exec rm -rf {} +
+
+      - name: Assert template artifacts are clean
+        run: |
+          find template \( -name node_modules -o -name .next -o -name .turbo \) -type d -prune -print > /tmp/template-artifacts
+          test ! -s /tmp/template-artifacts
+
+      - run: npm pack --dry-run
+
+      - name: Upload release metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-metadata
+          path: |
+            package.json
+            pnpm-lock.yaml
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dist
+          path: dist
+
+  release-metadata:
+    runs-on: ubuntu-latest
+    needs: [resolve, verify]
+    if: needs.resolve.outputs.has_changes == 'true'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download release metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: release-metadata
+          path: .
+
+      - name: Commit and tag
+        run: |
+          VERSION="v${{ needs.resolve.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add package.json pnpm-lock.yaml
+          git diff --cached --quiet || git commit -m "chore(release): ${VERSION}"
+          if git rev-parse "${VERSION}" >/dev/null 2>&1; then
+            echo "Tag ${VERSION} already exists, skipping"
+          else
+            git tag -a "${VERSION}" -m "${VERSION}"
+          fi
+          git push origin HEAD:${{ github.ref_name }}
+          git push origin "${VERSION}"
+
+      - name: Create GitHub Release
+        run: |
+          VERSION="v${{ needs.resolve.outputs.version }}"
+          if gh release view "${VERSION}" >/dev/null 2>&1; then
+            echo "GitHub Release ${VERSION} already exists, skipping"
+          else
+            gh release create "${VERSION}" --generate-notes --title "${VERSION}"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [resolve, release-metadata]
+    if: needs.resolve.outputs.has_changes == 'true'
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Download release metadata
+        uses: actions/download-artifact@v4
+        with:
+          name: release-metadata
+          path: .
+
+      - name: Download build output
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dist
+          path: dist
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Check if already published
+        id: npm-check
+        run: |
+          VERSION="${{ needs.resolve.outputs.version }}"
+          if npm view "@jjlabsio/create-jjlabs-app@${VERSION}" version 2>/dev/null; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "v${VERSION} already published to npm, skipping"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: steps.npm-check.outputs.published == 'false'
+        run: npm publish --provenance --access public
