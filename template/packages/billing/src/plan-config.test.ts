@@ -3,7 +3,6 @@ import {
   TIERS,
   type TierConfig,
   type PlanTier,
-  type BillingPeriod,
   type PeriodPricing,
 } from "./plan-config";
 

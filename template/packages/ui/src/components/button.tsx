@@ -57,6 +57,8 @@ function Button({
     /** @deprecated Use `render` prop instead. Ignored — exists only to prevent DOM warnings. */
     asChild?: boolean;
   }) {
+  void _asChild;
+
   return (
     <ButtonPrimitive
       data-slot="button"

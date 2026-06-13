@@ -16,7 +16,9 @@
     "db:migrate:status": "prisma migrate status",
     "db:studio": "prisma studio",
     "lint": "eslint . --max-warnings 0",
+    "pretypecheck": "pnpm run db:generate",
     "typecheck": "tsc --noEmit",
+    "pretest": "pnpm run db:generate",
     "test": "vitest run"
   },
   "dependencies": {

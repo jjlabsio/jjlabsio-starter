@@ -3,12 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "build:deps": "pnpm --filter @repo/database build",
+    "predev": "pnpm run build:deps",
     "dev": "nest start --watch",
+    "prebuild": "pnpm run build:deps",
     "build": "nest build",
     "start": "node dist/main.js",
+    "prestart:debug": "pnpm run build:deps",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint . --max-warnings 0",
+    "pretypecheck": "pnpm run build:deps",
     "typecheck": "tsc --noEmit",
+    "pretest": "pnpm run build:deps",
     "test": "vitest run"
   },
   "dependencies": {
