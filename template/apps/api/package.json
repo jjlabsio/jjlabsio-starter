@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:deps": "pnpm --filter @repo/database db:generate",
     "build:deps": "pnpm --filter @repo/database build",
     "predev": "pnpm run build:deps",
     "dev": "nest start --watch",
@@ -12,7 +13,7 @@
     "prestart:debug": "pnpm run build:deps",
     "start:debug": "nest start --debug --watch",
     "lint": "eslint . --max-warnings 0",
-    "pretypecheck": "pnpm run build:deps",
+    "pretypecheck": "pnpm run generate:deps",
     "typecheck": "tsc --noEmit",
     "pretest": "pnpm run build:deps",
     "test": "vitest run"

@@ -39,19 +39,19 @@
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./src/index.ts",
       "default": "./dist/index.js"
     },
     "./client": {
-      "types": "./dist/client.d.ts",
+      "types": "./src/client.ts",
       "default": "./dist/client.js"
     },
     "./keys": {
-      "types": "./dist/keys.d.ts",
+      "types": "./src/keys.ts",
       "default": "./dist/keys.js"
     },
     "./prisma": {
-      "types": "./dist/prisma.d.ts",
+      "types": "./src/prisma.ts",
       "default": "./dist/prisma.js"
     }
   }
