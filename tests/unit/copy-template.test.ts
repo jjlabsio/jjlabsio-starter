@@ -51,6 +51,30 @@ describe("copyTemplate", () => {
     );
   });
 
+  it("copies env examples but excludes real env files", async () => {
+    vi.mocked(fs.pathExists)
+      .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(false as never);
+    vi.mocked(fs.copy).mockResolvedValue(undefined as never);
+
+    await copyTemplate("/tmp/test-project");
+
+    const [, , options] = vi.mocked(fs.copy).mock.calls[0];
+    const filter = options?.filter;
+
+    expect(filter).toBeDefined();
+    expect(filter?.("/repo/template/apps/app/.env.example", "")).toBe(true);
+    expect(filter?.("/repo/template/apps/app/.env.local.example", "")).toBe(
+      true,
+    );
+    expect(filter?.("/repo/template/apps/app/.env", "")).toBe(false);
+    expect(filter?.("/repo/template/apps/app/.env.local", "")).toBe(false);
+    expect(filter?.("/repo/template/apps/app/.env.production", "")).toBe(
+      false,
+    );
+    expect(filter?.("/repo/template/apps/app/.env.test.local", "")).toBe(false);
+  });
+
   it("renames gitignore to .gitignore after copy", async () => {
     // First pathExists call: TEMPLATE_DIR exists; second: gitignore src exists
     vi.mocked(fs.pathExists)

@@ -29,9 +29,20 @@ function shouldCopyTemplateEntry(src: string): boolean {
     return true;
   }
 
-  return !relativePath
-    .split(path.sep)
-    .some((segment) => GENERATED_TEMPLATE_DIRS.has(segment));
+  const pathSegments = relativePath.split(path.sep);
+
+  if (pathSegments.some((segment) => GENERATED_TEMPLATE_DIRS.has(segment))) {
+    return false;
+  }
+
+  return !isRealEnvFile(path.basename(src));
+}
+
+function isRealEnvFile(fileName: string): boolean {
+  return (
+    fileName === ".env" ||
+    (fileName.startsWith(".env.") && !fileName.endsWith(".example"))
+  );
 }
 
 export async function copyTemplate(projectPath: string): Promise<void> {

@@ -35,7 +35,7 @@ async function copyEnvFile(projectDir: string): Promise<void> {
     );
 
     if (await fs.pathExists(envExample)) {
-      await fs.move(envExample, envLocal);
+      await fs.copy(envExample, envLocal, { overwrite: false });
     }
   }
 }
