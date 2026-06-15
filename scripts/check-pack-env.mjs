@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const EXPECTED_ENV_EXAMPLES = [
+  "template/.env.example",
   "template/apps/app/.env.example",
   "template/apps/web/.env.example",
   "template/packages/database/.env.example",

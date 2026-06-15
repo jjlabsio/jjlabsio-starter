@@ -12,6 +12,7 @@ describe("package env safety", () => {
   it("passes when all expected env examples are packed and no real env files are present", () => {
     const result = analyzePackFiles([
       "dist/index.js",
+      "template/.env.example",
       "template/apps/app/.env.example",
       "template/apps/web/.env.example",
       "template/packages/database/.env.example",
@@ -66,6 +67,7 @@ describe("package env safety", () => {
     const result = analyzePackFiles(["dist/index.js"]);
 
     expect(result.missingEnvExamples).toEqual([
+      "template/.env.example",
       "template/apps/app/.env.example",
       "template/apps/web/.env.example",
       "template/packages/database/.env.example",
