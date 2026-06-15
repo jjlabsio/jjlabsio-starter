@@ -14,7 +14,7 @@
 `packages/database/.env`:
 
 ```
-DATABASE_URL="postgresql://admin:admin@localhost:5432/starter?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/starter?schema=public"
 ```
 
 Docker Compose로 로컬 DB를 실행한다 (프로젝트 루트의 `docker-compose.yml`):
@@ -64,7 +64,7 @@ const nextConfig = {
 앱 루트에 `.env` 파일을 생성하고 `DATABASE_URL`을 설정한다.
 
 ```
-DATABASE_URL="postgresql://admin:admin@localhost:5432/starter?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/starter?schema=public"
 ```
 
 ### 4. 배포용 빌드 스크립트 추가
