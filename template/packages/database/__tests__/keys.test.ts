@@ -30,12 +30,19 @@ describe("keys", () => {
 
   it("should use a placeholder URL when validation is skipped", async () => {
     vi.stubEnv("DATABASE_URL", "");
-    vi.stubEnv("SKIP_ENV_VALIDATION", "1");
+    vi.stubEnv("SKIP_ENV_VALIDATION", "true");
 
     const { env } = await import("../src/keys");
 
     expect(env.DATABASE_URL).toBe(
       "postgresql://placeholder:placeholder@localhost:5432/placeholder",
     );
+  });
+
+  it("should not skip validation for non-true SKIP_ENV_VALIDATION values", async () => {
+    vi.stubEnv("DATABASE_URL", "");
+    vi.stubEnv("SKIP_ENV_VALIDATION", "1");
+
+    await expect(import("../src/keys")).rejects.toThrow();
   });
 });

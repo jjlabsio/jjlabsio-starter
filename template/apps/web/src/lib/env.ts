@@ -20,7 +20,7 @@ export const env = createEnv({
     NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY:
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
   },
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });
 
 export const PRODUCT_IDS = {

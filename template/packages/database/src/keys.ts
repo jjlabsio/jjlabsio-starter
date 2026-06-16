@@ -10,7 +10,7 @@ const runtimeEnv = {
   DIRECT_URL: process.env.DIRECT_URL || undefined,
 };
 
-export const env = process.env.SKIP_ENV_VALIDATION
+export const env = process.env.SKIP_ENV_VALIDATION === "true"
   ? {
       DATABASE_URL:
         runtimeEnv.DATABASE_URL ??
