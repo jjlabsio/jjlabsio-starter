@@ -34,8 +34,8 @@
 
 ```
 apps/
-  app/              # SaaS app (port 3000)
-  web/              # Landing page (port 3001)
+  app/              # SaaS app (LOCAL_APP_PORT)
+  web/              # Landing page (LOCAL_WEB_PORT)
 packages/
   auth/             # Better Auth server/client config, env validation
   billing/          # Polar billing: subscription CRUD, checkout, portal, webhook

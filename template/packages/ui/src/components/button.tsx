@@ -49,13 +49,10 @@ function Button({
   size = "default",
   isLoading = false,
   children,
-  asChild: _asChild,
   ...props
 }: ButtonPrimitive.Props &
   VariantProps<typeof buttonVariants> & {
     isLoading?: boolean;
-    /** @deprecated Use `render` prop instead. Ignored — exists only to prevent DOM warnings. */
-    asChild?: boolean;
   }) {
   return (
     <ButtonPrimitive

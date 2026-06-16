@@ -1,7 +1,5 @@
-import "server-only";
-
 import { PrismaClient } from "@prisma/client";
-import { env } from "./keys";
+import { env } from "./keys.js";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

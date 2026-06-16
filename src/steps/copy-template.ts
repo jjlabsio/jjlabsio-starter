@@ -15,6 +15,36 @@ const TEMPLATE_DIR = path.resolve(
   isBundled ? "../template" : "../../template",
 );
 
+const GENERATED_TEMPLATE_DIRS = new Set([
+  ".next",
+  ".turbo",
+  "dist",
+  "node_modules",
+]);
+
+function shouldCopyTemplateEntry(src: string): boolean {
+  const relativePath = path.relative(TEMPLATE_DIR, src);
+
+  if (!relativePath) {
+    return true;
+  }
+
+  const pathSegments = relativePath.split(path.sep);
+
+  if (pathSegments.some((segment) => GENERATED_TEMPLATE_DIRS.has(segment))) {
+    return false;
+  }
+
+  return !isRealEnvFile(path.basename(src));
+}
+
+function isRealEnvFile(fileName: string): boolean {
+  return (
+    fileName === ".env" ||
+    (fileName.startsWith(".env.") && !fileName.endsWith(".example"))
+  );
+}
+
 export async function copyTemplate(projectPath: string): Promise<void> {
   logger.step("Copying template...");
 
@@ -22,7 +52,9 @@ export async function copyTemplate(projectPath: string): Promise<void> {
     throw new Error(`Template directory not found: ${TEMPLATE_DIR}`);
   }
 
-  await fs.copy(TEMPLATE_DIR, projectPath);
+  await fs.copy(TEMPLATE_DIR, projectPath, {
+    filter: shouldCopyTemplateEntry,
+  });
 
   // Rename gitignore → .gitignore (npm strips dotfiles from published packages)
   const gitignoreSrc = path.join(projectPath, "gitignore");

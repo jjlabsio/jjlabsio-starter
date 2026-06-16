@@ -20,7 +20,59 @@ describe("copyTemplate", () => {
     expect(fs.copy).toHaveBeenCalledWith(
       expect.stringContaining("template"),
       "/tmp/test-project",
+      expect.objectContaining({
+        filter: expect.any(Function),
+      }),
     );
+  });
+
+  it("excludes generated build and install artifacts while copying", async () => {
+    vi.mocked(fs.pathExists)
+      .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(false as never);
+    vi.mocked(fs.copy).mockResolvedValue(undefined as never);
+
+    await copyTemplate("/tmp/test-project");
+
+    const [, , options] = vi.mocked(fs.copy).mock.calls[0];
+    const filter = options?.filter;
+
+    expect(filter).toBeDefined();
+    expect(filter?.("/repo/template/apps/app/src/app/page.tsx", "")).toBe(true);
+    expect(filter?.("/repo/template/apps/app/.next/types/validator.ts", "")).toBe(
+      false,
+    );
+    expect(filter?.("/repo/template/apps/app/.turbo/turbo-build.log", "")).toBe(
+      false,
+    );
+    expect(filter?.("/repo/template/apps/api/dist/main.js", "")).toBe(false);
+    expect(filter?.("/repo/template/node_modules/.pnpm/lock.yaml", "")).toBe(
+      false,
+    );
+  });
+
+  it("copies env examples but excludes real env files", async () => {
+    vi.mocked(fs.pathExists)
+      .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(false as never);
+    vi.mocked(fs.copy).mockResolvedValue(undefined as never);
+
+    await copyTemplate("/tmp/test-project");
+
+    const [, , options] = vi.mocked(fs.copy).mock.calls[0];
+    const filter = options?.filter;
+
+    expect(filter).toBeDefined();
+    expect(filter?.("/repo/template/apps/app/.env.example", "")).toBe(true);
+    expect(filter?.("/repo/template/apps/app/.env.local.example", "")).toBe(
+      true,
+    );
+    expect(filter?.("/repo/template/apps/app/.env", "")).toBe(false);
+    expect(filter?.("/repo/template/apps/app/.env.local", "")).toBe(false);
+    expect(filter?.("/repo/template/apps/app/.env.production", "")).toBe(
+      false,
+    );
+    expect(filter?.("/repo/template/apps/app/.env.test.local", "")).toBe(false);
   });
 
   it("renames gitignore to .gitignore after copy", async () => {

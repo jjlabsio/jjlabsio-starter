@@ -3,8 +3,11 @@
   "version": "0.0.0",
   "type": "module",
   "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "prisma generate",
+    "build": "prisma generate && tsc -p tsconfig.build.json",
+    "dev": "prisma generate && tsc -p tsconfig.build.json --watch",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate:dev": "prisma migrate dev",
@@ -13,18 +16,19 @@
     "db:migrate:status": "prisma migrate status",
     "db:studio": "prisma studio",
     "lint": "eslint . --max-warnings 0",
+    "pretypecheck": "pnpm run db:generate",
     "typecheck": "tsc --noEmit",
+    "pretest": "pnpm run db:generate",
     "test": "vitest run"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
-    "@t3-oss/env-nextjs": "^0.11.1",
-    "server-only": "^0.0.1",
     "zod": "^3.25.76"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
     "eslint": "^9.32.0",
     "prisma": "^6.10.1",
     "typescript": "^5.9.2",
@@ -34,8 +38,21 @@
     "schema": "prisma/schema"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./keys": "./src/keys.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "types": "./src/client.ts",
+      "default": "./dist/client.js"
+    },
+    "./keys": {
+      "types": "./src/keys.ts",
+      "default": "./dist/keys.js"
+    },
+    "./prisma": {
+      "types": "./src/prisma.ts",
+      "default": "./dist/prisma.js"
+    }
   }
 }

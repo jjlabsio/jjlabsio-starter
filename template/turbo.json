@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
         "NEXT_PUBLIC_APP_URL",
         "NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY",
@@ -22,12 +22,13 @@
       "dependsOn": ["^lint"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"]
+      "dependsOn": ["^build", "^typecheck"]
     },
     "test": {
       "dependsOn": ["^build"]
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     }
@@ -36,6 +37,7 @@
     "DATABASE_URL",
     "DIRECT_URL",
     "NODE_ENV",
+    "PORT",
     "SKIP_ENV_VALIDATION",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",

@@ -6,6 +6,7 @@ import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
 import { resetSerenaConfig } from "./steps/reset-serena-config.js";
 import { substituteProjectName } from "./steps/substitute-project-name.js";
+import { assignLocalPorts } from "./steps/assign-local-ports.js";
 import { finalize } from "./steps/finalize.js";
 import { logger } from "./utils/logger.js";
 
@@ -26,9 +27,15 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await updatePackageNames(projectDir, projectName);
   await resetSerenaConfig(projectDir, projectName);
   await substituteProjectName(projectDir, projectName);
+  const localPorts = await assignLocalPorts(projectDir, projectName);
   await finalize(projectDir);
 
   logger.success(`\nProject "${projectName}" created successfully!\n`);
+  logger.info("Local development ports:");
+  logger.info(`  app:      http://localhost:${localPorts.ports.app}`);
+  logger.info(`  web:      http://localhost:${localPorts.ports.web}`);
+  logger.info(`  api:      http://localhost:${localPorts.ports.api}`);
+  logger.info(`  postgres: localhost:${localPorts.ports.postgres}`);
   logger.info("Next steps:");
   logger.info(`  cd ${projectName}`);
   logger.info("  # Update .env with your credentials");

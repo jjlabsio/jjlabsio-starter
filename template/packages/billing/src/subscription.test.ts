@@ -5,7 +5,6 @@ import {
   TRIAL_DURATION_DAYS,
   getSubscriptionState,
 } from "./subscription-utils";
-import type { SubscriptionStatus } from "./types";
 import type { Subscription } from "./types";
 
 // Helper to create a minimal trial subscription for testing
