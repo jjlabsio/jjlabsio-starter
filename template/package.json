@@ -34,6 +34,9 @@
   },
   "packageManager": "pnpm@10.4.1",
   "pnpm": {
+    "overrides": {
+      "esbuild": "^0.28.1"
+    },
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",
