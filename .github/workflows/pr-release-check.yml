@@ -16,21 +16,46 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            const text = [
-              pr.title || "",
-              pr.body || "",
-              ...(pr.labels || []).map((label) => label.name),
-            ].join("\n");
+            const title = pr.title || "";
+            const labels = (pr.labels || []).map((label) => label.name.toLowerCase());
+            const hasReleaseNone = labels.includes("release-none");
+            const bump = resolveConventionalCommitBump(title);
 
-            const releaseIntent = text.match(
-              /(?:release-version|release|version)\s*:\s*(major|minor|patch|none|(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)(?![0-9A-Za-z.+-])/i
-            );
-
-            if (!releaseIntent) {
+            if (hasReleaseNone && bump) {
               core.setFailed(
-                "PR must declare release intent: release: major|minor|patch|none|x.y.z"
+                `Conflicting release signals: title resolves to ${bump}, but release-none label is present.`
               );
               return;
             }
 
-            core.info(`Release intent: ${releaseIntent[1]}`);
+            if (hasReleaseNone) {
+              core.info("Release intent: none (release-none label)");
+              return;
+            }
+
+            if (!bump) {
+              core.setFailed(
+                "PR title must use a release Conventional Commit type (feat, fix, docs, chore, refactor, perf, test, ci, build) or apply the release-none label."
+              );
+              return;
+            }
+
+            core.info(`Release intent: ${bump} (${title})`);
+
+            function resolveConventionalCommitBump(title) {
+              const releaseBumpTypes = new Map([
+                ["feat", "minor"],
+                ["fix", "patch"],
+                ["docs", "patch"],
+                ["chore", "patch"],
+                ["refactor", "patch"],
+                ["perf", "patch"],
+                ["test", "patch"],
+                ["ci", "patch"],
+                ["build", "patch"],
+              ]);
+              const match = title.match(/^([a-z]+)(?:\([^)]+\))?(!)?:\s+/);
+              if (!match) return "";
+              if (match[2]) return "major";
+              return releaseBumpTypes.get(match[1]) || "";
+            }
