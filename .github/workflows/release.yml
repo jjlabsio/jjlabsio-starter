@@ -42,7 +42,6 @@ jobs:
         id: release
         run: |
           node <<'NODE'
-          const { execFileSync } = require("node:child_process");
           const fs = require("node:fs");
 
           const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
@@ -51,61 +50,31 @@ jobs:
           const pr = fs.existsSync("pr.json")
             ? JSON.parse(fs.readFileSync("pr.json", "utf8"))
             : {};
-          const labels = Array.isArray(pr.labels)
-            ? pr.labels.map((label) => label.name).join("\n")
-            : "";
-
-          const lastTag = (() => {
-            try {
-              return execFileSync("git", ["describe", "--tags", "--abbrev=0", "--match", "v[0-9]*"], {
-                encoding: "utf8",
-                stdio: ["ignore", "pipe", "ignore"],
-              }).trim();
-            } catch {
-              return "";
-            }
-          })();
-
-          const range = lastTag ? `${lastTag}..HEAD` : "HEAD";
-          const commits = execFileSync("git", ["log", range, "--format=%s%n%b"], {
-            encoding: "utf8",
-          });
-          const text = [
-            inputVersion,
-            pr.title || "",
-            pr.body || "",
-            labels,
-            process.env.HEAD_COMMIT || "",
-            commits,
-          ].join("\n");
+          const labels = Array.isArray(pr.labels) ? pr.labels.map((label) => label.name.toLowerCase()) : [];
+          const hasReleaseNone = labels.includes("release-none");
+          const title = pr.title || firstLine(process.env.HEAD_COMMIT || "");
 
           const semver = /^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
-          const releaseIntentRaw = text.match(
-            /(?:release-version|release|version)\s*:\s*(major|minor|patch|none|(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)(?![0-9A-Za-z.+-])/i
-          )?.[1];
-          const releaseIntent = releaseIntentRaw?.toLowerCase();
-          const explicitVersion =
-            inputVersion ||
-            (releaseIntentRaw && semver.test(releaseIntentRaw) ? releaseIntentRaw : "");
+          const explicitVersion = inputVersion;
+          const titleBump = resolveConventionalCommitBump(title);
 
           let bump = "";
           if (explicitVersion) {
             bump = "exact";
-          } else if (["major", "minor", "patch", "none"].includes(releaseIntent)) {
-            bump = releaseIntent;
-          } else if (/BREAKING CHANGE|^[a-z]+(?:\([^)]+\))?!:/m.test(text)) {
-            bump = "major";
-          } else if (/^feat(?:\([^)]+\))?:/m.test(text)) {
-            bump = "minor";
-          } else if (/^(?:fix|perf|refactor)(?:\([^)]+\))?:/m.test(text)) {
-            bump = "patch";
+          } else if (hasReleaseNone && titleBump) {
+            throw new Error(
+              `Conflicting release signals: title resolves to ${titleBump}, but release-none label is present.`
+            );
+          } else if (hasReleaseNone) {
+            bump = "none";
+          } else {
+            bump = titleBump;
           }
 
           const nextVersion = bump === "none" ? "" : explicitVersion || bumpVersion(current, bump);
-          const output = fs.createWriteStream(process.env.GITHUB_OUTPUT, { flags: "a" });
 
           if (!nextVersion) {
-            output.write("has_changes=false\n");
+            writeOutput("has_changes=false");
             console.log("No releasable changes found.");
             process.exit(0);
           }
@@ -118,9 +87,13 @@ jobs:
             throw new Error(`Release version ${nextVersion} is lower than current version ${current}`);
           }
 
-          output.write("has_changes=true\n");
-          output.write(`version=${nextVersion}\n`);
+          writeOutput("has_changes=true");
+          writeOutput(`version=${nextVersion}`);
           console.log(`Release version resolved: ${nextVersion} (${bump})`);
+
+          function writeOutput(line) {
+            fs.appendFileSync(process.env.GITHUB_OUTPUT, `${line}\n`);
+          }
 
           function bumpVersion(version, type) {
             if (!type) return "";
@@ -129,6 +102,28 @@ jobs:
             if (type === "minor") return `${major}.${minor + 1}.0`;
             if (type === "patch") return `${major}.${minor}.${patch + 1}`;
             return "";
+          }
+
+          function firstLine(value) {
+            return value.split(/\r?\n/, 1)[0] || "";
+          }
+
+          function resolveConventionalCommitBump(title) {
+            const releaseBumpTypes = new Map([
+              ["feat", "minor"],
+              ["fix", "patch"],
+              ["docs", "patch"],
+              ["chore", "patch"],
+              ["refactor", "patch"],
+              ["perf", "patch"],
+              ["test", "patch"],
+              ["ci", "patch"],
+              ["build", "patch"],
+            ]);
+            const match = title.match(/^([a-z]+)(?:\([^)]+\))?(!)?:\s+/);
+            if (!match) return "";
+            if (match[2]) return "major";
+            return releaseBumpTypes.get(match[1]) || "";
           }
 
           function compareSemver(a, b) {
