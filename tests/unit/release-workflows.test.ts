@@ -115,6 +115,19 @@ describe("release workflow resolver", () => {
   });
 });
 
+describe("release publish job", () => {
+  it("installs pnpm before npm publish triggers prepublishOnly", () => {
+    const workflow = fs.readFileSync(releaseWorkflow, "utf8");
+    const publishJob = workflow.slice(workflow.indexOf("  publish:"));
+    const pnpmSetup = publishJob.indexOf("uses: pnpm/action-setup@v4");
+    const publishStep = publishJob.indexOf("run: npm publish --provenance --access public");
+
+    expect(pnpmSetup).toBeGreaterThanOrEqual(0);
+    expect(publishStep).toBeGreaterThanOrEqual(0);
+    expect(pnpmSetup).toBeLessThan(publishStep);
+  });
+});
+
 function pr(title: string) {
   return { title, body: "", labels: [] };
 }
