@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Exact version to publish, for example 0.1.9. Leave empty to run full release."
+        description: "Exact version to publish, for example 0.1.9. Leave empty to run without an exact version override."
         required: false
         type: string
 
