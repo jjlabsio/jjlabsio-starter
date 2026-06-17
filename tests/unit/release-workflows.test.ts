@@ -7,15 +7,20 @@ import { afterEach, describe, expect, it } from "vitest";
 
 const prCheckWorkflow = ".github/workflows/pr-release-check.yml";
 const releaseWorkflow = ".github/workflows/release.yml";
+const fixtureVersion = "0.2.0";
 
 const tempFiles = new Set<string>();
+const tempDirs = new Set<string>();
 
 afterEach(() => {
   for (const file of tempFiles) {
     fs.rmSync(file, { force: true });
     tempFiles.delete(file);
   }
-  fs.rmSync("pr.json", { force: true });
+  for (const dir of tempDirs) {
+    fs.rmSync(dir, { force: true, recursive: true });
+    tempDirs.delete(dir);
+  }
 });
 
 describe("PR release check workflow", () => {
@@ -60,7 +65,7 @@ describe("PR release check workflow", () => {
 
 describe("release workflow resolver", () => {
   it("resolves PR titles using the same mapping as the PR check", () => {
-    expectReleaseVersion({ pr: pr("feat: add option") }, "0.3.0");
+    expectReleaseVersion({ pr: pr("feat: add option") }, bumpVersion(fixtureVersion, "minor"));
 
     for (const title of [
       "fix: repair release",
@@ -72,21 +77,21 @@ describe("release workflow resolver", () => {
       "ci: update workflow",
       "build: update package",
     ]) {
-      expectReleaseVersion({ pr: pr(title) }, "0.2.1");
+      expectReleaseVersion({ pr: pr(title) }, bumpVersion(fixtureVersion, "patch"));
     }
 
-    expectReleaseVersion({ pr: pr("feat!: change contract") }, "1.0.0");
-    expectReleaseVersion({ pr: pr("fix(api)!: change contract") }, "1.0.0");
+    expectReleaseVersion({ pr: pr("feat!: change contract") }, bumpVersion(fixtureVersion, "major"));
+    expectReleaseVersion({ pr: pr("fix(api)!: change contract") }, bumpVersion(fixtureVersion, "major"));
   });
 
-  it("uses the merge commit title when no PR title is available", () => {
+  it("uses the merge commit title as the explicit non-PR fallback", () => {
     expectReleaseVersion(
       { pr: {}, headCommit: "fix: fallback release\n\nbody text" },
-      "0.2.1",
+      bumpVersion(fixtureVersion, "patch"),
     );
   });
 
-  it("keeps exact workflow_dispatch versions independent from title resolution", () => {
+  it("keeps trusted exact workflow_dispatch versions independent from title resolution", () => {
     expectReleaseVersion({ pr: undefined, inputVersion: "0.2.5" }, "0.2.5");
     expectNoRelease({ pr: undefined });
   });
@@ -101,12 +106,12 @@ describe("release workflow resolver", () => {
     );
   });
 
-  it("documents title-only breaking release signaling", () => {
+  it("documents that title-only breaking releases require ! in the title", () => {
     expectReleaseVersion(
       { pr: { title: "feat: api", body: "BREAKING CHANGE: incompatible API", labels: [] } },
-      "0.3.0",
+      bumpVersion(fixtureVersion, "minor"),
     );
-    expectReleaseVersion({ pr: pr("feat!: api") }, "1.0.0");
+    expectReleaseVersion({ pr: pr("feat!: api") }, bumpVersion(fixtureVersion, "major"));
   });
 });
 
@@ -176,9 +181,12 @@ function runReleaseResolver({
 }) {
   const script = extractReleaseScript();
   const output = tempFile();
+  const cwd = tempDir();
+
+  fs.writeFileSync(path.join(cwd, "package.json"), JSON.stringify({ version: fixtureVersion }));
 
   if (pr !== undefined) {
-    fs.writeFileSync("pr.json", JSON.stringify(pr));
+    fs.writeFileSync(path.join(cwd, "pr.json"), JSON.stringify(pr));
   }
 
   try {
@@ -190,6 +198,7 @@ function runReleaseResolver({
         HEAD_COMMIT: headCommit,
         INPUT_VERSION: inputVersion,
       },
+      cwd,
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -239,4 +248,17 @@ function tempFile() {
   const file = path.join(os.tmpdir(), `release-workflow-test-${Date.now()}-${Math.random()}`);
   tempFiles.add(file);
   return file;
+}
+
+function tempDir() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "release-workflow-test-"));
+  tempDirs.add(dir);
+  return dir;
+}
+
+function bumpVersion(version: string, type: "major" | "minor" | "patch") {
+  const [major, minor, patch] = version.split(".").map(Number);
+  if (type === "major") return `${major + 1}.0.0`;
+  if (type === "minor") return `${major}.${minor + 1}.0`;
+  return `${major}.${minor}.${patch + 1}`;
 }
