@@ -2,6 +2,10 @@
   "name": "@jjlabsio/create-jjlabs-app",
   "version": "0.2.2",
   "description": "CLI to scaffold a new JJLabs app from the starter template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjlabsio/jjlabsio-starter.git"
+  },
   "type": "module",
   "bin": {
     "create-jjlabs-app": "dist/index.js"

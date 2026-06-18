@@ -72,20 +72,27 @@ cd test-project && pnpm dev
 
 릴리스는 GitHub Actions로 자동화됨.
 
-1. PR 제목, 본문, 또는 라벨에 릴리스 의도 선언
+1. PR 제목을 Conventional Commit 형식으로 작성
 
 ```text
-release: major
-release: minor
-release: patch
-release: none
-release: 1.2.3
+feat: add capability        # minor
+fix: correct behavior       # patch
+docs: update release docs   # patch
+ci: update workflow         # patch
+feat!: change contract      # major
 ```
 
-2. PR merge 후 `main` push에서 `.github/workflows/release.yml` 실행
-3. workflow가 버전 결정, `chore(release): vX.Y.Z` 커밋, 태그, GitHub Release, npm publish 수행
+2. 비릴리스 PR은 `release-none` 라벨 적용
+3. PR merge 후 `main` push에서 `.github/workflows/release.yml` 실행
+4. workflow가 버전 결정, `chore(release): vX.Y.Z` 커밋, 태그, GitHub Release, npm publish 수행
 
-비릴리스 PR은 `release: none` 사용.
+수동으로 특정 버전을 재시도해야 할 때는 `workflow_dispatch`로 Release workflow를 실행하고 `version`에 정확한 semver를 입력.
+
+```text
+0.2.2
+```
+
+이미 tag 또는 GitHub Release가 있으면 workflow가 해당 단계는 건너뛰고, npm에 같은 버전이 없을 때 publish를 다시 시도함.
 
 ### npm Trusted Publishing
 
@@ -100,3 +107,5 @@ workflow는 npm 토큰 없이 OIDC provenance publish 사용:
 ```bash
 npm publish --provenance --access public
 ```
+
+provenance 검증을 위해 root `package.json`의 `repository.url`은 GitHub repository와 매칭되어야 함.
