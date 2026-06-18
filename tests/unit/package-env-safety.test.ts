@@ -9,6 +9,15 @@ import {
 } from "../../scripts/check-pack-env.mjs";
 
 describe("package env safety", () => {
+  it("declares repository metadata required by npm provenance", () => {
+    const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+
+    expect(pkg.repository).toEqual({
+      type: "git",
+      url: "git+https://github.com/jjlabsio/jjlabsio-starter.git",
+    });
+  });
+
   it("passes when all expected env examples are packed and no real env files are present", () => {
     const result = analyzePackFiles([
       "dist/index.js",
