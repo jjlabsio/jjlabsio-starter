@@ -1,6 +1,6 @@
 {
   "name": "@jjlabsio/create-jjlabs-app",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "CLI to scaffold a new JJLabs app from the starter template",
   "repository": {
     "type": "git",
