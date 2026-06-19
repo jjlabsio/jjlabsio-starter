@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "node ../../scripts/run-local-port.mjs LOCAL_APP_PORT 3000 -- next dev --port",
+    "dev": "next dev --port {{LOCAL_APP_PORT}}",
     "build": "next build",
     "build:deploy": "pnpm --filter @repo/database db:migrate:deploy && next build",
-    "start": "node ../../scripts/run-local-port.mjs LOCAL_APP_PORT 3000 -- next start --port",
+    "start": "next start --port {{LOCAL_APP_PORT}}",
     "lint": "eslint .",
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit",

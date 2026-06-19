@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "node ../../scripts/run-local-port.mjs LOCAL_WEB_PORT 3001 -- next dev --port",
+    "dev": "next dev --port {{LOCAL_WEB_PORT}}",
     "build": "next build",
-    "start": "node ../../scripts/run-local-port.mjs LOCAL_WEB_PORT 3001 -- next start --port",
+    "start": "next start --port {{LOCAL_WEB_PORT}}",
     "lint": "eslint .",
     "lint:fix": "next lint --fix",
     "typecheck": "tsc --noEmit"

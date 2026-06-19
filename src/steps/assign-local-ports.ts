@@ -8,9 +8,12 @@ const REGISTRY_PATH = ".jjlabsio-starter/ports.json";
 const MAX_PORT_SET = 500;
 
 const PORT_TEMPLATE_FILES = [
-  ".env.example",
+  "apps/api/src/main.ts",
+  "apps/app/package.json",
   "apps/app/.env.example",
+  "apps/web/package.json",
   "apps/web/.env.example",
+  "docker-compose.yml",
   "packages/database/.env.example",
   "packages/database/README.md",
 ];
@@ -32,7 +35,7 @@ interface PortRegistry {
   readonly projects: Record<string, PortRegistryProject>;
 }
 
-interface AssignLocalPortsOptions {
+export interface LocalPortOptions {
   readonly homeDir?: string;
   readonly isPortAvailable?: (port: number) => Promise<boolean>;
 }
@@ -44,23 +47,19 @@ export interface AssignedLocalPorts {
 
 export function getPortsForSet(portSet: number): LocalPorts {
   return {
-    app: 3000 + portSet * 100,
-    web: 3001 + portSet * 100,
-    api: 3002 + portSet * 100,
-    postgres: 5432 + portSet * 100,
+    app: 3100 + portSet * 100,
+    web: 3101 + portSet * 100,
+    api: 3102 + portSet * 100,
+    postgres: 5532 + portSet * 100,
   };
 }
 
-export async function assignLocalPorts(
+export async function previewLocalPorts(
   projectDir: string,
-  projectName: string,
-  options: AssignLocalPortsOptions = {},
+  options: LocalPortOptions = {},
+  startAfterPortSet = -1,
 ): Promise<AssignedLocalPorts> {
-  logger.step("Assigning local development ports...");
-
-  const homeDir =
-    options.homeDir ?? process.env.JJLABSIO_STARTER_HOME ?? os.homedir();
-  const registryPath = path.join(homeDir, REGISTRY_PATH);
+  const registryPath = getRegistryPath(options);
   const isPortAvailable = options.isPortAvailable ?? isLocalPortAvailable;
   const registry = await readPortRegistry(registryPath);
   const projects = await pruneMissingProjects(registry.projects);
@@ -69,7 +68,34 @@ export async function assignLocalPorts(
       .filter(([registeredProjectDir]) => registeredProjectDir !== projectDir)
       .map(([, project]) => project.portSet),
   );
-  const assigned = await selectPortSet(usedPortSets, isPortAvailable);
+
+  return selectPortSet(usedPortSets, isPortAvailable, startAfterPortSet + 1);
+}
+
+export async function assignLocalPorts(
+  projectDir: string,
+  projectName: string,
+  assigned: AssignedLocalPorts,
+  options: LocalPortOptions = {},
+): Promise<AssignedLocalPorts> {
+  logger.step("Assigning local development ports...");
+
+  const registryPath = getRegistryPath(options);
+  const isPortAvailable = options.isPortAvailable ?? isLocalPortAvailable;
+  const registry = await readPortRegistry(registryPath);
+  const projects = await pruneMissingProjects(registry.projects);
+  const usedByOtherProject = Object.entries(projects).some(
+    ([registeredProjectDir, project]) =>
+      registeredProjectDir !== projectDir && project.portSet === assigned.portSet,
+  );
+  const portsAvailable = await arePortsAvailable(
+    assigned.ports,
+    isPortAvailable,
+  );
+
+  if (usedByOtherProject || !portsAvailable) {
+    throw new Error("Selected local development port set is no longer available.");
+  }
 
   projects[projectDir] = {
     projectName,
@@ -83,6 +109,13 @@ export async function assignLocalPorts(
   await applyLocalPorts(projectDir, assigned.ports);
 
   return assigned;
+}
+
+function getRegistryPath(options: LocalPortOptions): string {
+  const homeDir =
+    options.homeDir ?? process.env.JJLABSIO_STARTER_HOME ?? os.homedir();
+
+  return path.join(homeDir, REGISTRY_PATH);
 }
 
 async function readPortRegistry(registryPath: string): Promise<PortRegistry> {
@@ -146,8 +179,9 @@ async function pruneMissingProjects(
 async function selectPortSet(
   usedPortSets: Set<number>,
   isPortAvailable: (port: number) => Promise<boolean>,
+  startPortSet = 0,
 ): Promise<AssignedLocalPorts> {
-  for (let portSet = 0; portSet <= MAX_PORT_SET; portSet += 1) {
+  for (let portSet = startPortSet; portSet <= MAX_PORT_SET; portSet += 1) {
     if (usedPortSets.has(portSet)) {
       continue;
     }
@@ -166,6 +200,17 @@ async function selectPortSet(
   }
 
   throw new Error("No available local development port set found.");
+}
+
+async function arePortsAvailable(
+  ports: LocalPorts,
+  isPortAvailable: (port: number) => Promise<boolean>,
+): Promise<boolean> {
+  const available = await Promise.all(
+    Object.values(ports).map((port) => isPortAvailable(port)),
+  );
+
+  return available.every(Boolean);
 }
 
 async function writePortRegistry(

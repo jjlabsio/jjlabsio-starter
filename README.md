@@ -32,7 +32,8 @@ CLI 실행 파일 이름은 계속 `create-jjlabs-app`입니다.
 5. **패키지 이름 업데이트** — root 및 `apps/app`의 `package.json` 이름 치환
 6. **Serena 설정 초기화** — `.serena/project.yml`의 `project_name` 갱신
 7. **플레이스홀더 치환** — `{{PROJECT_NAME}}`을 실제 프로젝트명으로 일괄 치환
-8. **마무리** — `.git` 제거, `.env.example` → `.env` 복사, `pnpm install` 실행
+8. **포트 확정** — CLI에서 preview한 로컬 개발 포트를 템플릿 파일에 기록
+9. **마무리** — `.git` 제거, 앱·패키지 `.env.example` → `.env` 복사, `pnpm install` 실행
 
 ## Layout Options
 

@@ -34,8 +34,8 @@
 
 ```
 apps/
-  app/              # SaaS app (LOCAL_APP_PORT)
-  web/              # Landing page (LOCAL_WEB_PORT)
+  app/              # SaaS app
+  web/              # Landing page
 packages/
   auth/             # Better Auth server/client config, env validation
   billing/          # Polar billing: subscription CRUD, checkout, portal, webhook

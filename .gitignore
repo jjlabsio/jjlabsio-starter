@@ -1,5 +1,6 @@
 dist/
 node_modules/
+.turbo/
 template/node_modules/
 template/**/.turbo/
 template/**/.next/
