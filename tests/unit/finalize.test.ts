@@ -14,10 +14,9 @@ describe("finalize", () => {
     vi.restoreAllMocks();
   });
 
-  it("creates .env files from .env.example without removing examples", async () => {
+  it("creates app and package .env files from .env.example without creating a root .env", async () => {
     vi.mocked(fs.pathExists)
       .mockResolvedValueOnce(false as never)
-      .mockResolvedValueOnce(true as never)
       .mockResolvedValueOnce(true as never)
       .mockResolvedValueOnce(true as never)
       .mockResolvedValueOnce(true as never);
@@ -25,11 +24,6 @@ describe("finalize", () => {
 
     await finalize("/tmp/test-project");
 
-    expect(fs.copy).toHaveBeenCalledWith(
-      "/tmp/test-project/.env.example",
-      "/tmp/test-project/.env",
-      { overwrite: false },
-    );
     expect(fs.copy).toHaveBeenCalledWith(
       "/tmp/test-project/apps/app/.env.example",
       "/tmp/test-project/apps/app/.env",
@@ -43,6 +37,11 @@ describe("finalize", () => {
     expect(fs.copy).toHaveBeenCalledWith(
       "/tmp/test-project/packages/database/.env.example",
       "/tmp/test-project/packages/database/.env",
+      { overwrite: false },
+    );
+    expect(fs.copy).not.toHaveBeenCalledWith(
+      "/tmp/test-project/.env.example",
+      "/tmp/test-project/.env",
       { overwrite: false },
     );
     expect(fs.move).not.toHaveBeenCalled();

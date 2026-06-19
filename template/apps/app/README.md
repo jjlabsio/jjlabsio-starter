@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-Open the `LOCAL_APP_PORT` URL printed by the scaffold command with your browser to see the result.
+Open the app URL printed by the scaffold command with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

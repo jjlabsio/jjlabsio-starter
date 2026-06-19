@@ -6,13 +6,17 @@ import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
 import { resetSerenaConfig } from "./steps/reset-serena-config.js";
 import { substituteProjectName } from "./steps/substitute-project-name.js";
-import { assignLocalPorts } from "./steps/assign-local-ports.js";
+import {
+  type AssignedLocalPorts,
+  assignLocalPorts,
+} from "./steps/assign-local-ports.js";
 import { finalize } from "./steps/finalize.js";
 import { logger } from "./utils/logger.js";
 
 interface ScaffoldOptions {
   readonly projectName: string;
   readonly layout: LayoutChoice;
+  readonly localPorts: AssignedLocalPorts;
 }
 
 export async function scaffold(options: ScaffoldOptions): Promise<void> {
@@ -27,7 +31,11 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await updatePackageNames(projectDir, projectName);
   await resetSerenaConfig(projectDir, projectName);
   await substituteProjectName(projectDir, projectName);
-  const localPorts = await assignLocalPorts(projectDir, projectName);
+  const localPorts = await assignLocalPorts(
+    projectDir,
+    projectName,
+    options.localPorts,
+  );
   await finalize(projectDir);
 
   logger.success(`\nProject "${projectName}" created successfully!\n`);

@@ -4,7 +4,7 @@ import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
 
-const DEFAULT_PORT = 3002;
+const DEFAULT_PORT = {{LOCAL_API_PORT}};
 
 function getPort() {
   const port = Number.parseInt(process.env.PORT ?? "", 10);

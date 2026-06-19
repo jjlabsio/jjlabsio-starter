@@ -23,7 +23,7 @@ Docker Compose로 로컬 DB를 실행한다 (프로젝트 루트의 `docker-comp
 docker compose up -d
 ```
 
-로컬 PostgreSQL host port는 프로젝트 루트 `.env`의 `LOCAL_POSTGRES_PORT`를 따른다.
+로컬 PostgreSQL host port는 scaffold 시 `docker-compose.yml`에 기록된 값을 따른다.
 
 ### 프로덕션 환경 (Supabase)
 
