@@ -13,5 +13,7 @@ const nextConfig: NextConfig = {
 
 export default withSentryConfig(nextConfig, {
   silent: !process.env.CI,
-  authToken: process.env.SENTRY_AUTH_TOKEN,
+  sourcemaps: {
+    disable: true,
+  },
 });

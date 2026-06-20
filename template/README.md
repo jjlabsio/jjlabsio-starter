@@ -93,15 +93,15 @@ RESEND_API_KEY="re_xxx"
 
 ### Step 6. Sentry 설정
 
-[Sentry](https://sentry.io)에서 Next.js 프로젝트를 생성한 후 `apps/app/.env`에 설정합니다.
+Sentry로 런타임 에러를 수집하려면 [Sentry](https://sentry.io)에서 Next.js 프로젝트를 생성한 후 `apps/app/.env`에 DSN을 설정합니다.
 
 ```bash
 NEXT_PUBLIC_SENTRY_DSN="https://xxx@xxx.ingest.sentry.io/xxx"
-SENTRY_AUTH_TOKEN="sntrys_xxx"
 ```
 
-- `NEXT_PUBLIC_SENTRY_DSN`: 미설정 시 Sentry 비활성화
-- `SENTRY_AUTH_TOKEN`: source map 업로드용
+`NEXT_PUBLIC_SENTRY_DSN`이 비어 있으면 Sentry는 비활성화됩니다.
+
+이 starter는 Vercel 빌드 메모리 사용량을 줄이기 위해 Sentry source map upload를 기본 비활성화합니다.
 
 ## Development
 
