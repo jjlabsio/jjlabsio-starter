@@ -4,7 +4,6 @@ import { copyTemplate } from "./steps/copy-template.js";
 import { cleanLayout } from "./steps/clean-layout.js";
 import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
-import { resetSerenaConfig } from "./steps/reset-serena-config.js";
 import { substituteProjectName } from "./steps/substitute-project-name.js";
 import {
   type AssignedLocalPorts,
@@ -29,7 +28,6 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   await cleanLayout(projectDir, layout);
   await cleanAuthDuplication(projectDir, layout);
   await updatePackageNames(projectDir, projectName);
-  await resetSerenaConfig(projectDir, projectName);
   await substituteProjectName(projectDir, projectName);
   const localPorts = await assignLocalPorts(
     projectDir,
