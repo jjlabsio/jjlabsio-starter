@@ -4,6 +4,7 @@ import { logger } from "../utils/logger.js";
 
 const TARGET_FILES = [
   "README.md",
+  "AGENTS.md",
   "CLAUDE.md",
   "apps/app/.env.example",
   "packages/database/.env.example",
