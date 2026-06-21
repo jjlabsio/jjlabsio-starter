@@ -3,7 +3,7 @@
 모노레포 전체에서 공유하는 Prisma 데이터베이스 패키지.
 
 - 개발 환경: 로컬 PostgreSQL
-- 프로덕션 환경: Supabase (PostgreSQL)
+- 프로덕션 환경: Neon PostgreSQL 권장
 
 ---
 
@@ -25,20 +25,21 @@ docker compose up -d
 
 로컬 PostgreSQL host port는 scaffold 시 `docker-compose.yml`에 기록된 값을 따른다.
 
-### 프로덕션 환경 (Supabase)
+### 프로덕션 환경
 
-Supabase 대시보드 > Project Settings > Database > Connection string에서 연결 문자열을 확인한다.
+프로덕션 또는 공유 개발 DB는 Neon PostgreSQL을 기본 권장한다.
+다른 PostgreSQL 호스팅을 사용해도 되며, Prisma가 사용할 연결 문자열만 동일하게 설정하면 된다.
 
 배포 플랫폼(Vercel 등)에 다음 환경변수를 등록한다:
 
-| 환경변수       | 용도                           | 포트 |
-| -------------- | ------------------------------ | ---- |
-| `DATABASE_URL` | PgBouncer 경유 (런타임 쿼리용) | 6543 |
-| `DIRECT_URL`   | 직접 연결 (마이그레이션용)     | 5432 |
+| 환경변수       | 용도                            |
+| -------------- | ------------------------------- |
+| `DATABASE_URL` | 런타임 쿼리용 연결 문자열       |
+| `DIRECT_URL`   | 마이그레이션용 직접 연결 문자열 |
 
 ```
-DATABASE_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true"
-DIRECT_URL="postgresql://postgres.[PROJECT-REF]:[PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
+DATABASE_URL="postgresql://..."
+DIRECT_URL="postgresql://..."
 ```
 
 `DIRECT_URL`은 optional이므로 로컬 개발 시에는 설정하지 않아도 된다.
@@ -142,7 +143,7 @@ pnpm --filter @repo/database db:push
    prisma/migrations/ 내 마이그레이션 파일을 프로덕션 DB에 적용
    - 새 마이그레이션을 생성하지 않음
    - 아직 적용되지 않은 마이그레이션만 순서대로 실행
-   - DIRECT_URL을 통해 PgBouncer를 우회하여 직접 연결
+   - DIRECT_URL이 있으면 마이그레이션에 직접 연결 사용
 
 4. next build
    Next.js 앱 빌드

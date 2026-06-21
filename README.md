@@ -51,7 +51,3 @@ CLI 실행 파일 이름은 `create-jjlabs-app`.
 | --- | --- |
 | **Sidebar** | 대시보드 스타일의 사이드바 네비게이션 |
 | **Standard** | 헤더 + 푸터 레이아웃 |
-
-## Development
-
-이 CLI를 개발하거나 템플릿을 수정하려면 [Development Guide](docs/development.md)를 참고.
