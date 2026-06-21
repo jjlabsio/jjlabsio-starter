@@ -44,4 +44,34 @@ describe("template structure contracts", () => {
     expect(packageJson.scripts.pretest).toBe("pnpm run build:deps");
     expect(packageJson.scripts.prebuild).toBe("pnpm run build:deps");
   });
+
+  it("uses MDF fallback docs structure for generated projects", async () => {
+    const expectedDocs = [
+      "docs/index.md",
+      "docs/product/index.md",
+      "docs/product/product-brief.md",
+      "docs/architecture/index.md",
+      "docs/decisions/index.md",
+      "docs/operations/index.md",
+    ];
+
+    for (const relativePath of expectedDocs) {
+      await expect(
+        fs.pathExists(path.join(TEMPLATE_DIR, relativePath)),
+      ).resolves.toBe(true);
+    }
+
+    const removedDocs = [
+      "docs/brand_brief.md",
+      "docs/brand_brief_prompt.md",
+      "docs/growth_playbook.md",
+      "docs/prd.md",
+    ];
+
+    for (const relativePath of removedDocs) {
+      await expect(
+        fs.pathExists(path.join(TEMPLATE_DIR, relativePath)),
+      ).resolves.toBe(false);
+    }
+  });
 });
