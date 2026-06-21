@@ -13,7 +13,15 @@ Scaffold 완료 후 아래 항목을 프로젝트에 맞게 설정합니다.
 - `.env.example` 기반 `.env` 파일 생성
 - `pnpm install`
 
-### Step 1. Auth Secret 생성
+### Step 1. Product Brief 작성
+
+제품 정의와 현재 스코프를 먼저 정리합니다.
+
+- `docs/product/product-brief.md`
+
+이 문서는 이후 기능 범위, 화면 구성, 용어, 에이전트 작업 컨텍스트의 기준으로 사용합니다.
+
+### Step 2. Auth Secret 생성
 
 `apps/app/.env`의 `BETTER_AUTH_SECRET` 값을 실제 secret으로 교체합니다.
 
@@ -21,7 +29,7 @@ Scaffold 완료 후 아래 항목을 프로젝트에 맞게 설정합니다.
 openssl rand -base64 32
 ```
 
-### Step 2. Database 설정
+### Step 3. Database 설정
 
 로컬 개발은 기본 `docker-compose.yml`의 PostgreSQL을 사용할 수 있습니다.
 
@@ -42,7 +50,7 @@ DATABASE_URL="postgresql://..."
 DIRECT_URL="postgresql://..."
 ```
 
-### Step 3. Google OAuth 설정
+### Step 4. Google OAuth 설정
 
 [Google Cloud Console](https://console.cloud.google.com/apis/credentials)에서 OAuth 자격 증명 생성 후 `apps/app/.env`에 설정합니다.
 
@@ -51,7 +59,7 @@ GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 ```
 
-### Step 4. Polar Billing 설정
+### Step 5. Polar Billing 설정
 
 [Polar](https://polar.sh)에서 organization, products, API key, webhook을 준비한 후 `apps/app/.env`와 `apps/web/.env`에 설정합니다.
 
@@ -83,7 +91,7 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY="prod_xxx_pro_yearly"
 
 가격과 플랜 카피는 앱의 pricing 관련 파일에서 실제 제품에 맞게 조정합니다.
 
-### Step 5. Resend Email 설정
+### Step 6. Resend Email 설정
 
 [Resend](https://resend.com) API key를 발급한 후 `apps/app/.env`에 설정합니다.
 
@@ -91,7 +99,7 @@ NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY="prod_xxx_pro_yearly"
 RESEND_API_KEY="re_xxx"
 ```
 
-### Step 6. Sentry 설정
+### Step 7. Sentry 설정
 
 Sentry로 런타임 에러를 수집하려면 [Sentry](https://sentry.io)에서 Next.js 프로젝트를 생성한 후 `apps/app/.env`에 DSN을 설정합니다.
 
