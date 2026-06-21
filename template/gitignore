@@ -19,6 +19,10 @@ coverage
 # Turbo
 .turbo
 
+# MDF local workflow state
+.mdf/
+.worktrees/
+
 # Vercel
 .vercel
 
