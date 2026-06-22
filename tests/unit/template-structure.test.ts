@@ -45,6 +45,49 @@ describe("template structure contracts", () => {
     expect(packageJson.scripts.prebuild).toBe("pnpm run build:deps");
   });
 
+  it("includes a worker NestJS app with worker-specific identity", async () => {
+    const workerPackageJson = await fs.readJson(
+      path.join(TEMPLATE_DIR, "apps/worker/package.json"),
+    );
+    const workerMain = await fs.readFile(
+      path.join(TEMPLATE_DIR, "apps/worker/src/main.ts"),
+      "utf-8",
+    );
+    const workerService = await fs.readFile(
+      path.join(TEMPLATE_DIR, "apps/worker/src/app.service.ts"),
+      "utf-8",
+    );
+    const workerControllerTest = await fs.readFile(
+      path.join(TEMPLATE_DIR, "apps/worker/src/app.controller.test.ts"),
+      "utf-8",
+    );
+
+    expect(workerPackageJson.name).toBe("worker");
+    expect(workerPackageJson.scripts.pretypecheck).toBe("pnpm run generate:deps");
+    expect(workerPackageJson.scripts.typecheck).toBe("tsc --noEmit");
+    expect(workerMain).toContain("{{LOCAL_WORKER_PORT}}");
+    expect(workerMain).not.toContain("{{LOCAL_API_PORT}}");
+    expect(workerMain).toContain('const DEFAULT_HOST = "127.0.0.1";');
+    expect(workerMain).toContain('process.env.HOST || DEFAULT_HOST');
+    expect(workerMain).not.toContain("enableCors");
+    expect(workerService).toContain("jjlabsio-starter-worker");
+    expect(workerControllerTest).toContain("jjlabsio-starter-worker");
+  });
+
+  it("documents the generated worker app", async () => {
+    const rootReadme = await fs.readFile(
+      path.resolve(__dirname, "../../README.md"),
+      "utf-8",
+    );
+    const templateReadme = await fs.readFile(
+      path.join(TEMPLATE_DIR, "README.md"),
+      "utf-8",
+    );
+
+    expect(rootReadme).toContain("apps/worker");
+    expect(templateReadme).toContain("apps/worker");
+  });
+
   it("uses MDF fallback docs structure for generated projects", async () => {
     const expectedDocs = [
       "docs/index.md",

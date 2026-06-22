@@ -128,6 +128,13 @@ pnpm dev
 
 `pnpm dev`는 workspace dev task를 실행합니다. 앱별 포트는 scaffold 중 배정된 값을 사용합니다.
 
+생성되는 workspace 앱:
+
+- `apps/app`: 인증, 결제, 대시보드가 포함된 SaaS 앱
+- `apps/web`: 랜딩/마케팅 웹 앱
+- `apps/api`: NestJS API 앱
+- `apps/worker`: NestJS Worker 앱
+
 ## Commands
 
 ```bash

@@ -54,6 +54,10 @@ describe("assignLocalPorts", () => {
       "const DEFAULT_PORT = {{LOCAL_API_PORT}};",
     );
     await fs.outputFile(
+      path.join(projectDir, "apps/worker/src/main.ts"),
+      "const DEFAULT_PORT = {{LOCAL_WORKER_PORT}};",
+    );
+    await fs.outputFile(
       path.join(projectDir, "docker-compose.yml"),
       'ports:\n  - "{{LOCAL_POSTGRES_PORT}}:5432"',
     );
@@ -64,12 +68,14 @@ describe("assignLocalPorts", () => {
       app: 3100,
       web: 3101,
       api: 3102,
+      worker: 3103,
       postgres: 5532,
     });
     expect(getPortsForSet(1)).toEqual({
       app: 3200,
       web: 3201,
       api: 3202,
+      worker: 3203,
       postgres: 5632,
     });
   });
@@ -180,6 +186,9 @@ describe("assignLocalPorts", () => {
       fs.readFile(path.join(projectDir, "apps/api/src/main.ts"), "utf-8"),
     ).resolves.toContain("const DEFAULT_PORT = 3202;");
     await expect(
+      fs.readFile(path.join(projectDir, "apps/worker/src/main.ts"), "utf-8"),
+    ).resolves.toContain("const DEFAULT_PORT = 3203;");
+    await expect(
       fs.readFile(path.join(projectDir, "packages/database/README.md"), "utf-8"),
     ).resolves.toContain("localhost:5632");
     await expect(
@@ -241,7 +250,7 @@ describe("assignLocalPorts", () => {
     await expect(
       assignLocalPorts(projectDir, "new-project", selected, {
         homeDir,
-        isPortAvailable: async (port) => port !== selected.ports.app,
+        isPortAvailable: async (port) => port !== selected.ports.worker,
       }),
     ).rejects.toThrow("Selected local development port set is no longer available.");
   });

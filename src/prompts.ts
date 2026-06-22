@@ -129,6 +129,7 @@ function formatPortPreview(selected: AssignedLocalPorts): string {
     `app ${selected.ports.app}`,
     `web ${selected.ports.web}`,
     `api ${selected.ports.api}`,
+    `worker ${selected.ports.worker}`,
     `postgres ${selected.ports.postgres}`,
   ].join(" ");
 }
