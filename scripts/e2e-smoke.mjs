@@ -4,6 +4,7 @@ import path from "node:path";
 
 const PROJECT_NAME = "test-project";
 const API_PORT = 4312;
+const WORKER_PORT = 4313;
 const PROJECT_DIR = path.join(process.cwd(), PROJECT_NAME);
 const STATE_HOME_DIR = path.join(process.cwd(), ".tmp-e2e-home");
 
@@ -99,6 +100,7 @@ function assertGeneratedPorts() {
   const webPackagePath = path.join(PROJECT_DIR, "apps/web/package.json");
   const databaseEnvPath = path.join(PROJECT_DIR, "packages/database/.env");
   const apiMainPath = path.join(PROJECT_DIR, "apps/api/src/main.ts");
+  const workerMainPath = path.join(PROJECT_DIR, "apps/worker/src/main.ts");
   const dockerComposePath = path.join(PROJECT_DIR, "docker-compose.yml");
   const registryPath = path.join(
     STATE_HOME_DIR,
@@ -112,12 +114,14 @@ function assertGeneratedPorts() {
   const webPackage = fs.readFileSync(webPackagePath, "utf8");
   const databaseEnv = fs.readFileSync(databaseEnvPath, "utf8");
   const apiMain = fs.readFileSync(apiMainPath, "utf8");
+  const workerMain = fs.readFileSync(workerMainPath, "utf8");
   const dockerCompose = fs.readFileSync(dockerComposePath, "utf8");
   const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
   const portSet = registry.projects[PROJECT_DIR]?.portSet;
   const appPort = 3100 + portSet * 100;
   const webPort = 3101 + portSet * 100;
   const apiPort = 3102 + portSet * 100;
+  const workerPort = 3103 + portSet * 100;
   const postgresPort = 5532 + portSet * 100;
 
   if (!Number.isInteger(portSet)) {
@@ -154,6 +158,10 @@ function assertGeneratedPorts() {
 
   if (!apiMain.includes(`const DEFAULT_PORT = ${apiPort};`)) {
     throw new Error("Expected generated API main.ts to include selected API port");
+  }
+
+  if (!workerMain.includes(`const DEFAULT_PORT = ${workerPort};`)) {
+    throw new Error("Expected generated worker main.ts to include selected worker port");
   }
 
   if (!dockerCompose.includes(`\"${postgresPort}:5432\"`)) {
@@ -234,30 +242,52 @@ async function assertApiRuntime() {
   }
 }
 
+async function assertWorkerRuntime() {
+  const worker = spawn("pnpm", ["--filter", "worker", "start"], {
+    cwd: PROJECT_DIR,
+    env: {
+      ...process.env,
+      PORT: String(WORKER_PORT),
+    },
+    stdio: "inherit",
+  });
+
+  try {
+    await waitForHealth(`http://127.0.0.1:${WORKER_PORT}/health`);
+  } finally {
+    worker.kill("SIGINT");
+  }
+}
+
 async function main() {
   fs.rmSync(PROJECT_DIR, { recursive: true, force: true });
   fs.rmSync(STATE_HOME_DIR, { recursive: true, force: true });
 
-  run("pnpm", ["build"]);
-  await runInteractive("node", ["dist/index.js", PROJECT_NAME], {
-    env: {
-      ...process.env,
-      JJLABSIO_STARTER_HOME: STATE_HOME_DIR,
-    },
-    inputs: ["\n", "\n"],
-  });
+  try {
+    run("pnpm", ["build"]);
+    await runInteractive("node", ["dist/index.js", PROJECT_NAME], {
+      env: {
+        ...process.env,
+        JJLABSIO_STARTER_HOME: STATE_HOME_DIR,
+      },
+      inputs: ["\n", "\n"],
+    });
 
-  assertGeneratedEnvFiles();
-  assertGeneratedPorts();
-  assertNoStalePortRuntimeReferences();
+    assertGeneratedEnvFiles();
+    assertGeneratedPorts();
+    assertNoStalePortRuntimeReferences();
 
-  run("pnpm", ["typecheck"], { cwd: PROJECT_DIR });
-  run("pnpm", ["test"], { cwd: PROJECT_DIR });
-  run("pnpm", ["build"], { cwd: PROJECT_DIR });
-  await assertApiRuntime();
+    run("pnpm", ["typecheck"], { cwd: PROJECT_DIR });
+    run("pnpm", ["lint"], { cwd: PROJECT_DIR });
+    run("pnpm", ["test"], { cwd: PROJECT_DIR });
+    run("pnpm", ["build"], { cwd: PROJECT_DIR });
+    await assertApiRuntime();
+    await assertWorkerRuntime();
+  } finally {
+    fs.rmSync(PROJECT_DIR, { recursive: true, force: true });
+    fs.rmSync(STATE_HOME_DIR, { recursive: true, force: true });
+  }
 
-  fs.rmSync(PROJECT_DIR, { recursive: true, force: true });
-  fs.rmSync(STATE_HOME_DIR, { recursive: true, force: true });
   console.log("e2e smoke test passed.");
 }
 

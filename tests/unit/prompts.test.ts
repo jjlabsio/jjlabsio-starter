@@ -50,6 +50,9 @@ describe("getUserChoices", () => {
         ports: getPortsForSet(0),
       },
     });
+    expect(vi.mocked(prompts).mock.calls[1]?.[0]).toMatchObject({
+      message: expect.stringContaining("worker 3103"),
+    });
   });
 
   it("uses argProjectName when provided", async () => {

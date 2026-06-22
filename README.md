@@ -30,6 +30,7 @@ CLI 실행 파일 이름은 `create-jjlabs-app`.
 - `apps/app`: 인증, 결제, 대시보드가 포함된 SaaS 앱
 - `apps/web`: 랜딩/마케팅 웹 앱
 - `apps/api`: NestJS API 앱
+- `apps/worker`: NestJS Worker 앱
 - `packages/*`: auth, billing, database, email, ui 등 공유 패키지
 
 생성 후 `README.md`에 초기 설정 절차가 포함됨.

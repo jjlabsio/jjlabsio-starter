@@ -9,6 +9,7 @@ const MAX_PORT_SET = 500;
 
 const PORT_TEMPLATE_FILES = [
   "apps/api/src/main.ts",
+  "apps/worker/src/main.ts",
   "apps/app/package.json",
   "apps/app/.env.example",
   "apps/web/package.json",
@@ -22,6 +23,7 @@ export interface LocalPorts {
   readonly app: number;
   readonly web: number;
   readonly api: number;
+  readonly worker: number;
   readonly postgres: number;
 }
 
@@ -50,6 +52,7 @@ export function getPortsForSet(portSet: number): LocalPorts {
     app: 3100 + portSet * 100,
     web: 3101 + portSet * 100,
     api: 3102 + portSet * 100,
+    worker: 3103 + portSet * 100,
     postgres: 5532 + portSet * 100,
   };
 }
@@ -229,6 +232,7 @@ async function applyLocalPorts(
     "{{LOCAL_APP_PORT}}": String(ports.app),
     "{{LOCAL_WEB_PORT}}": String(ports.web),
     "{{LOCAL_API_PORT}}": String(ports.api),
+    "{{LOCAL_WORKER_PORT}}": String(ports.worker),
     "{{LOCAL_POSTGRES_PORT}}": String(ports.postgres),
   };
 

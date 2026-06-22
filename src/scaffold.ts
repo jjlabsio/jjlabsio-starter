@@ -41,6 +41,7 @@ export async function scaffold(options: ScaffoldOptions): Promise<void> {
   logger.info(`  app:      http://localhost:${localPorts.ports.app}`);
   logger.info(`  web:      http://localhost:${localPorts.ports.web}`);
   logger.info(`  api:      http://localhost:${localPorts.ports.api}`);
+  logger.info(`  worker:   http://localhost:${localPorts.ports.worker}`);
   logger.info(`  postgres: localhost:${localPorts.ports.postgres}`);
   logger.info("Next steps:");
   logger.info(`  cd ${projectName}`);

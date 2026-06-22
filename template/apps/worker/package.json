@@ -1,0 +1,39 @@
+{
+  "name": "worker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "generate:deps": "pnpm --filter @repo/database db:generate",
+    "build:deps": "pnpm --filter @repo/database build",
+    "predev": "pnpm run build:deps",
+    "dev": "nest start --watch",
+    "prebuild": "pnpm run build:deps",
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "prestart:debug": "pnpm run build:deps",
+    "start:debug": "nest start --debug --watch",
+    "lint": "eslint . --max-warnings 0",
+    "pretypecheck": "pnpm run generate:deps",
+    "typecheck": "tsc --noEmit",
+    "pretest": "pnpm run build:deps",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.11",
+    "@nestjs/core": "^11.1.11",
+    "@nestjs/platform-express": "^11.1.11",
+    "@repo/database": "workspace:*",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.14",
+    "@nestjs/testing": "^11.1.11",
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^20",
+    "eslint": "^9.32.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  }
+}
