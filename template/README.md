@@ -61,7 +61,7 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
 ### Step 5. Polar Billing 설정
 
-[Polar](https://polar.sh)에서 organization, products, API key, webhook을 준비한 후 `apps/app/.env`와 `apps/web/.env`에 설정합니다.
+[Polar](https://polar.sh)에서 organization, products, API key, webhook을 준비합니다.
 
 Webhook URL:
 
@@ -77,12 +77,21 @@ subscription.updated
 subscription.canceled
 ```
 
-Environment variables:
+`apps/app/.env`에는 서버에서 사용하는 Polar secret과 product ID를 설정합니다.
 
 ```bash
 POLAR_ACCESS_TOKEN="pat_xxx"
 POLAR_WEBHOOK_SECRET="whs_xxx"
 POLAR_ORGANIZATION_ID="org_xxx"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY="prod_xxx_starter_monthly"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY="prod_xxx_starter_yearly"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY="prod_xxx_pro_monthly"
+NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY="prod_xxx_pro_yearly"
+```
+
+`apps/web/.env`에는 public product ID만 설정합니다.
+
+```bash
 NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY="prod_xxx_starter_monthly"
 NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY="prod_xxx_starter_yearly"
 NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY="prod_xxx_pro_monthly"
