@@ -22,7 +22,6 @@ src/
     clean-auth-duplication.ts  # 선택 레이아웃 layout.tsx의 중복 auth guard 제거
     update-redirects.ts # standard 선택 시 루트·sign-in 리다이렉트 경로 /home으로 변경
     update-package-names.ts   # package.json 이름 치환 (root + apps/app)
-    reset-serena-config.ts    # .serena/project.yml의 project_name 갱신
     substitute-project-name.ts  # {{PROJECT_NAME}} 플레이스홀더 일괄 치환
     finalize.ts         # .git 제거, .env 복사, pnpm install 실행
   utils/

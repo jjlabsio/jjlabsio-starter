@@ -1,4 +1,4 @@
-# CLAUDE.md
+# AGENTS.md
 
 > Agent 작업 지침.
 > 사용자용 설치·운영 안내는 `README.md` 참조.
