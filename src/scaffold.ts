@@ -1,8 +1,5 @@
 import path from "node:path";
-import type { LayoutChoice } from "./config/constants.js";
 import { copyTemplate } from "./steps/copy-template.js";
-import { cleanLayout } from "./steps/clean-layout.js";
-import { cleanAuthDuplication } from "./steps/clean-auth-duplication.js";
 import { updatePackageNames } from "./steps/update-package-names.js";
 import { substituteProjectName } from "./steps/substitute-project-name.js";
 import {
@@ -14,19 +11,16 @@ import { logger } from "./utils/logger.js";
 
 interface ScaffoldOptions {
   readonly projectName: string;
-  readonly layout: LayoutChoice;
   readonly localPorts: AssignedLocalPorts;
 }
 
 export async function scaffold(options: ScaffoldOptions): Promise<void> {
-  const { projectName, layout } = options;
+  const { projectName } = options;
   const projectDir = path.resolve(projectName);
 
-  logger.info(`\nCreating ${projectName} with ${layout} layout...\n`);
+  logger.info(`\nCreating ${projectName}...\n`);
 
   await copyTemplate(projectDir);
-  await cleanLayout(projectDir, layout);
-  await cleanAuthDuplication(projectDir, layout);
   await updatePackageNames(projectDir, projectName);
   await substituteProjectName(projectDir, projectName);
   const localPorts = await assignLocalPorts(

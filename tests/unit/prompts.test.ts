@@ -34,7 +34,6 @@ describe("getUserChoices", () => {
     vi.mocked(prompts)
       .mockResolvedValueOnce({
         projectName: "my-app",
-        layout: "sidebar",
       })
       .mockResolvedValueOnce({
         portAction: "accept",
@@ -44,12 +43,14 @@ describe("getUserChoices", () => {
 
     expect(result).toEqual({
       projectName: "my-app",
-      layout: "sidebar",
       localPorts: {
         portSet: 0,
         ports: getPortsForSet(0),
       },
     });
+    expect(vi.mocked(prompts).mock.calls[0]?.[0]).toEqual([
+      expect.objectContaining({ name: "projectName" }),
+    ]);
     expect(vi.mocked(prompts).mock.calls[1]?.[0]).toMatchObject({
       message: expect.stringContaining("worker 3103"),
     });
@@ -58,7 +59,6 @@ describe("getUserChoices", () => {
   it("uses argProjectName when provided", async () => {
     vi.mocked(prompts)
       .mockResolvedValueOnce({
-        layout: "standard",
       })
       .mockResolvedValueOnce({
         portAction: "accept",
@@ -68,7 +68,6 @@ describe("getUserChoices", () => {
 
     expect(result).toEqual({
       projectName: "pre-defined-name",
-      layout: "standard",
       localPorts: {
         portSet: 0,
         ports: getPortsForSet(0),
@@ -76,7 +75,7 @@ describe("getUserChoices", () => {
     });
   });
 
-  it("returns null when layout is not selected", async () => {
+  it("returns null when project name is not entered", async () => {
     vi.mocked(prompts).mockResolvedValue({
       projectName: "my-app",
     });
@@ -89,7 +88,6 @@ describe("getUserChoices", () => {
     vi.mocked(prompts)
       .mockResolvedValueOnce({
         projectName: "my-app",
-        layout: "sidebar",
       })
       .mockResolvedValueOnce({
         portAction: "another",
@@ -110,7 +108,6 @@ describe("getUserChoices", () => {
     vi.mocked(prompts)
       .mockResolvedValueOnce({
         projectName: "my-app",
-        layout: "sidebar",
       })
       .mockResolvedValueOnce({
         portAction: "cancel",

@@ -1,6 +1,5 @@
 import path from "node:path";
 import prompts from "prompts";
-import type { LayoutChoice } from "./config/constants.js";
 import {
   type AssignedLocalPorts,
   type LocalPortOptions,
@@ -10,7 +9,6 @@ import { validateProjectName } from "./utils/validate.js";
 
 export interface UserChoices {
   readonly projectName: string;
-  readonly layout: LayoutChoice;
   readonly localPorts: AssignedLocalPorts;
 }
 
@@ -34,30 +32,13 @@ export async function getUserChoices(
           return result.valid ? true : (result.message ?? "Invalid name");
         },
       },
-      {
-        type: "select",
-        name: "layout",
-        message: "Choose a layout:",
-        choices: [
-          {
-            title: "Sidebar",
-            value: "sidebar",
-            description: "Dashboard-style sidebar navigation",
-          },
-          {
-            title: "Standard",
-            value: "standard",
-            description: "Header + footer layout",
-          },
-        ],
-      },
     ],
     { onCancel },
   );
 
   const projectName = argProjectName ?? response.projectName;
 
-  if (!projectName || !response.layout) {
+  if (!projectName) {
     return null;
   }
 
@@ -69,7 +50,6 @@ export async function getUserChoices(
 
   return {
     projectName,
-    layout: response.layout as LayoutChoice,
     localPorts,
   };
 }

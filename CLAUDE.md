@@ -11,15 +11,10 @@
 ```
 src/
   index.ts              # CLI 진입점, 인수 파싱, 대화형 입력 호출
-  prompts.ts            # 프로젝트명, 레이아웃, 로컬 포트 선택 입력
+  prompts.ts            # 프로젝트명, 로컬 포트 선택 입력
   scaffold.ts           # 전체 scaffold 흐름 오케스트레이션
-  config/
-    constants.ts        # 경로 상수, 레이아웃 타입
-    layout-files.ts     # 선택 레이아웃 기준 제거 대상 반환
   steps/
     copy-template.ts    # 내장 template/ 디렉토리를 프로젝트 경로로 복사
-    clean-layout.ts     # 미사용 layout route group 및 domain 디렉토리 제거
-    clean-auth-duplication.ts  # 선택 layout.tsx의 중복 auth guard 제거
     update-package-names.ts    # root 및 apps/app package.json 이름 치환
     substitute-project-name.ts # {{PROJECT_NAME}} 플레이스홀더 치환
     assign-local-ports.ts      # 프로젝트별 로컬 개발 포트 배정 및 템플릿 반영
@@ -35,25 +30,20 @@ src/
 ## Scaffold Flow
 
 1. `template/` 복사
-2. 선택하지 않은 레이아웃 route group 및 domain 디렉토리 제거
-3. 선택 레이아웃의 중복 auth guard 제거
-4. package 이름 치환
-5. `{{PROJECT_NAME}}` 플레이스홀더 치환
-6. 로컬 개발 포트 배정 및 템플릿 포트 플레이스홀더 치환
-7. `.git` 제거, `.env.example` 복사, `pnpm install` 실행
+2. package 이름 치환
+3. `{{PROJECT_NAME}}` 플레이스홀더 치환
+4. 로컬 개발 포트 배정 및 템플릿 포트 플레이스홀더 치환
+5. `.git` 제거, `.env.example` 복사, `pnpm install` 실행
 
 ---
 
 ## Layout Structure
 
-템플릿은 두 레이아웃을 동시에 포함.
+템플릿은 sidebar 레이아웃만 포함.
 
 | Layout | Route Group | Domain Dir |
 | --- | --- | --- |
 | sidebar | `apps/app/src/app/(authenticated)/(sidebar)` | `apps/app/src/domains/sidebar` |
-| standard | `apps/app/src/app/(authenticated)/(standard)` | `apps/app/src/domains/standard` |
-
-`cleanLayout`은 선택하지 않은 레이아웃의 route group 및 domain 디렉토리 제거.
 공유 컴포넌트는 `apps/app/src/components/`에 유지.
 
 ---

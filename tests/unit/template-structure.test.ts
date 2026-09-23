@@ -5,6 +5,23 @@ import fs from "fs-extra";
 const TEMPLATE_DIR = path.resolve(__dirname, "../../template");
 
 describe("template structure contracts", () => {
+  it("ships only the sidebar app layout", async () => {
+    const authenticatedDir = path.join(
+      TEMPLATE_DIR,
+      "apps/app/src/app/(authenticated)",
+    );
+
+    await expect(
+      fs.pathExists(path.join(authenticatedDir, "(sidebar)")),
+    ).resolves.toBe(true);
+    await expect(
+      fs.pathExists(path.join(authenticatedDir, "(standard)")),
+    ).resolves.toBe(false);
+    await expect(
+      fs.pathExists(path.join(TEMPLATE_DIR, "apps/app/src/domains/standard")),
+    ).resolves.toBe(false);
+  });
+
   it("uses Base UI render instead of keeping a deprecated Button asChild shim", async () => {
     const content = await fs.readFile(
       path.join(TEMPLATE_DIR, "packages/ui/src/components/button.tsx"),

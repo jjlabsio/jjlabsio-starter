@@ -24,13 +24,12 @@ Generate a ready-to-customize monorepo that gives users a coherent starting poin
 
 ## Core Use Case
 
-A user runs the CLI, chooses a layout, receives a generated project, fills in environment credentials, and starts development with `pnpm dev`.
+A user runs the CLI, receives a sidebar-based generated project, fills in environment credentials, and starts development with `pnpm dev`.
 
 ## Current Scope
 
 - Scaffold a pnpm workspace monorepo from `template/`
-- Support sidebar and standard app layouts
-- Remove unused layout files after selection
+- Ship one sidebar-based app layout
 - Substitute project name and local development ports
 - Create `.env` files from examples
 - Install dependencies
@@ -59,14 +58,14 @@ A user runs the CLI, chooses a layout, receives a generated project, fills in en
 ## Differentiation
 
 - Opinionated full-stack monorepo rather than a minimal app shell
-- Scaffold-time cleanup of unused layouts
+- One predictable app layout with no scaffold-time cleanup
 - Generated project guidance tailored to the included stack
 
 ## Constraints
 
 - npm package includes `dist/` and `template/`
 - Template dotfiles may need non-dotfile names before copy, such as `template/gitignore`
-- Template source can contain route groups that only become buildable after scaffold cleanup
+- Template source is directly buildable without layout cleanup
 
 ## Open Questions
 
