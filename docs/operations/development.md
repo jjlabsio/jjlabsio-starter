@@ -54,11 +54,9 @@ npm 배포 시 root `package.json`의 `files` 설정에 따라 `dist/`와 `templ
 
 `src/steps/copy-template.ts`가 복사 후 `gitignore`를 `.gitignore`로 rename 처리.
 
-## Template 빌드 제한
+## Template 빌드
 
-템플릿은 `(sidebar)`와 `(standard)` 양쪽이 동일 route를 일부 정의하므로 템플릿 원본 상태에서는 앱 빌드를 전제로 하지 않음.
-
-scaffold 후 미사용 레이아웃이 제거되면 route 충돌이 해소됨.
+템플릿은 sidebar 레이아웃만 포함하므로 앱 빌드 시 레이아웃 route 충돌이 없음.
 
 ## 테스트 기준
 
@@ -72,7 +70,7 @@ pnpm typecheck
 템플릿 구조 또는 scaffold 흐름 변경:
 
 ```bash
-pnpm test -- tests/unit/template-structure.test.ts tests/integration/scaffold-standard.test.ts tests/integration/scaffold-sidebar.test.ts
+pnpm test -- tests/unit/template-structure.test.ts tests/unit/prompts.test.ts
 ```
 
 패키징 또는 배포 포함 여부 변경:

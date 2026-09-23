@@ -38,17 +38,9 @@ CLI 실행 파일 이름은 `create-jjlabs-app`.
 ## Scaffold Flow
 
 1. CLI 패키지에 포함된 `template/` 복사
-2. Sidebar 또는 Standard 레이아웃 선택
-3. 선택하지 않은 레이아웃 route group 및 domain 디렉토리 제거
-4. 선택한 레이아웃의 중복 auth guard 정리
-5. package 이름과 프로젝트명 플레이스홀더 치환
-6. 로컬 개발 포트 배정 및 템플릿 파일 반영
-7. `.env.example` 기반 `.env` 파일 생성
-8. 의존성 설치
+2. package 이름과 프로젝트명 플레이스홀더 치환
+3. 로컬 개발 포트 배정 및 템플릿 파일 반영
+4. `.env.example` 기반 `.env` 파일 생성
+5. 의존성 설치
 
-## Layout Options
-
-| Layout | Description |
-| --- | --- |
-| **Sidebar** | 대시보드 스타일의 사이드바 네비게이션 |
-| **Standard** | 헤더 + 푸터 레이아웃 |
+생성되는 앱은 대시보드 스타일의 sidebar 레이아웃을 기본으로 사용함.
