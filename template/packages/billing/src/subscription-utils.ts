@@ -6,6 +6,18 @@ import type {
 
 export const TRIAL_DURATION_DAYS = 14;
 
+export function getTrialDaysRemaining(
+  subscription: Pick<Subscription, "status" | "trialEnd"> | null,
+  now = Date.now(),
+): number | null {
+  if (subscription?.status !== "TRIALING" || !subscription.trialEnd)
+    return null;
+  return Math.max(
+    0,
+    Math.ceil((subscription.trialEnd.getTime() - now) / (24 * 60 * 60 * 1000)),
+  );
+}
+
 const ACTIVE_STATUSES: ReadonlySet<SubscriptionStatus> = new Set([
   "ACTIVE",
   "TRIALING",

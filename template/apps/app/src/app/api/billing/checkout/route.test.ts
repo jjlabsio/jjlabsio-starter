@@ -40,6 +40,8 @@ vi.mock("@repo/billing", () => ({
     NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY: "prod_starter_yearly",
     NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY: "prod_pro_monthly",
     NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY: "prod_pro_yearly",
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY: "prod_premium_monthly",
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY: "prod_premium_yearly",
   },
 }));
 
@@ -58,6 +60,8 @@ const VALID_PRODUCT_IDS = [
   "prod_starter_yearly",
   "prod_pro_monthly",
   "prod_pro_yearly",
+  "prod_premium_monthly",
+  "prod_premium_yearly",
 ];
 
 const MOCK_SESSION = {
@@ -70,6 +74,23 @@ const MOCK_SESSION = {
 // ---- Tests ----
 
 describe("GET /api/billing/checkout", () => {
+  it("JSON 요청에는 화면을 떠나기 전에 확인할 checkout URL을 반환한다", async () => {
+    mockGetSession.mockResolvedValue(MOCK_SESSION);
+    mockCheckRateLimit.mockReturnValue({ allowed: true });
+    mockCheckoutsCreate.mockResolvedValue({
+      url: "https://polar.sh/checkout/example",
+    });
+    const response = await GET(
+      new NextRequest(
+        "http://localhost:3000/api/billing/checkout?productId=prod_starter_monthly",
+        { headers: { Accept: "application/json" } },
+      ),
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      url: "https://polar.sh/checkout/example",
+    });
+  });
   beforeEach(() => {
     vi.clearAllMocks();
     // Default: authenticated, not rate-limited
@@ -270,7 +291,7 @@ describe("GET /api/billing/checkout", () => {
 
       const req = makeRequest(
         "/api/billing/checkout",
-        "?productId=prod_pro_yearly",
+        "?productId=prod_premium_yearly",
       );
       const res = await GET(req);
 

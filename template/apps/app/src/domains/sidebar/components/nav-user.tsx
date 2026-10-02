@@ -4,25 +4,25 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-  IconBell,
-  IconCheck,
   IconCreditCard,
   IconLogout,
   IconDeviceDesktop,
   IconMoon,
-  IconDotsVertical,
   IconSun,
   IconContrastFilled,
-  IconUserCircle,
+  IconUser,
+  IconGift,
 } from "@tabler/icons-react";
 import { useTheme } from "next-themes";
 import { signOut } from "@repo/auth/client";
+import { toast } from "@repo/ui/components/toast";
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@repo/ui/components/avatar";
+import { CaretIcon } from "@repo/ui/components/caret-icon";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,11 +71,16 @@ export function NavUser({
 
   const handleSignOut = async () => {
     try {
-      await signOut();
-    } catch {
-      // redirect regardless of server call result
-    } finally {
+      const result = await signOut();
+      if (result.error) throw new Error("Sign out failed");
       router.push("/sign-in");
+      router.refresh();
+    } catch {
+      toast.add({
+        type: "error",
+        title: "Could not sign out",
+        description: "Please try again.",
+      });
     }
   };
 
@@ -86,26 +91,28 @@ export function NavUser({
           <DropdownMenuTrigger
             render={
               <SidebarMenuButton
-                size="lg"
-                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+                variant="account"
+                size="account"
+                aria-label="Account menu"
               />
             }
           >
-            <Avatar className="h-8 w-8 rounded-lg grayscale">
+            <Avatar size="xs" aria-hidden="true">
               {user.image && <AvatarImage src={user.image} alt={user.name} />}
-              <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
+              <AvatarFallback>{initials.slice(0, 1)}</AvatarFallback>
             </Avatar>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
-              <span className="text-muted-foreground truncate text-xs">
-                {user.email}
-              </span>
-            </div>
-            <IconDotsVertical className="ml-auto size-4" />
+            <span className="min-w-0 truncate group-data-[collapsible=icon]:hidden">
+              {user.email}
+            </span>
+            <CaretIcon
+              variant="chevron"
+              direction="up"
+              className="group-data-[collapsible=icon]:hidden"
+            />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--anchor-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            className="w-(--anchor-width) min-w-56"
+            side={isMobile ? "top" : "right"}
             align="end"
             sideOffset={4}
           >
@@ -125,17 +132,17 @@ export function NavUser({
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <IconUserCircle />
-                Account
+              <DropdownMenuItem render={<Link href="/settings/profile" />}>
+                <IconUser />
+                Profile
               </DropdownMenuItem>
               <DropdownMenuItem render={<Link href="/settings/billing" />}>
                 <IconCreditCard />
                 Billing
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <IconBell />
-                Notifications
+              <DropdownMenuItem render={<Link href="/rewards" />}>
+                <IconGift />
+                Rewards Program
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
@@ -143,26 +150,26 @@ export function NavUser({
                   Theme
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
-                  <DropdownMenuItem onClick={() => setTheme("light")}>
+                  <DropdownMenuItem
+                    selected={mounted && theme === "light"}
+                    onClick={() => setTheme("light")}
+                  >
                     <IconSun />
                     Light
-                    {mounted && theme === "light" && (
-                      <IconCheck className="ml-auto" />
-                    )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")}>
+                  <DropdownMenuItem
+                    selected={mounted && theme === "dark"}
+                    onClick={() => setTheme("dark")}
+                  >
                     <IconMoon />
                     Dark
-                    {mounted && theme === "dark" && (
-                      <IconCheck className="ml-auto" />
-                    )}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")}>
+                  <DropdownMenuItem
+                    selected={mounted && theme === "system"}
+                    onClick={() => setTheme("system")}
+                  >
                     <IconDeviceDesktop />
                     System
-                    {mounted && theme === "system" && (
-                      <IconCheck className="ml-auto" />
-                    )}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuSub>

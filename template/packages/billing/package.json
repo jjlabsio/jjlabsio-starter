@@ -33,6 +33,7 @@
     "./keys": "./src/keys.ts",
     "./plan-config": "./src/plan-config.ts",
     "./subscription": "./src/subscription.ts",
+    "./subscription-utils": "./src/subscription-utils.ts",
     "./require-subscription": "./src/require-subscription.ts",
     "./trial": "./src/trial.ts",
     "./webhook": "./src/webhook.ts"

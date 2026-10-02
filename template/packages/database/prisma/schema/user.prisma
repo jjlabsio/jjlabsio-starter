@@ -10,6 +10,7 @@ model User {
   sessions        Session[]
   accounts        Account[]
   subscription    Subscription?
+  rewardSubmission RewardSubmission?
 
   @@map("users")
 }

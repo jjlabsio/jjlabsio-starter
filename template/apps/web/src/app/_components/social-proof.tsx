@@ -18,7 +18,7 @@ export function SocialProof() {
             {Array.from({ length: 5 }).map((_, i) => (
               <IconStarFilled
                 key={i}
-                className="size-4 fill-neutral-800 text-neutral-800 dark:fill-neutral-200 dark:text-neutral-200"
+                className="size-4 fill-foreground text-foreground"
               />
             ))}
             <span className="ml-2 text-sm text-muted-foreground">

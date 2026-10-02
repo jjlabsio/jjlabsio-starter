@@ -1,9 +1,13 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
+import { BillingAction } from "@/components/billing-action";
 import type { Subscription, SubscriptionStatus } from "@repo/billing";
+import { getTrialDaysRemaining } from "@repo/billing/subscription-utils";
 import { Badge } from "@repo/ui/components/badge";
 import { buttonVariants } from "@repo/ui/components/button";
+import { Card, CardContent, CardTitle } from "@repo/ui/components/card";
 
 const STATUS_LABELS: Record<SubscriptionStatus, string> = {
   ACTIVE: "Active",
@@ -26,24 +30,31 @@ const STATUS_VARIANT: Record<
 
 interface SubscriptionStatusCardProps {
   subscription: Subscription | null;
+  planName: string | null;
 }
 
 export function SubscriptionStatusCard({
   subscription,
+  planName,
 }: SubscriptionStatusCardProps) {
   if (!subscription) {
     return (
-      <div className="bg-card flex items-center justify-between rounded-xl border p-6">
-        <div>
-          <p className="font-medium">No active subscription</p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            Subscribe to unlock full access.
-          </p>
-        </div>
-        <Link href="/pricing" className={buttonVariants({ size: "sm" })}>
-          View Plans
-        </Link>
-      </div>
+      <Card>
+        <CardContent className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>Your plan</CardTitle>
+            <div className="mt-3 space-y-1">
+              <p className="font-medium">No active subscription</p>
+              <p className="text-muted-foreground text-sm">
+                Subscribe to unlock full access.
+              </p>
+            </div>
+          </div>
+          <Link href="/pricing" className={buttonVariants()}>
+            View Plans
+          </Link>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -51,13 +62,7 @@ export function SubscriptionStatusCard({
   const badgeVariant = STATUS_VARIANT[subscription.status];
   const isTrial = subscription.status === "TRIALING";
 
-  const trialDaysRemaining =
-    isTrial && subscription.trialEnd
-      ? Math.ceil(
-          (subscription.trialEnd.getTime() - Date.now()) /
-            (1000 * 60 * 60 * 24),
-        )
-      : null;
+  const trialDaysRemaining = getTrialDaysRemaining(subscription);
 
   const renewalDate = subscription.currentPeriodEnd
     ? new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(
@@ -66,37 +71,49 @@ export function SubscriptionStatusCard({
     : null;
 
   return (
-    <div className="bg-card flex items-center justify-between rounded-xl border p-6">
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <p className="font-medium">{isTrial ? "Free Trial" : "Pro Plan"}</p>
-          <Badge variant={badgeVariant}>{statusLabel}</Badge>
+    <Card>
+      <CardContent className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <CardTitle>Your plan</CardTitle>
+          <div className="mt-3 space-y-1">
+            <div className="flex items-center gap-2">
+              <p className="font-medium">
+                {isTrial
+                  ? "Free Trial"
+                  : planName
+                    ? `${planName} Plan`
+                    : "Unknown plan"}
+              </p>
+              <Badge variant={badgeVariant}>{statusLabel}</Badge>
+            </div>
+            {isTrial && trialDaysRemaining !== null && (
+              <p className="text-muted-foreground text-sm">
+                {trialDaysRemaining} days remaining
+              </p>
+            )}
+            {!isTrial && renewalDate && (
+              <p className="text-muted-foreground text-sm">
+                {subscription.cancelAtPeriodEnd
+                  ? `Cancels on ${renewalDate}`
+                  : `Renews on ${renewalDate}`}
+              </p>
+            )}
+          </div>
         </div>
-        {isTrial && trialDaysRemaining !== null && (
-          <p className="text-muted-foreground text-sm">
-            {trialDaysRemaining} days remaining
-          </p>
+        {isTrial ? (
+          <Link href="#plan-comparison-heading" className={buttonVariants()}>
+            Choose a plan
+          </Link>
+        ) : (
+          <BillingAction
+            endpoint="/api/billing/portal"
+            variant="outline"
+            size="sm"
+          >
+            Manage Billing
+          </BillingAction>
         )}
-        {!isTrial && renewalDate && (
-          <p className="text-muted-foreground text-sm">
-            {subscription.cancelAtPeriodEnd
-              ? `Cancels on ${renewalDate}`
-              : `Renews on ${renewalDate}`}
-          </p>
-        )}
-      </div>
-      {isTrial ? (
-        <Link href="/pricing" className={buttonVariants({ size: "sm" })}>
-          Upgrade
-        </Link>
-      ) : (
-        <Link
-          href="/api/billing/portal"
-          className={buttonVariants({ variant: "outline", size: "sm" })}
-        >
-          Manage Billing
-        </Link>
-      )}
-    </div>
+      </CardContent>
+    </Card>
   );
 }

@@ -1,30 +1,21 @@
-import { Button } from "@repo/ui/components/button";
+import Link from "next/link";
+import { buttonVariants } from "@repo/ui/components/button";
+import { env } from "@/lib/env";
 
 export function CtaSection() {
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-7xl px-6 text-center">
-        <h2 className="text-4xl font-light tracking-tight md:text-5xl">
-          Ready to get started?
+    <section className="border-t border-border">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-7 px-6 py-20 text-center lg:py-30">
+        <h2 className="max-w-[12em] text-4xl leading-none font-medium tracking-tight text-balance md:text-[56px]">
+          Your next chapter starts here
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-lg text-muted-foreground">
-          Join thousands of teams already building better products with Acme.
-          Start free and scale as you grow.
-        </p>
-
-        <div className="mt-10 flex items-center justify-center gap-4">
-          <Button className="rounded-full px-8 py-6 text-base" size="lg">
-            Start for free
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-full px-8 py-6 text-base"
-            size="lg"
-          >
-            Talk to sales
-          </Button>
-        </div>
+        <Link
+          href={`${env.NEXT_PUBLIC_APP_URL}/sign-in`}
+          className={buttonVariants({ size: "lg" })}
+        >
+          Start for free
+        </Link>
       </div>
     </section>
   );

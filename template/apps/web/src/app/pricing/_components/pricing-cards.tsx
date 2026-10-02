@@ -12,7 +12,7 @@ interface PricingCardsProps {
 export function PricingCards({ period }: PricingCardsProps) {
   return (
     <section className="pb-24">
-      <div className="mx-auto grid max-w-4xl gap-8 px-6 md:grid-cols-2">
+      <div className="mx-auto grid max-w-5xl gap-8 px-6 lg:grid-cols-3">
         {TIERS.map((tier) => {
           const productId = PRODUCT_IDS[tier.id][period];
           const href = productId

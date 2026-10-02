@@ -8,10 +8,13 @@
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "env": [
         "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_WEB_URL",
         "NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY",
         "NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY",
         "NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY",
         "NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY",
+        "NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY",
         "NEXT_PUBLIC_SENTRY_DSN"
       ]
     },
@@ -34,10 +37,12 @@
     }
   },
   "globalEnv": [
+    "ADMIN_EMAIL",
     "DATABASE_URL",
     "DIRECT_URL",
     "NODE_ENV",
     "PORT",
+    "HOST",
     "SKIP_ENV_VALIDATION",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",
@@ -46,6 +51,7 @@
     "POLAR_ACCESS_TOKEN",
     "POLAR_WEBHOOK_SECRET",
     "POLAR_ORGANIZATION_ID",
-    "RESEND_API_KEY"
+    "RESEND_API_KEY",
+    "EMAIL_FROM"
   ]
 }

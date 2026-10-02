@@ -1,6 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
-import { getSubscription, isSubscriptionActive } from "./subscription";
+import { getSubscription } from "./subscription";
+import { getSubscriptionState } from "./subscription-utils";
 import { expireTrial } from "./trial";
 
 export async function requireSubscription(userId: string) {
@@ -16,7 +17,8 @@ export async function requireSubscription(userId: string) {
     redirect("/pricing");
   }
 
-  if (!isSubscriptionActive(subscription?.status)) {
+  const state = getSubscriptionState(subscription);
+  if (state !== "active" && state !== "trialing") {
     redirect("/pricing");
   }
 

@@ -20,6 +20,7 @@ async function removeGitDir(projectDir: string): Promise<void> {
 
 const ENV_EXAMPLE_PATHS = [
   "apps/app/.env.example",
+  "apps/admin/.env.example",
   "apps/web/.env.example",
   "packages/database/.env.example",
 ];

@@ -1,16 +1,17 @@
 import { execFileSync } from "node:child_process";
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 export const EXPECTED_ENV_EXAMPLES = [
   "template/apps/app/.env.example",
+  "template/apps/admin/.env.example",
   "template/apps/web/.env.example",
   "template/packages/database/.env.example",
 ];
 
 const GENERATED_TEMPLATE_DIRS = new Set([
   ".next",
+  ".react-email",
   ".turbo",
   ".vercel",
   "build",
@@ -47,36 +48,23 @@ export function analyzePackFiles(filePaths) {
   };
 }
 
-export function findUnsafeTemplateFiles(templateDir) {
-  if (!fs.existsSync(templateDir)) {
-    return {
-      realEnvFiles: [],
-      generatedArtifactFiles: [],
-    };
-  }
-
-  const allFiles = listFiles(templateDir).map((filePath) =>
-    path.relative(process.cwd(), filePath),
+export function analyzeTrackedFiles(filePaths) {
+  const { forbiddenEnvFiles, forbiddenGeneratedFiles } =
+    analyzePackFiles(filePaths);
+  const forbiddenRootFiles = filePaths.filter(
+    (filePath) =>
+      [".local-preview/", "dist/", "node_modules/"].some((prefix) =>
+        filePath.startsWith(prefix),
+      ),
   );
 
   return {
-    realEnvFiles: allFiles
-      .filter((filePath) => isEnvFilePath(filePath) && !isEnvExamplePath(filePath))
-      .sort(),
-    generatedArtifactFiles: allFiles.filter(isGeneratedPath).sort(),
+    forbiddenFiles: [
+      ...forbiddenEnvFiles,
+      ...forbiddenGeneratedFiles,
+      ...forbiddenRootFiles,
+    ].sort(),
   };
-}
-
-function listFiles(dir) {
-  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
-    const entryPath = path.join(dir, entry.name);
-
-    if (entry.isDirectory()) {
-      return listFiles(entryPath);
-    }
-
-    return entry.isFile() ? [entryPath] : [];
-  });
 }
 
 function isEnvFilePath(filePath) {
@@ -124,34 +112,34 @@ function reportFailure(title, filePaths) {
 }
 
 export function main() {
-  const { realEnvFiles, generatedArtifactFiles } = findUnsafeTemplateFiles(
-    path.join(process.cwd(), "template"),
-  );
+  if (process.argv[2] === "--tracked") {
+    const trackedFiles = execFileSync("git", ["ls-files", "-z"], {
+      encoding: "utf8",
+    })
+      .split("\0")
+      .filter(Boolean);
+    const { forbiddenFiles } = analyzeTrackedFiles(trackedFiles);
+    if (forbiddenFiles.length > 0) {
+      reportFailure(
+        "Generated or secret files are tracked by Git:",
+        forbiddenFiles,
+      );
+      process.exitCode = 1;
+      return;
+    }
+    console.log("Git tracked-file safety check passed.");
+    return;
+  }
+
   const packFilePaths = parsePackFilePaths(runPackDryRun());
   const { forbiddenEnvFiles, forbiddenGeneratedFiles, missingEnvExamples } =
     analyzePackFiles(packFilePaths);
 
   if (
-    realEnvFiles.length > 0 ||
-    generatedArtifactFiles.length > 0 ||
     forbiddenEnvFiles.length > 0 ||
     forbiddenGeneratedFiles.length > 0 ||
     missingEnvExamples.length > 0
   ) {
-    if (realEnvFiles.length > 0) {
-      reportFailure(
-        "Real env files exist under template/ and must not be published:",
-        realEnvFiles,
-      );
-    }
-
-    if (generatedArtifactFiles.length > 0) {
-      reportFailure(
-        "Generated artifacts exist under template/ and must not be published:",
-        generatedArtifactFiles,
-      );
-    }
-
     if (forbiddenEnvFiles.length > 0) {
       reportFailure(
         "Real env files would be included in npm package:",

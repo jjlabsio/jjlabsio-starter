@@ -1,37 +1,19 @@
 "use client";
-
 import { useState } from "react";
 import type { BillingPeriod } from "@repo/billing/plan-config";
+import { BillingPeriodToggle } from "@repo/ui/components/billing-period-toggle";
 import { PricingCards } from "./pricing-cards";
+import { PricingComparison } from "./pricing-comparison";
 
 export function PricingToggle() {
-  const [period, setPeriod] = useState<BillingPeriod>("monthly");
-
+  const [period, setPeriod] = useState<BillingPeriod>("yearly");
   return (
     <div>
-      <div className="mb-10 flex items-center justify-center gap-3">
-        <button
-          onClick={() => setPeriod("monthly")}
-          className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-            period === "monthly"
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          Monthly
-        </button>
-        <button
-          onClick={() => setPeriod("yearly")}
-          className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-            period === "yearly"
-              ? "bg-foreground text-background"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          Yearly
-        </button>
+      <div className="mb-10 flex justify-center">
+        <BillingPeriodToggle value={period} onChange={setPeriod} />
       </div>
       <PricingCards period={period} />
+      <PricingComparison period={period} />
     </div>
   );
 }

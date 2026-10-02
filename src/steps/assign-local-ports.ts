@@ -11,17 +11,22 @@ const PORT_TEMPLATE_FILES = [
   "apps/api/src/main.ts",
   "apps/worker/src/main.ts",
   "apps/app/package.json",
+  "apps/admin/package.json",
+  "apps/admin/.env.example",
   "apps/app/.env.example",
   "apps/web/package.json",
   "apps/web/.env.example",
   "docker-compose.yml",
   "packages/database/.env.example",
   "packages/database/README.md",
+  "packages/email/package.json",
 ];
 
 export interface LocalPorts {
   readonly app: number;
   readonly web: number;
+  readonly admin: number;
+  readonly email: number;
   readonly api: number;
   readonly worker: number;
   readonly postgres: number;
@@ -51,6 +56,8 @@ export function getPortsForSet(portSet: number): LocalPorts {
   return {
     app: 3100 + portSet * 100,
     web: 3101 + portSet * 100,
+    admin: 3104 + portSet * 100,
+    email: 3105 + portSet * 100,
     api: 3102 + portSet * 100,
     worker: 3103 + portSet * 100,
     postgres: 5532 + portSet * 100,
@@ -230,6 +237,8 @@ async function applyLocalPorts(
 ): Promise<void> {
   const replacements = {
     "{{LOCAL_APP_PORT}}": String(ports.app),
+    "{{LOCAL_ADMIN_PORT}}": String(ports.admin),
+    "{{LOCAL_EMAIL_PORT}}": String(ports.email),
     "{{LOCAL_WEB_PORT}}": String(ports.web),
     "{{LOCAL_API_PORT}}": String(ports.api),
     "{{LOCAL_WORKER_PORT}}": String(ports.worker),

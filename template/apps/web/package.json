@@ -15,11 +15,13 @@
     "@repo/billing": "workspace:*",
     "@repo/ui": "workspace:*",
     "@t3-oss/env-nextjs": "^0.11.1",
-    "next": "16.1.6",
     "@tabler/icons-react": "^3.36.1",
+    "gray-matter": "^4.0.3",
+    "next": "16.1.6",
     "next-themes": "^0.4.6",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-markdown": "^10.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {

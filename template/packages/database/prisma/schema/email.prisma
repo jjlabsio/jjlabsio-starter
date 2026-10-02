@@ -1,0 +1,54 @@
+enum EmailCampaignStatus {
+  DRAFT
+  SENDING
+  SENT
+}
+
+enum EmailBatchStatus {
+  PENDING
+  SENDING
+  SENT
+  FAILED
+}
+
+model EmailCampaign {
+  id             String              @id @default(cuid())
+  subject        String              @db.VarChar(200)
+  previewText    String              @db.VarChar(250)
+  blocks         Json
+  audiences      String[]
+  status         EmailCampaignStatus @default(DRAFT)
+  revision       Int                 @default(1)
+  createdBy      String
+  confirmedBy    String?
+  confirmedAt    DateTime?
+  recipientCount Int                 @default(0)
+  from           String?
+  html           String?
+  text           String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  batches        EmailBatch[]
+
+  @@index([createdAt])
+  @@map("email_campaigns")
+}
+
+model EmailBatch {
+  id             String         @id @default(cuid())
+  campaignId     String
+  campaign       EmailCampaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  position       Int
+  recipients     Json
+  recipientCount Int
+  status         EmailBatchStatus @default(PENDING)
+  firstAttemptAt DateTime?
+  leaseUntil     DateTime?
+  leaseToken     String?
+  providerIds    String[]
+  acceptedAt     DateTime?
+
+  @@unique([campaignId, position])
+  @@index([campaignId, status, position])
+  @@map("email_batches")
+}

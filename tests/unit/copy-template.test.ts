@@ -46,6 +46,7 @@ describe("copyTemplate", () => {
       false,
     );
     expect(filter?.("/repo/template/apps/api/dist/main.js", "")).toBe(false);
+    expect(filter?.("/repo/template/packages/email/.react-email/index.html", "")).toBe(false);
     expect(filter?.("/repo/template/node_modules/.pnpm/lock.yaml", "")).toBe(
       false,
     );

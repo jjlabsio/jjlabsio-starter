@@ -1,58 +1,62 @@
-import {
-  Body,
-  Container,
-  Head,
-  Heading,
-  Html,
-  Preview,
-  Text,
-} from "@react-email/components";
+import { Button, Heading, Text } from "@react-email/components";
+import { EMAIL_BRAND } from "../config";
+import { EmailLayout } from "./layout";
 
-interface WelcomeEmailProps {
+export function WelcomeEmail({
+  name,
+  appUrl,
+  brandName = EMAIL_BRAND,
+}: {
   name: string;
-}
-
-export function WelcomeEmail({ name }: WelcomeEmailProps) {
+  appUrl: string;
+  brandName?: string;
+}) {
   return (
-    <Html>
-      <Head />
-      <Preview>Welcome to {"{{PROJECT_NAME}}"}</Preview>
-      <Body style={body}>
-        <Container style={container}>
-          <Heading style={heading}>Welcome, {name}!</Heading>
-          <Text style={text}>
-            Thanks for signing up. We&apos;re excited to have you on board.
-          </Text>
-        </Container>
-      </Body>
-    </Html>
+    <EmailLayout
+      preview={`Welcome to ${brandName}. Your account is ready.`}
+      brandName={brandName}
+    >
+      <Heading
+        style={{
+          fontSize: "28px",
+          lineHeight: "36px",
+          fontWeight: 600,
+          letterSpacing: "-0.5px",
+          margin: "0 0 24px",
+        }}
+      >
+        Welcome to {brandName}
+      </Heading>
+      <Text
+        style={{ fontSize: "16px", lineHeight: "26px", margin: "0 0 16px" }}
+      >
+        Hi {name.trim() || "there"},
+      </Text>
+      <Text
+        style={{
+          fontSize: "16px",
+          lineHeight: "26px",
+          color: "#525252",
+          margin: "0 0 24px",
+        }}
+      >
+        Thanks for signing up. Your account is ready. Open your workspace to get
+        started.
+      </Text>
+      <Button
+        href={appUrl}
+        style={{
+          backgroundColor: "#171717",
+          color: "#ffffff",
+          borderRadius: "8px",
+          padding: "12px 20px",
+          fontSize: "14px",
+          lineHeight: "20px",
+          fontWeight: 600,
+        }}
+      >
+        Open workspace
+      </Button>
+    </EmailLayout>
   );
 }
-
-const body = {
-  backgroundColor: "#f6f9fc",
-  fontFamily:
-    '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-};
-
-const container = {
-  backgroundColor: "#ffffff",
-  margin: "0 auto",
-  padding: "40px 20px",
-  maxWidth: "560px",
-  borderRadius: "8px",
-};
-
-const heading = {
-  fontSize: "24px",
-  fontWeight: "600" as const,
-  color: "#1a1a1a",
-  margin: "0 0 16px",
-};
-
-const text = {
-  fontSize: "16px",
-  lineHeight: "26px",
-  color: "#4a4a4a",
-  margin: "0",
-};

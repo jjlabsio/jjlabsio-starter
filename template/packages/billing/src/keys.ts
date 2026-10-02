@@ -11,8 +11,10 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY: z.string().min(1),
     NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY: z.string().min(1),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY: z.string().min(1),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY: z.string().min(1),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY: z.string().min(1),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY: z.string().min(1),
   },
   runtimeEnv: {
     POLAR_ACCESS_TOKEN: process.env.POLAR_ACCESS_TOKEN,
@@ -26,6 +28,10 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY,
     NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY:
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY:
+      process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY,
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY:
+      process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });

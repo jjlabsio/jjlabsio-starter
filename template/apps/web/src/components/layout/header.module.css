@@ -1,0 +1,41 @@
+/* 랜딩 내비게이션 전용 표현. 공통 메뉴의 키보드·포커스 동작 유지. */
+.dropdown {
+  padding: 12px;
+}
+
+/* 이 랜딩 메뉴를 포함한 팝업에만 적용. 다른 공통 메뉴에는 영향 없음. */
+:global([data-slot="navigation-menu-popup"]):has(.dropdown) {
+  border-radius: calc(var(--radius) * 0.6);
+}
+
+.groups {
+  display: grid;
+  width: 288px;
+  max-width: calc(100vw - 64px);
+  gap: 24px;
+}
+
+.label {
+  padding: 0 8px;
+  margin-bottom: 12px;
+  color: var(--subtle-foreground);
+}
+
+.link {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-height: 52px;
+  padding: 10px 8px;
+  color: var(--foreground);
+  border-radius: var(--radius);
+}
+
+.description {
+  color: var(--muted-foreground);
+}
+
+.link:hover,
+.link:focus-visible {
+  background: var(--muted);
+}

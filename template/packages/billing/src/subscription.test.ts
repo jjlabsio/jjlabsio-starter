@@ -4,6 +4,7 @@ import {
   hasActiveTrial,
   TRIAL_DURATION_DAYS,
   getSubscriptionState,
+  getTrialDaysRemaining,
 } from "./subscription-utils";
 import type { Subscription } from "./types";
 
@@ -29,6 +30,40 @@ function createTrialSubscription(
     ...overrides,
   };
 }
+
+describe("getTrialDaysRemaining", () => {
+  const now = Date.UTC(2026, 8, 29, 12);
+  const day = 24 * 60 * 60 * 1000;
+
+  it.each([
+    [14 * day, 14],
+    [day + 1, 2],
+    [1, 1],
+    [0, 0],
+    [-day, 0],
+  ])("남은 시간 %dms를 %d일로 표시한다", (remaining, expected) => {
+    const subscription = createTrialSubscription({
+      trialEnd: new Date(now + remaining),
+    });
+    expect(getTrialDaysRemaining(subscription, now)).toBe(expected);
+  });
+
+  it("유료·취소 상태나 종료일 없는 구독에는 Trial 표시를 제공하지 않는다", () => {
+    expect(getTrialDaysRemaining(null, now)).toBeNull();
+    expect(
+      getTrialDaysRemaining(createTrialSubscription({ status: "ACTIVE" }), now),
+    ).toBeNull();
+    expect(
+      getTrialDaysRemaining(
+        createTrialSubscription({ status: "CANCELED" }),
+        now,
+      ),
+    ).toBeNull();
+    expect(
+      getTrialDaysRemaining(createTrialSubscription({ trialEnd: null }), now),
+    ).toBeNull();
+  });
+});
 
 describe("isSubscriptionActive", () => {
   it("ACTIVE 구독은 활성 상태로 판단", () => {

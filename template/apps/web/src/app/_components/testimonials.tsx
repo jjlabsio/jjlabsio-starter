@@ -20,7 +20,7 @@ const TESTIMONIALS: readonly TestimonialCard[] = [
   {
     type: "brand",
     name: "TechCorp",
-    color: "bg-neutral-800",
+    color: "bg-primary",
   },
   {
     type: "quote",
@@ -33,7 +33,7 @@ const TESTIMONIALS: readonly TestimonialCard[] = [
   {
     type: "brand",
     name: "DataFlow",
-    color: "bg-[#c97b84]",
+    color: "bg-primary",
   },
   {
     type: "quote",
@@ -46,7 +46,7 @@ const TESTIMONIALS: readonly TestimonialCard[] = [
   {
     type: "brand",
     name: "CloudBase",
-    color: "bg-neutral-700",
+    color: "bg-primary",
   },
   {
     type: "quote",
@@ -59,12 +59,12 @@ const TESTIMONIALS: readonly TestimonialCard[] = [
   {
     type: "brand",
     name: "Nextera",
-    color: "bg-[#b89a9e]",
+    color: "bg-primary",
   },
   {
     type: "brand",
     name: "Synthwave",
-    color: "bg-neutral-900",
+    color: "bg-primary",
   },
 ] as const;
 
@@ -83,7 +83,7 @@ export function Testimonials() {
                 key={i}
                 className={`${card.color} flex min-w-[220px] shrink-0 items-center justify-center rounded-3xl border-0 p-10`}
               >
-                <span className="text-2xl font-bold text-white">
+                <span className="text-2xl font-bold text-primary-foreground">
                   {card.name}
                 </span>
               </Card>
@@ -97,7 +97,7 @@ export function Testimonials() {
                     &ldquo;{card.quote}&rdquo;
                   </p>
                   <div className="flex items-center gap-3">
-                    <div className="flex size-9 items-center justify-center rounded-full bg-neutral-100 text-xs font-medium dark:bg-neutral-800">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-muted text-xs font-medium">
                       {card.initials}
                     </div>
                     <div>

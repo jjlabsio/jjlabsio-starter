@@ -108,6 +108,8 @@ function formatPortPreview(selected: AssignedLocalPorts): string {
     "Use this local development port set?",
     `app ${selected.ports.app}`,
     `web ${selected.ports.web}`,
+    `admin ${selected.ports.admin}`,
+    `email ${selected.ports.email}`,
     `api ${selected.ports.api}`,
     `worker ${selected.ports.worker}`,
     `postgres ${selected.ports.postgres}`,

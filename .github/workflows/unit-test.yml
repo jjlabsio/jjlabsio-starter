@@ -28,6 +28,12 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Check tracked artifacts
+        run: pnpm run test:tracked-artifacts
+
+      - name: Check npm package contents
+        run: pnpm run test:pack-env
+
       - name: Typecheck
         run: pnpm run typecheck
 
