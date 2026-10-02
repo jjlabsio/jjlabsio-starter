@@ -4,7 +4,7 @@ export function FeatureIntro() {
   return (
     <section id="product" className="py-24">
       <div className="mx-auto max-w-7xl px-6 text-center">
-        <Badge variant="secondary" className="mb-6 rounded-full px-4 py-1">
+        <Badge variant="secondary" className="mb-6">
           Discover Acme
         </Badge>
 

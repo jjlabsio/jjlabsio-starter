@@ -28,6 +28,7 @@ coverage
 
 # Build Outputs
 .next/
+.react-email/
 out/
 build
 dist

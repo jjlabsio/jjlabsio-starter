@@ -18,21 +18,10 @@ export function PricingCta() {
           <Link
             href={`${env.NEXT_PUBLIC_APP_URL}/sign-in`}
             className={buttonVariants({
-              className: "rounded-full px-8 py-6 text-base",
               size: "lg",
             })}
           >
-            Get Started
-          </Link>
-          <Link
-            href="/pricing"
-            className={buttonVariants({
-              variant: "outline",
-              className: "rounded-full px-8 py-6 text-base",
-              size: "lg",
-            })}
-          >
-            Compare plans
+            Start for free
           </Link>
         </div>
       </div>

@@ -203,15 +203,8 @@ jobs:
       - run: pnpm test
       - run: pnpm audit --audit-level moderate
 
-      - name: Clean template artifacts
-        run: find template \( -name node_modules -o -name .next -o -name .turbo \) -type d -prune -exec rm -rf {} +
-
-      - name: Assert template artifacts are clean
-        run: |
-          find template \( -name node_modules -o -name .next -o -name .turbo \) -type d -prune -print > /tmp/template-artifacts
-          test ! -s /tmp/template-artifacts
-
-      - run: npm pack --dry-run
+      - name: Check npm package contents
+        run: pnpm test:pack-env
 
       - name: Upload release metadata
         uses: actions/upload-artifact@v4

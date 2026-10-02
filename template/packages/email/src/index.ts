@@ -1,24 +1,54 @@
 import "server-only";
-import { Resend } from "resend";
 import type React from "react";
-import { env } from "./keys";
+import { z } from "zod";
+import { getEmailSender, getResendClient } from "./client";
+import { renderEmail } from "./render";
 
-const resend = new Resend(env.RESEND_API_KEY);
-
-interface SendEmailOptions {
+export interface SendEmailOptions {
   to: string | string[];
   subject: string;
   react: React.ReactElement;
   from?: string;
+  idempotencyKey?: string;
 }
 
-export async function sendEmail({ to, subject, react, from }: SendEmailOptions) {
-  return resend.emails.send({
-    from: from ?? "{{PROJECT_NAME}} <noreply@yourdomain.com>",
-    to: Array.isArray(to) ? to : [to],
-    subject,
-    react,
-  });
+/** Server-only transactional email; broadcasts must use separate-recipient batches. */
+export async function sendEmail({
+  to,
+  subject,
+  react,
+  from,
+  idempotencyKey,
+}: SendEmailOptions) {
+  const sender = getEmailSender(from);
+  const recipients = z
+    .array(z.string().email())
+    .min(1)
+    .parse(Array.isArray(to) ? to : [to]);
+  const validSubject = z
+    .string()
+    .trim()
+    .min(1)
+    .refine((value) => !/[\r\n]/.test(value))
+    .parse(subject);
+  const { html, text } = await renderEmail(react);
+  const result = await getResendClient().emails.send(
+    {
+      from: sender,
+      to: recipients,
+      subject: validSubject,
+      html,
+      text,
+    },
+    { idempotencyKey },
+  );
+  if (result.error)
+    throw new Error(`Email delivery failed: ${result.error.name}`);
+  if (!result.data?.id) throw new Error("Email delivery was not confirmed.");
+  return result.data;
 }
 
 export { env } from "./keys";
+export { emailSendingConfigured } from "./client";
+export { sendEmailBatch } from "./batch";
+export { renderEmail } from "./render";

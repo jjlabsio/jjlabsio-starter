@@ -10,12 +10,20 @@ const ALLOWED_PRODUCT_IDS = new Set(
     env.NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY,
     env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY,
     env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY,
+    env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY,
   ].filter(Boolean),
 );
 
 export async function GET(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
+    if (request.headers.get("accept")?.includes("application/json")) {
+      return NextResponse.json(
+        { error: "Your session expired. Sign in again." },
+        { status: 401 },
+      );
+    }
     const callbackUrl = request.nextUrl.pathname + request.nextUrl.search;
     return NextResponse.redirect(
       new URL(
@@ -45,7 +53,9 @@ export async function GET(request: NextRequest) {
       successUrl,
     });
 
-    return NextResponse.redirect(checkout.url);
+    return request.headers.get("accept")?.includes("application/json")
+      ? NextResponse.json({ url: checkout.url })
+      : NextResponse.redirect(checkout.url);
   } catch (error) {
     console.error("[Billing] Checkout creation failed:", error);
     return NextResponse.json(

@@ -1,0 +1,40 @@
+enum RewardStatus {
+  PENDING
+  CHANGES_REQUESTED
+  APPROVED
+  REJECTED
+}
+
+model RewardSubmission {
+  id                 String       @id @default(cuid())
+  userId             String       @unique
+  user               User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postUrl            String       @unique @db.VarChar(2048)
+  status             RewardStatus @default(PENDING)
+  consentVersion     String
+  participationAt    DateTime
+  marketingConsent   Boolean      @default(false)
+  marketingConsentAt DateTime?
+  reviewNote         String       @default("") @db.VarChar(1000)
+  reviewedBy         String?
+  reviewedAt         DateTime?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  events             RewardReviewEvent[]
+
+  @@index([status, createdAt])
+  @@map("reward_submissions")
+}
+
+model RewardReviewEvent {
+  id           String           @id @default(cuid())
+  submissionId String
+  submission   RewardSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  actorId      String
+  action       String
+  note         String
+  createdAt    DateTime         @default(now())
+
+  @@index([submissionId, createdAt])
+  @@map("reward_review_events")
+}

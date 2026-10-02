@@ -7,6 +7,7 @@
 ```bash
 pnpm install
 pnpm dev              # tsx src/index.ts
+pnpm dev:template-email # packages/email의 독립 미리보기 (4002)
 pnpm build            # tsup build
 pnpm test             # vitest run
 pnpm test:watch       # vitest watch
@@ -20,6 +21,7 @@ pnpm test:e2e         # 빌드된 CLI smoke test
 템플릿 파일은 `template/`에 위치.
 
 npm 배포 시 root `package.json`의 `files` 설정에 따라 `dist/`와 `template/`만 패키지에 포함됨.
+`template/.npmignore`가 로컬 의존성·빌드 캐시와 실제 `.env` 파일을 패키지에서 제외함. `pnpm test:pack-env`는 현재 작업 폴더를 직접 `npm pack --dry-run`으로 검사하며 파일을 삭제하지 않음.
 
 ```json
 ["dist", "template"]
@@ -40,11 +42,14 @@ npm 배포 시 root `package.json`의 `files` 설정에 따라 `dist/`와 `templ
 
 포트 치환은 `src/steps/assign-local-ports.ts`에서 관리.
 
+이메일 미리보기는 `template/packages/email/emails/`를 React Email CLI로 실행. 사용자 앱·Admin 라우트에 추가하지 않음. 생성 프로젝트에서는 `pnpm --filter @repo/email dev` 사용, 포트 세트의 이메일 포트 독립 배정(3105부터 100씩 증가). Node.js 20.19 이상 필요.
+
 주요 플레이스홀더:
 
 - `{{PROJECT_NAME}}`
 - `{{LOCAL_APP_PORT}}`
 - `{{LOCAL_WEB_PORT}}`
+- `{{LOCAL_EMAIL_PORT}}`
 - `{{LOCAL_API_PORT}}`
 - `{{LOCAL_POSTGRES_PORT}}`
 
@@ -59,6 +64,17 @@ npm 배포 시 root `package.json`의 `files` 설정에 따라 `dist/`와 `templ
 템플릿은 sidebar 레이아웃만 포함하므로 앱 빌드 시 레이아웃 route 충돌이 없음.
 
 ## 테스트 기준
+
+### 로컬 UI 회귀 검사
+
+1. `pnpm dev:template-app`으로 로컬 프리뷰 실행.
+2. 기존 Playwright 설치 경로를 `PLAYWRIGHT_MODULE`에 지정해 `node scripts/audit-template-ui.mjs` 실행. 프로젝트에 Playwright가 설치된 경우 경로 지정 생략.
+3. `.local-preview/ui-audit/verified-*-desktop.png`, `verified-*-mobile.png` 육안 검수.
+
+- 대상: 모든 앱 경로, 메뉴·필터·선택·차트·폼·테마·로그아웃. 브라우저별 격리된 탭의 예시 데이터 사용.
+- 크기: 1440×900 / 390×844. localhost 외 실행 거부.
+- 결제: 외부 구매 미실행. 포털·trial 오류는 로컬 응답 대체로 검증.
+- 캡처·브라우저 의존성: npm 템플릿 배포 대상에서 제외.
 
 일반 변경:
 
@@ -77,7 +93,6 @@ pnpm test -- tests/unit/template-structure.test.ts tests/unit/prompts.test.ts
 
 ```bash
 pnpm test:pack-env
-npm pack --dry-run
 ```
 
 릴리스 전 전체 확인:

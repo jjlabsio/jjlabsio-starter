@@ -1,91 +1,29 @@
-import type { Post } from "./featured-post";
-import { FeaturedPost } from "./featured-post";
-import { PostCard } from "./post-card";
+"use client";
 
-const POSTS: readonly Post[] = [
-  {
-    slug: "introducing-acme-v2",
-    title: "Introducing Acme v2: A New Era of Product Development",
-    excerpt:
-      "We are excited to announce the next generation of Acme with AI-powered workflows, real-time collaboration, and a completely redesigned experience.",
-    category: "Product",
-    date: "Jan 15, 2025",
-    readTime: "5 min read",
-    featured: true,
-  },
-  {
-    slug: "scaling-to-one-million-users",
-    title: "How We Scaled to One Million Users",
-    excerpt:
-      "A deep dive into the architecture decisions, infrastructure changes, and engineering practices that helped us reach this milestone.",
-    category: "Engineering",
-    date: "Jan 8, 2025",
-    readTime: "8 min read",
-    featured: false,
-  },
-  {
-    slug: "design-system-principles",
-    title: "Building a Design System That Scales",
-    excerpt:
-      "The principles and patterns behind our design system, and how it enables our team to ship consistent experiences faster.",
-    category: "Design",
-    date: "Dec 20, 2024",
-    readTime: "6 min read",
-    featured: false,
-  },
-  {
-    slug: "ai-powered-workflows",
-    title: "The Future of AI-Powered Workflows",
-    excerpt:
-      "How we are integrating AI throughout the product to help teams automate repetitive tasks and focus on creative work.",
-    category: "Product",
-    date: "Dec 12, 2024",
-    readTime: "7 min read",
-    featured: false,
-  },
-  {
-    slug: "engineering-culture",
-    title: "Our Engineering Culture: Ship Fast, Stay Curious",
-    excerpt:
-      "A look inside how our engineering team operates, from daily rituals to the values that guide our technical decisions.",
-    category: "Company",
-    date: "Dec 5, 2024",
-    readTime: "4 min read",
-    featured: false,
-  },
-  {
-    slug: "real-time-collaboration",
-    title: "Building Real-Time Collaboration From Scratch",
-    excerpt:
-      "The technical challenges of building a multiplayer editing experience with conflict resolution and instant syncing.",
-    category: "Engineering",
-    date: "Nov 28, 2024",
-    readTime: "10 min read",
-    featured: false,
-  },
-];
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@repo/ui/components/button";
+import type { BlogPost } from "@/lib/blog";
 
-export function PostGrid() {
-  const featuredPost = POSTS.find((p) => p.featured);
-  const otherPosts = POSTS.filter((p) => !p.featured);
-
-  return (
-    <>
-      {featuredPost && (
-        <section className="pb-12">
-          <div className="mx-auto max-w-6xl px-6">
-            <FeaturedPost post={featuredPost} />
+export function PostGrid({ posts }: { posts: Omit<BlogPost, "body">[] }) {
+  const [category, setCategory] = useState("All");
+  const categories = ["All", ...new Set(posts.map((post) => post.category))];
+  return <section className="mx-auto max-w-7xl px-6 pb-24">
+    <div aria-label="Blog categories" className="mb-10 flex flex-wrap gap-2 border-b border-border pb-6">
+      {categories.map((item) => <Button key={item} variant={category === item ? "secondary" : "ghost"} aria-pressed={category === item} onClick={() => setCategory(item)}>{item}</Button>)}
+    </div>
+    <div className="grid gap-x-8 gap-y-12 md:grid-cols-2 lg:grid-cols-3">
+      {posts.filter((post) => category === "All" || post.category === category).map((post) => <article key={post.slug}>
+        <Link href={`/blog/${post.slug}`} className="group block rounded-lg outline-offset-4 focus-visible:outline-2 focus-visible:outline-ring">
+          <div className="relative aspect-video overflow-hidden rounded-lg bg-muted">
+            <Image src={post.cover} alt={post.coverAlt} fill sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw" className="object-cover transition-opacity group-hover:opacity-80" />
           </div>
-        </section>
-      )}
-
-      <section className="pb-24">
-        <div className="mx-auto grid max-w-6xl gap-8 px-6 md:grid-cols-2 lg:grid-cols-3">
-          {otherPosts.map((post) => (
-            <PostCard key={post.slug} post={post} />
-          ))}
-        </div>
-      </section>
-    </>
-  );
+          <div className="mt-5 flex items-center gap-3 text-xs text-muted-foreground"><span>{post.category}</span><span aria-hidden="true">·</span><time dateTime={post.date}>{new Date(`${post.date}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })}</time></div>
+          <h2 className="mt-3 line-clamp-2 h-14 text-xl leading-7 font-medium tracking-tight group-hover:underline underline-offset-4">{post.title}</h2>
+          <p className="mt-3 line-clamp-3 h-[4.5rem] text-base leading-6 text-muted-foreground">{post.description}</p>
+        </Link>
+      </article>)}
+    </div>
+  </section>;
 }

@@ -2,16 +2,18 @@
 
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { TooltipProvider } from "@repo/ui/components/tooltip";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <NextThemesProvider
       attribute="class"
-      forcedTheme="light"
+      defaultTheme="light"
+      enableSystem
       disableTransitionOnChange
       enableColorScheme
     >
-      {children}
+      <TooltipProvider>{children}</TooltipProvider>
     </NextThemesProvider>
   );
 }

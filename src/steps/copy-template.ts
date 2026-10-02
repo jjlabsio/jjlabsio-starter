@@ -17,6 +17,7 @@ const TEMPLATE_DIR = path.resolve(
 
 const GENERATED_TEMPLATE_DIRS = new Set([
   ".next",
+  ".react-email",
   ".turbo",
   "dist",
   "node_modules",

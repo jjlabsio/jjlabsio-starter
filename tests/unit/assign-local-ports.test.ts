@@ -50,6 +50,10 @@ describe("assignLocalPorts", () => {
       '{"scripts":{"dev":"next dev --port {{LOCAL_WEB_PORT}}","start":"next start --port {{LOCAL_WEB_PORT}}"}}',
     );
     await fs.outputFile(
+      path.join(projectDir, "packages/email/package.json"),
+      '{"scripts":{"dev":"email dev --dir ./emails --port {{LOCAL_EMAIL_PORT}}"}}',
+    );
+    await fs.outputFile(
       path.join(projectDir, "apps/api/src/main.ts"),
       "const DEFAULT_PORT = {{LOCAL_API_PORT}};",
     );
@@ -67,6 +71,8 @@ describe("assignLocalPorts", () => {
     expect(getPortsForSet(0)).toEqual({
       app: 3100,
       web: 3101,
+      admin: 3104,
+      email: 3105,
       api: 3102,
       worker: 3103,
       postgres: 5532,
@@ -74,6 +80,8 @@ describe("assignLocalPorts", () => {
     expect(getPortsForSet(1)).toEqual({
       app: 3200,
       web: 3201,
+      admin: 3204,
+      email: 3205,
       api: 3202,
       worker: 3203,
       postgres: 5632,
@@ -174,6 +182,9 @@ describe("assignLocalPorts", () => {
       fs.readFile(path.join(projectDir, "apps/web/package.json"), "utf-8"),
     ).resolves.toContain("next start --port 3201");
     await expect(
+      fs.readFile(path.join(projectDir, "packages/email/package.json"), "utf-8"),
+    ).resolves.toContain("email dev --dir ./emails --port 3205");
+    await expect(
       fs.readFile(path.join(projectDir, "apps/web/.env.example"), "utf-8"),
     ).resolves.toContain("http://localhost:3200");
     await expect(
@@ -255,14 +266,14 @@ describe("assignLocalPorts", () => {
     ).rejects.toThrow("Selected local development port set is no longer available.");
   });
 
-  it("skips a port set when one of its ports is currently unavailable", async () => {
+  it("skips a port set when its email preview port is currently unavailable", async () => {
     const homeDir = await createTempDir("jjlabs-home-");
     const projectDir = await createTempDir("jjlabs-project-");
     await writeProjectTemplates(projectDir);
 
     const result = await previewLocalPorts(projectDir, {
       homeDir,
-      isPortAvailable: async (port) => port !== 3100,
+      isPortAvailable: async (port) => port !== 3105,
     });
 
     expect(result.portSet).toBe(1);

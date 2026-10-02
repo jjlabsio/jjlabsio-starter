@@ -132,7 +132,7 @@ function assertGeneratedPorts() {
     throw new Error("Expected generated app .env to include selected app port");
   }
 
-  if (!appPackage.includes(`next dev --port ${appPort}`)) {
+  if (!appPackage.includes(`next dev --hostname 127.0.0.1 --port ${appPort}`)) {
     throw new Error("Expected generated app package scripts to include selected app port");
   }
 

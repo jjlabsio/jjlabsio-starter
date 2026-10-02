@@ -1,74 +1,74 @@
 import Link from "next/link";
-
-const LINK_GROUPS = [
-  {
-    title: "Product",
-    links: [
-      { label: "Features", href: "#features" },
-      { label: "Pricing", href: "/pricing" },
-      { label: "Integrations", href: "#" },
-      { label: "Changelog", href: "#" },
-      { label: "Documentation", href: "#" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "/blog" },
-      { label: "Careers", href: "#" },
-      { label: "Press", href: "#" },
-      { label: "Contact", href: "#" },
-    ],
-  },
-  {
-    title: "Social",
-    links: [
-      { label: "Twitter", href: "#" },
-      { label: "GitHub", href: "#" },
-      { label: "Discord", href: "#" },
-      { label: "LinkedIn", href: "#" },
-    ],
-  },
-] as const;
+import { marketingNavigation } from "@/lib/marketing";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/40 py-16">
+    <footer className="border-t border-border pb-8 pt-16 md:pt-20">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-12 md:grid-cols-4">
+        <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
           <div>
-            <Link href="/" className="text-xl font-semibold tracking-tight">
+            <Link href="/" className="text-xl font-semibold">
               Acme
             </Link>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Build better products, faster than ever.
-            </p>
           </div>
-
-          {LINK_GROUPS.map((group) => (
-            <div key={group.title}>
-              <h3 className="mb-4 text-sm font-medium">{group.title}</h3>
-              <ul className="flex flex-col gap-3">
-                {group.links.map((link) => (
-                  <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
+          <nav
+            aria-label="Footer"
+            className="grid grid-cols-2 gap-x-8 gap-y-10 md:grid-cols-3"
+          >
+            {marketingNavigation.map((menu) => (
+              <div key={menu.label}>
+                <h2 className="mb-3 type-ui-body text-subtle-foreground">
+                  {menu.label}
+                </h2>
+                <ul className="space-y-3">
+                  {menu.groups
+                    .flatMap<{ label: string; href: string }>(
+                      (group) => group.links,
+                    )
+                    .map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className="type-ui-body text-muted-foreground hover:text-foreground hover:underline focus-visible:underline"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            ))}
+            <div className="md:col-start-1 md:row-start-2">
+              <h2 className="mb-3 type-ui-body text-subtle-foreground">
+                Company
+              </h2>
+              <ul className="space-y-3">
+                <li>
+                  <Link
+                    href="/pricing"
+                    className="type-ui-body text-muted-foreground hover:text-foreground hover:underline focus-visible:underline"
+                  >
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <a
+                    href="mailto:support@example.com"
+                    className="type-ui-body text-muted-foreground hover:text-foreground hover:underline focus-visible:underline"
+                  >
+                    Contact us
+                  </a>
+                </li>
               </ul>
             </div>
-          ))}
+          </nav>
         </div>
-
-        <div className="mt-16 border-t border-border/40 pt-8">
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} Acme Inc. All rights reserved.
-          </p>
+        <div className="mt-16 flex flex-col gap-4 type-ui-caption text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:mt-24">
+          <p>&copy; {new Date().getFullYear()} Acme. All rights reserved.</p>
+          <nav aria-label="Legal" className="flex gap-6">
+            <Link href="/privacy" className="hover:text-foreground hover:underline focus-visible:underline">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-foreground hover:underline focus-visible:underline">Terms of Service</Link>
+          </nav>
         </div>
       </div>
     </footer>

@@ -4,6 +4,7 @@ node_modules/
 template/node_modules/
 template/**/.turbo/
 template/**/.next/
+template/**/.react-email/
 template/apps/*/node_modules/
 template/packages/*/node_modules/
 template/**/.env
@@ -14,6 +15,7 @@ template/packages/*/coverage/
 
 test-project/
 .env
+.local-preview/
 
 # MDF local workflow state
 .mdf/

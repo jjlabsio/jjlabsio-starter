@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -33,7 +33,9 @@ export async function GET() {
       customerId: user.polarCustomerId,
     });
 
-    return NextResponse.redirect(portalSession.customerPortalUrl);
+    return request.headers.get("accept")?.includes("application/json")
+      ? NextResponse.json({ url: portalSession.customerPortalUrl })
+      : NextResponse.redirect(portalSession.customerPortalUrl);
   } catch (error) {
     console.error("[Billing] Portal session creation failed:", error);
     return NextResponse.json(

@@ -41,9 +41,7 @@ export function FeatureBlock({
             {description}
           </p>
           <div>
-            <Button variant="outline" className="rounded-full">
-              Learn more
-            </Button>
+            <Button variant="outline">Learn more</Button>
           </div>
         </div>
       </div>

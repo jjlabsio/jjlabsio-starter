@@ -21,6 +21,9 @@ describe("substituteProjectName", () => {
         path.join(productDir, "product-brief.md"),
         "# Product Brief\n\n`{{PROJECT_NAME}}` is a new product.\n",
       );
+      const emailConfig = path.join(projectDir, "packages/email/src/config.ts");
+      await fs.ensureDir(path.dirname(emailConfig));
+      await fs.writeFile(emailConfig, 'export const EMAIL_BRAND = "{{PROJECT_NAME}}";\n');
 
       await substituteProjectName(projectDir, "my-app");
 
@@ -30,6 +33,7 @@ describe("substituteProjectName", () => {
       await expect(
         fs.readFile(path.join(productDir, "product-brief.md"), "utf-8"),
       ).resolves.toContain("my-app");
+      await expect(fs.readFile(emailConfig, "utf-8")).resolves.toContain('EMAIL_BRAND = "my-app"');
     } finally {
       await fs.remove(projectDir);
     }

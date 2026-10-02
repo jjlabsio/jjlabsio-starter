@@ -3,23 +3,23 @@
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { isNavigationActive } from "../lib/navigation";
 
 import {
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@repo/ui/components/sidebar";
-
-function isItemActive(currentPathname: string, itemUrl: string) {
-  if (currentPathname === itemUrl) return true;
-  return currentPathname.startsWith(`${itemUrl}/`);
-}
 
 export function NavMain({
   items,
+  label,
 }: {
+  label?: string;
   items: {
     title: string;
     url: string;
@@ -27,6 +27,7 @@ export function NavMain({
   }[];
 }) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
   const [mountedPathname, setMountedPathname] = React.useState<string | null>(
     null,
   );
@@ -37,16 +38,20 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+      <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 tooltip={item.title}
                 render={<Link href={item.url} />}
+                onClick={() => {
+                  if (isMobile) setOpenMobile(false);
+                }}
                 isActive={
                   mountedPathname
-                    ? isItemActive(mountedPathname, item.url)
+                    ? isNavigationActive(mountedPathname, item.url)
                     : false
                 }
               >

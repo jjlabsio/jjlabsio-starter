@@ -1,0 +1,12 @@
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules/
+**/.next/
+**/.react-email/
+**/.turbo/
+**/.vercel/
+**/build/
+**/coverage/
+**/dist/
+**/out/

@@ -19,6 +19,7 @@ describe("finalize", () => {
       .mockResolvedValueOnce(false as never)
       .mockResolvedValueOnce(true as never)
       .mockResolvedValueOnce(true as never)
+      .mockResolvedValueOnce(true as never)
       .mockResolvedValueOnce(true as never);
     vi.mocked(fs.copy).mockResolvedValue(undefined as never);
 
@@ -32,6 +33,11 @@ describe("finalize", () => {
     expect(fs.copy).toHaveBeenCalledWith(
       "/tmp/test-project/apps/web/.env.example",
       "/tmp/test-project/apps/web/.env",
+      { overwrite: false },
+    );
+    expect(fs.copy).toHaveBeenCalledWith(
+      "/tmp/test-project/apps/admin/.env.example",
+      "/tmp/test-project/apps/admin/.env",
       { overwrite: false },
     );
     expect(fs.copy).toHaveBeenCalledWith(

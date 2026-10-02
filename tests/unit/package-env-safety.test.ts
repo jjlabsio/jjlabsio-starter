@@ -1,14 +1,57 @@
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   analyzePackFiles,
-  findUnsafeTemplateFiles,
+  analyzeTrackedFiles,
   parsePackFilePaths,
 } from "../../scripts/check-pack-env.mjs";
 
 describe("package env safety", () => {
+  it("keeps env examples but excludes local env and generated files from the real npm manifest", () => {
+    const probeDir = fs.mkdtempSync(path.join(os.tmpdir(), "jjlabs-pack-probe-"));
+
+    try {
+      fs.writeFileSync(
+        path.join(probeDir, "package.json"),
+        JSON.stringify({
+          name: "jjlabs-pack-probe",
+          version: "1.0.0",
+          files: ["template"],
+        }),
+      );
+      const templateDir = path.join(probeDir, "template");
+      const webDir = path.join(templateDir, "apps/web");
+      fs.mkdirSync(path.join(webDir, ".next"), { recursive: true });
+      fs.copyFileSync(
+        new URL("../../template/.npmignore", import.meta.url),
+        path.join(templateDir, ".npmignore"),
+      );
+      fs.writeFileSync(path.join(webDir, ".env.example"), "SAFE=example");
+      fs.writeFileSync(path.join(webDir, ".env.local"), "SECRET=probe");
+      fs.writeFileSync(path.join(webDir, ".next/probe.txt"), "generated");
+      const emailDir = path.join(templateDir, "packages/email/.react-email");
+      fs.mkdirSync(emailDir, { recursive: true });
+      fs.writeFileSync(path.join(emailDir, "probe.txt"), "generated");
+
+      const files = parsePackFilePaths(
+        execFileSync("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
+          cwd: probeDir,
+          encoding: "utf8",
+        }),
+      );
+
+      expect(files).toContain("template/apps/web/.env.example");
+      expect(files).not.toContain("template/apps/web/.env.local");
+      expect(files).not.toContain("template/apps/web/.next/probe.txt");
+      expect(files).not.toContain("template/packages/email/.react-email/probe.txt");
+    } finally {
+      fs.rmSync(probeDir, { recursive: true, force: true });
+    }
+  });
+
   it("declares repository metadata required by npm provenance", () => {
     const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
@@ -22,6 +65,7 @@ describe("package env safety", () => {
     const result = analyzePackFiles([
       "dist/index.js",
       "template/apps/app/.env.example",
+      "template/apps/admin/.env.example",
       "template/apps/web/.env.example",
       "template/packages/database/.env.example",
     ]);
@@ -56,6 +100,7 @@ describe("package env safety", () => {
       "template/apps/app/coverage/coverage-final.json",
       "template/apps/web/out/index.html",
       "template/apps/web/.turbo/turbo-build.log",
+      "template/packages/email/.react-email/index.html",
       "template/node_modules/.pnpm/lock.yaml",
     ]);
 
@@ -67,6 +112,7 @@ describe("package env safety", () => {
       "template/apps/app/coverage/coverage-final.json",
       "template/apps/web/out/index.html",
       "template/apps/web/.turbo/turbo-build.log",
+      "template/packages/email/.react-email/index.html",
       "template/node_modules/.pnpm/lock.yaml",
     ]);
   });
@@ -76,6 +122,7 @@ describe("package env safety", () => {
 
     expect(result.missingEnvExamples).toEqual([
       "template/apps/app/.env.example",
+      "template/apps/admin/.env.example",
       "template/apps/web/.env.example",
       "template/packages/database/.env.example",
     ]);
@@ -99,47 +146,24 @@ describe("package env safety", () => {
     ]);
   });
 
-  it("reports unsafe generated files in template source", () => {
-    const originalCwd = process.cwd();
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "pack-env-"));
+  it("rejects tracked generated files without scanning local preview output", () => {
+    const result = analyzeTrackedFiles([
+      ".env",
+      ".local-preview/secret",
+      "dist/index.js",
+      "template/apps/app/.env.example",
+      "template/apps/app/.env.local",
+      "template/apps/app/.next/BUILD_ID",
+      "template/node_modules/.pnpm/lock.yaml",
+    ]);
 
-    try {
-      process.chdir(tempDir);
-
-      for (const filePath of [
-        "template/apps/api/dist/main.js",
-        "template/apps/app/.next/build-manifest.json",
-        "template/apps/app/.vercel/output/config.json",
-        "template/apps/app/build/server.js",
-        "template/apps/app/coverage/coverage-final.json",
-        "template/apps/web/out/index.html",
-      ]) {
-        fs.mkdirSync(path.dirname(filePath), { recursive: true });
-        fs.writeFileSync(filePath, "generated");
-      }
-
-      const result = findUnsafeTemplateFiles(path.join(tempDir, "template"));
-      const generatedArtifactFiles = result.generatedArtifactFiles.map(
-        (filePath) => filePath.slice(filePath.indexOf("template/")),
-      );
-
-      expect({
-        generatedArtifactFiles,
-        realEnvFiles: result.realEnvFiles,
-      }).toEqual({
-        generatedArtifactFiles: [
-          "template/apps/api/dist/main.js",
-          "template/apps/app/.next/build-manifest.json",
-          "template/apps/app/.vercel/output/config.json",
-          "template/apps/app/build/server.js",
-          "template/apps/app/coverage/coverage-final.json",
-          "template/apps/web/out/index.html",
-        ],
-        realEnvFiles: [],
-      });
-    } finally {
-      process.chdir(originalCwd);
-      fs.rmSync(tempDir, { recursive: true, force: true });
-    }
+    expect(result.forbiddenFiles).toEqual([
+      ".env",
+      ".local-preview/secret",
+      "dist/index.js",
+      "template/apps/app/.env.local",
+      "template/apps/app/.next/BUILD_ID",
+      "template/node_modules/.pnpm/lock.yaml",
+    ]);
   });
 });

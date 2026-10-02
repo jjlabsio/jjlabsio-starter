@@ -4,10 +4,12 @@ import { z } from "zod";
 export const env = createEnv({
   client: {
     NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY: z.string().min(1),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY: z.string().min(1),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY: z.string().min(1),
-    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY: z.string().min(1),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_MONTHLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_STARTER_YEARLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY: z.string().min(1).optional(),
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY: z.string().min(1).optional(),
   },
   runtimeEnv: {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
@@ -19,6 +21,10 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY,
     NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY:
       process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY:
+      process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY,
+    NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY:
+      process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY,
   },
   skipValidation: process.env.SKIP_ENV_VALIDATION === "true",
 });
@@ -31,5 +37,9 @@ export const PRODUCT_IDS = {
   pro: {
     monthly: env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_MONTHLY,
     yearly: env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PRO_YEARLY,
+  },
+  premium: {
+    monthly: env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_MONTHLY,
+    yearly: env.NEXT_PUBLIC_POLAR_PRODUCT_ID_PREMIUM_YEARLY,
   },
 } as const;

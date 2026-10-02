@@ -20,13 +20,17 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
+    "dev:template-app": "node scripts/dev-template-app.mjs",
+    "dev:template-admin": "node scripts/dev-template-admin.mjs",
+    "dev:template-email": "pnpm --dir template --filter @repo/email exec email dev --dir ./emails --port 4002",
     "test": "vitest run",
     "test:pack-env": "node scripts/check-pack-env.mjs",
+    "test:tracked-artifacts": "node scripts/check-pack-env.mjs --tracked",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "test:e2e": "node scripts/e2e-smoke.mjs",
     "prepublishOnly": "pnpm test:pack-env",
-    "publish:npm": "pnpm build && find template \\( -name node_modules -o -name .next -o -name .turbo -o -name .vercel -o -name build -o -name coverage -o -name dist -o -name out \\) -type d -prune -exec rm -rf {} + && pnpm test:pack-env && npm publish --provenance --access public"
+    "publish:npm": "pnpm build && npm publish --provenance --access public"
   },
   "dependencies": {
     "fs-extra": "^11.2.0",
